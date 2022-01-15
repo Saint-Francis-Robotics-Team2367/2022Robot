@@ -43,11 +43,8 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  // frc::Solenoid valve{0};
   m_leftEncoder.SetPosition(0);
   m_rightEncoder.SetPosition(0);
-  // compressor = new frc::Spark(1);
-  // valve.Set(false);
 }
 
 void Robot::TeleopPeriodic() {

@@ -47,7 +47,6 @@ class Robot : public frc::TimedRobot {
 
   frc::AnalogInput * analog_input = new frc::AnalogInput(1);
 
-
   rev::CANSparkMax* m_leftLeadMotor = new rev::CANSparkMax(leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightLeadMotor = new rev::CANSparkMax(rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_leftFollowMotor = new rev::CANSparkMax(leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
@@ -59,8 +58,6 @@ class Robot : public frc::TimedRobot {
   frc::Joystick* m_stick = new frc::Joystick{0};
 
   SFDrive* m_robotDrive = new SFDrive(m_leftLeadMotor, m_rightLeadMotor);
-
-  // frc::Solenoid valve{0};
 
   Test* TestFunctions = new Test();
   
