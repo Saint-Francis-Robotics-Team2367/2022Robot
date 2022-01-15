@@ -57,7 +57,7 @@ void Robot::AutonomousInit()
   //maybe init all in the constructor
   //PID tuned values for t-shirt cannon, having init here instead of SFDrive, might change later
   //double m_P = 0.23, m_I = 0.04, m_D = 1.68, iZone = 0.04;
-  double m_P = 0.05, m_I = 0.0, m_D = 0, iZone = 0.03;
+  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
   m_leftLeadMotor->GetPIDController().SetP(m_P);
   m_leftLeadMotor->GetPIDController().SetI(m_I);
   m_leftLeadMotor->GetPIDController().SetD(m_D);
@@ -128,7 +128,7 @@ void Robot::AutonomousPeriodic() {
 //     prevTime = frc::Timer::GetFPGATimestamp();
   
 
-  double positionTotal = 2;
+  double positionTotal = 6;
   if (currentPosition < positionTotal) {
     double timeElapsed = frc::Timer::GetFPGATimestamp() - prevTime;
 
@@ -154,7 +154,7 @@ void Robot::AutonomousPeriodic() {
     //double inRots = (currentPosition*12) / (3.14 * 5.7) * 42 * ((14/50) * (24/40));
 
     //0.168 is gear ratio
-    double setpoint = (currentPosition * 12) / (3.14 * 5.7);
+    double setpoint = (currentPosition * 12) / (3.14 * 6);
     frc::SmartDashboard::PutNumber("setpoint", setpoint);
     //frc::SmartDashboard::PutNumber("inRots", inRots);
     m_leftLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
