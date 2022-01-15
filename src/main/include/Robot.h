@@ -65,5 +65,6 @@ class Robot : public frc::TimedRobot {
   // frc::Solenoid valve{0};
 
   Test* TestFunctions = new Test();
+  photonlib::PhotonCamera cam{"photonvision"};
   
 };
