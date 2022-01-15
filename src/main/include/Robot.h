@@ -16,6 +16,8 @@
 #include <fstream>
 #include <stdio.h>
 #include "Test.h"
+#include "photonlib/PhotonCamera.h"
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
