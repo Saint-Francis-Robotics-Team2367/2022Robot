@@ -57,7 +57,7 @@ void Robot::AutonomousInit()
   //maybe init all in the constructor
   //PID tuned values for t-shirt cannon, having init here instead of SFDrive, might change later
   //double m_P = 0.23, m_I = 0.04, m_D = 1.68, iZone = 0.04;
-  double m_P = 0.05, m_I = 0.0, m_D = 0, iZone = 0;
+  double m_P = 0.05, m_I = 0.0, m_D = 0, iZone = 0.03;
   m_leftLeadMotor->GetPIDController().SetP(m_P);
   m_leftLeadMotor->GetPIDController().SetI(m_I);
   m_leftLeadMotor->GetPIDController().SetD(m_D);
@@ -80,7 +80,7 @@ void Robot::AutonomousInit()
 }
 
 void Robot::AutonomousPeriodic() {
-    Robot::PIDTesting();
+    //Robot::PIDTesting();
 
 //   double radius = 0;
 //   double angle = 360;
@@ -128,39 +128,43 @@ void Robot::AutonomousPeriodic() {
 //     prevTime = frc::Timer::GetFPGATimestamp();
   
 
-  // double totalFeet = 1;
-  // if(currentPosition < totalFeet){
+  double positionTotal = 2;
+  if (currentPosition < positionTotal) {
+    double timeElapsed = frc::Timer::GetFPGATimestamp() - prevTime;
 
-  //   timeElapsed = frc::Timer::GetFPGATimestamp() - prevTime;
-  //   distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
-  //   if (distanceToDeccelerate > totalFeet - currentPosition) {
-  //     currentVelocity -= (maxAcc * timeElapsed);
-  //   }
-  //   else //increase velocity
-  //   {
-  //     currentVelocity += (maxAcc * timeElapsed);
-  //     if (currentVelocity > maxVelocity)
-  //     {
-  //       currentVelocity = maxVelocity;
-  //     }
-  //   }
+    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
 
-  //   currentPosition += currentVelocity * timeElapsed;
-  //   if(currentPosition > totalFeet) {
-  //     currentPosition = totalFeet;
-  //   }
+    //If the amount of distance we have is less than distance to deccelerate, reduce velocity, by the most possible
+    if (distanceToDeccelerate > positionTotal - currentPosition) {
+      currentVelocity -= (maxAcc * timeElapsed);
+    }
+    else //increase velocity
+    {
+      currentVelocity += (maxAcc * timeElapsed);
+      if (currentVelocity > maxVelocity)
+      {
+        currentVelocity = maxVelocity;
+      }
+    }
+    currentPosition += currentVelocity * timeElapsed;
+    
+    //convert to rots
+    frc::SmartDashboard::PutNumber("currPos", currentPosition);
+    //frc::SmartDashboard::PutNumber("convertedToRotsPoint", Robot::convertDistanceToTicks(currentPosition));
+    //double inRots = (currentPosition*12) / (3.14 * 5.7) * 42 * ((14/50) * (24/40));
 
-  //   //converting currentPosition to ticks? for the motor: inches / (circum) * ticks * gearboxRatio, might look at this later
-  //   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //   double setpoint = (currentPosition * 12) / (3.1415 * 5.7) * 42 * (0.168); // for now this is ticks (maybe rotations / gearRatio if not then)
-  //   m_leftLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
-  //   m_rightLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
-  //   prevTime = frc::Timer::GetFPGATimestamp();
+    //0.168 is gear ratio
+    double setpoint = (currentPosition * 12) / (3.14 * 5.7);
+    frc::SmartDashboard::PutNumber("setpoint", setpoint);
+    //frc::SmartDashboard::PutNumber("inRots", inRots);
+    m_leftLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
+    m_rightLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
+
+    prevTime = frc::Timer::GetFPGATimestamp();
      
-// }
-
 }
 
+}
 
 void Robot::TeleopInit() {
 

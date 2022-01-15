@@ -105,7 +105,7 @@ bool SFDrive::PIDDrive(float totalFeet, float maxAcc, float maxVelocity) {
 
     //converting currentPosition to ticks? for the motor: inches / (circum) * ticks * gearboxRatio, might look at this later
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    setpoint = (currentPosition * 12) / (PI * 5.7) * 42 * (0.168); // for now this is ticks (maybe rotations / gearRatio if not then)
+    setpoint = (currentPosition * 12) / (PI * 5.7); // for now this is ticks (maybe rotations / gearRatio if not then)
     leftLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
     rightLeadMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp();
