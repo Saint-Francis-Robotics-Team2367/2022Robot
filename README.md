@@ -1,22 +1,26 @@
-# 2021dev
-Learning wpilib
+# 2022 Robot Repository Instructions
 
 ### 1. Branch from devTest to create new features or fix bugs
 
-`git checkout devTest`  
+```
+git checkout devTest
 
-`git checkout -b feature/my-feature` OR `git checkout -b bugfix/my-bugfix`
+git checkout -b feature/my-feature` OR `git checkout -b bugfix/my-bugfix
 
-`git add .`
+git add .
 
-`git commit -m "m"`
+git commit -m "m"
 
-`git push -u origin feature/my-feature`
+git push -u origin feature/my-feature
+```
 
 ### 2. Merge new feature to devUnstable
-  
-`git checkout devUnstable`  
-`git merge feature/my-feature`
+
+```
+git checkout devUnstable
+
+git merge feature/my-feature
+```
 
 If you have a bug fix for your own branch and don't want to mess with the branch's base code, checkout your branch and branch from it to add your code. After adding the bug fix, merge to your original branch.
 
