@@ -7,7 +7,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/AnalogInput.h>
-#include <frc/Spark.h>
+#include <frc/motorcontrol/Spark.h>
 #include "SFDrive.h"
 #include <frc/Solenoid.h>
 #include <frc/commands/WaitCommand.h>
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-#include "Test.h"
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -53,8 +53,8 @@ class Robot : public frc::TimedRobot {
   rev::CANSparkMax* m_leftFollowMotor = new rev::CANSparkMax(leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightFollowMotor = new rev::CANSparkMax(rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
 
-  rev::CANEncoder m_leftEncoder = m_leftLeadMotor->GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42);
-  rev::CANEncoder m_rightEncoder = m_rightLeadMotor->GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42);
+  // rev::CANEncoder m_leftEncoder = m_leftLeadMotor->GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42);
+  // rev::CANEncoder m_rightEncoder = m_rightLeadMotor->GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42);
 
   frc::Joystick* m_stick = new frc::Joystick{0};
 
@@ -62,6 +62,6 @@ class Robot : public frc::TimedRobot {
 
   // frc::Solenoid valve{0};
 
-  Test* TestFunctions = new Test();
+  // Test* TestFunctions = new Test();
   
 };
