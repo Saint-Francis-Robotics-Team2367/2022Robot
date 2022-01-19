@@ -11,7 +11,7 @@
 
 void Robot::RobotInit()
 {
-int driveMotorCurrentLimit = 38;
+int driveMotorCurrentLimit = 30;
  m_leftLeadMotor->RestoreFactoryDefaults();
   m_rightLeadMotor->RestoreFactoryDefaults();
   m_leftFollowMotor->RestoreFactoryDefaults();
