@@ -61,8 +61,8 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   // frc::Solenoid valve{0};
-  m_leftEncoder.SetPosition(0);
-  m_rightEncoder.SetPosition(0);
+  m_leftLeadMotor->GetEncoder().SetPosition(0);
+  m_rightLeadMotor->GetEncoder().SetPosition(0);
   // compressor = new frc::Spark(1);
   // valve.Set(false);
 }
@@ -87,16 +87,9 @@ void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {
-  tested_motors = false;
 }
 
 void Robot::TestPeriodic() {
-  if (tested_motors == false) {
-    TestFunctions->checkMotorIDs();
-    tested_motors = true;
-  } else {
-    exit(0);
-  }
 }
 
 #ifndef RUNNING_FRC_TESTS
