@@ -4,6 +4,8 @@
 
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
 
 // roboRIO-TEAM-frc.local
 
@@ -35,8 +37,18 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-  frc::SmartDashboard::PutNumber("left y: ", -(m_stick->GetRawAxis(1)));
-  frc::SmartDashboard::PutNumber("right x: ", m_stick->GetRawAxis(4));
+  //frc::Shuffleboard::GetTab("Drive Train")
+     //.Add("Left Y", -(m_stick->GetRawAxis(1))).GetEntry();
+  //frc::Shuffleboard::GetTab("Drive Train")
+     //.Add("Right X", m_stick->GetRawAxis(4)).GetEntry();
+  frc::Shuffleboard::GetTab("Drive Train")
+     .Add("Left Y", -(m_stick->GetRawAxis(1))).GetEntry().SetDouble(-(m_stick->GetRawAxis(1)));
+  frc::Shuffleboard::GetTab("Drive Train")
+     .Add("Right X", m_stick->GetRawAxis(4)).GetEntry().SetDouble(m_stick->GetRawAxis(4));
+  frc::Shuffleboard::GetTab("Drive Train")
+     .Add("Left Encoder", m_leftEncoder.GetPosition()).GetEntry().SetDouble(m_leftEncoder.GetPosition());  
+  frc::Shuffleboard::GetTab("Drive Train")
+     .Add("Right Encoder", m_rightEncoder.GetPosition()).GetEntry().SetDouble(m_rightEncoder.GetPosition());  
 }
  
 void Robot::AutonomousInit() {}
@@ -45,6 +57,8 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {
   m_leftEncoder.SetPosition(0);
   m_rightEncoder.SetPosition(0);
+  m_leftEncoder.SetPositionConversionFactor(0.168);
+  m_rightEncoder.SetPositionConversionFactor(0.168);
 }
 
 void Robot::TeleopPeriodic() {
