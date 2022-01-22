@@ -63,7 +63,19 @@ void Robot::AutonomousPeriodic() {
     photonlib::PhotonPipelineResult result = cam.GetLatestResult();
     float v = result.GetBestTarget().GetYaw();
     frc::SmartDashboard::PutNumber("yaw", v);
-    m_robotDrive->ArcadeDrive(0, v * 0.05);
+    float y = result.GetBestTarget().GetCameraRelativePose().X().value();
+    frc::SmartDashboard::PutNumber("distance", y);
+    if (y > 4) {
+      y = 0.05;
+    }
+    else {
+      y = 0;
+    }
+    if (v > abs(0.1))
+      m_robotDrive->ArcadeDrive(0, v * 0.02);
+    else {
+      m_robotDrive->ArcadeDrive(y, 0);
+    }
   }
   else {
     frc::SmartDashboard::PutBoolean("camera", false);
