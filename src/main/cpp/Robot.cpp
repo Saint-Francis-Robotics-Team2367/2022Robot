@@ -66,15 +66,15 @@ void Robot::AutonomousPeriodic() {
     float y = result.GetBestTarget().GetCameraRelativePose().X().value();
     frc::SmartDashboard::PutNumber("distance", y);
     if (y > 4) {
-      y = 0.05;
+      y = 0.2;
     }
     else {
       y = 0;
     }
-    if (v > abs(0.1))
+    if (fabs(v) > 3)
       m_robotDrive->ArcadeDrive(0, v * 0.02);
     else {
-      m_robotDrive->ArcadeDrive(y, 0);
+      m_robotDrive->ArcadeDrive(-y, 0);
     }
   }
   else {
