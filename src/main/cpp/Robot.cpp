@@ -57,7 +57,18 @@ void Robot::RobotPeriodic() {
 }
   
 void Robot::AutonomousInit() {}
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+  if (cam.HasTargets()) {
+    frc::SmartDashboard::PutBoolean("camera", true);
+    photonlib::PhotonPipelineResult result = cam.GetLatestResult();
+    float v = result.GetBestTarget().GetYaw();
+    frc::SmartDashboard::PutNumber("yaw", v);
+    m_robotDrive->ArcadeDrive(0, v * 0.05);
+  }
+  else {
+    frc::SmartDashboard::PutBoolean("camera", false);
+  }
+}
 
 void Robot::TeleopInit() {
   // frc::Solenoid valve{0};
@@ -74,13 +85,7 @@ void Robot::TeleopPeriodic() {
   m_robotDrive->ArcadeDrive(-left_y, right_x);
   frc::SmartDashboard::PutNumber("left y: ", -(m_stick->GetRawAxis(1)));
   frc::SmartDashboard::PutNumber("right x: ", m_stick->GetRawAxis(4));
-  if (cam.HasTargets()) {
-    frc::SmartDashboard::PutBoolean("camera", true);
-    photonlib::PhotonPipelineResult result = cam.GetLatestResult();
-  }
-  else {
-    frc::SmartDashboard::PutBoolean("camera", false);
-  }
+
 }
 
 void Robot::DisabledInit() {}
