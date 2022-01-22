@@ -163,7 +163,13 @@ bool SFDrive::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity
   return true;
 }
 
+void SFDrive::PathA(){
+    
+}
 
+void SFDrive::PathB(){
+     
+}
 
 void SFDrive::PIDTuning(float delta) {
   double prevTime = frc::Timer::GetFPGATimestamp();
