@@ -4,6 +4,7 @@
 
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "Constructor.h"
 
 // roboRIO-TEAM-frc.local
 

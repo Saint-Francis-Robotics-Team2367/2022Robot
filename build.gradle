@@ -56,11 +56,11 @@ model {
 
             sources.cpp {
                 source {
-                    srcDir 'src/main/cpp'
+                    srcDirs 'src/main/cpp', 'module/src'
                     include '**/*.cpp', '**/*.cc'
                 }
                 exportedHeaders {
-                    srcDir 'src/main/include'
+                    srcDirs 'src/main/include', 'module/include'
                 }
             }
 
