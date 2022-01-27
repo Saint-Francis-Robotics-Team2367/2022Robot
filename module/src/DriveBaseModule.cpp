@@ -97,7 +97,7 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  if (stateRef->IsOperatorControl()) {
+  if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
     return;
   }

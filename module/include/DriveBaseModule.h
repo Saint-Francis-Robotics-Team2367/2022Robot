@@ -14,10 +14,10 @@
 #define driverStickPort 0
 #define operatorStickPort 1
 
-#define lMotorLeaderID 13 // Change these according to hardware
-#define lMotorFollowerID 12 
-#define rMotorLeaderID 3
-#define rMotorFollowerID 50
+#define lMotorLeaderID 12 // Change these according to hardware
+#define lMotorFollowerID 13
+#define rMotorLeaderID 15
+#define rMotorFollowerID 14
 
 // Values that are assigned on init 
 #define PIDProportional 1
@@ -31,8 +31,8 @@
 #define lInvert true // Inversion setings for sides
 #define rInvert false 
 
-#define xDeadband 0.1
-#define yDeadband 0.1
+#define xDeadband 0.08
+#define yDeadband 0.08
 
 class DriveBaseModule : public ModuleBase {
   float rMotorSetpoint; // Current Motor Setpoints
