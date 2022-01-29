@@ -6,8 +6,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
+#include <frc/RobotController.h>
+#include <iostream>
 
 // roboRIO-TEAM-frc.local
+using namespace std;
 
 void Robot::RobotInit() {
   // Restore factory defaults on drive motors
@@ -49,6 +52,10 @@ void Robot::RobotPeriodic() {
      .Add("Left Encoder", m_leftEncoder.GetPosition()).GetEntry().SetDouble(m_leftEncoder.GetPosition());  
   frc::Shuffleboard::GetTab("Drive Train")
      .Add("Right Encoder", m_rightEncoder.GetPosition()).GetEntry().SetDouble(m_rightEncoder.GetPosition());  
+
+  cout << frc::RobotController::GetBatteryVoltage();
+  frc::Shuffleboard::GetTab("Drive Train")
+    .Add("Battery Level", (double) frc::RobotController::GetBatteryVoltage()).GetEntry().SetDouble((double)frc::RobotController::GetBatteryVoltage());
 }
  
 void Robot::AutonomousInit() {}
