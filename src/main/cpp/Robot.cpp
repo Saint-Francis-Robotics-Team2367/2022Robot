@@ -32,6 +32,8 @@ void Robot::RobotInit() {
   m_leftFollowMotor->Follow(*m_leftLeadMotor, false);
   m_rightLeadMotor->SetInverted(false);
   m_rightFollowMotor->Follow(*m_rightLeadMotor, false);
+  m_leftLeadMotor->SetOpenLoopRampRate(0.25);
+  m_rightLeadMotor->SetOpenLoopRampRate(0.25); // have driver drive and decrease value for better drive feel until chain breaks
 
 }
 
