@@ -164,11 +164,35 @@ bool SFDrive::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity
 }
 
 void SFDrive::PathA(){
-    
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn();
+    //shoot
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn(); 
+    //shoot
 }
 
 void SFDrive::PathB(){
-     
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn();
+    //shoot
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn();
+    PIDDrive();
+    //pickup ball
+    PIDTurn(); 
+    //shoot
 }
 
 void SFDrive::PIDTuning(float delta) {
