@@ -39,11 +39,9 @@ void Robot::RobotInit() {
 
 }
 
+bool shooter_speed() {return false;}
+
 void Robot::RobotPeriodic() {
-  //frc::Shuffleboard::GetTab("Drive Train")
-     //.Add("Left Y", -(m_stick->GetRawAxis(1))).GetEntry();
-  //frc::Shuffleboard::GetTab("Drive Train")
-     //.Add("Right X", m_stick->GetRawAxis(4)).GetEntry();
   frc::Shuffleboard::GetTab("Drive Train")
      .Add("Left Y", -(m_stick->GetRawAxis(1))).GetEntry().SetDouble(-(m_stick->GetRawAxis(1)));
   frc::Shuffleboard::GetTab("Drive Train")
@@ -52,10 +50,14 @@ void Robot::RobotPeriodic() {
      .Add("Left Encoder", m_leftEncoder.GetPosition()).GetEntry().SetDouble(m_leftEncoder.GetPosition());  
   frc::Shuffleboard::GetTab("Drive Train")
      .Add("Right Encoder", m_rightEncoder.GetPosition()).GetEntry().SetDouble(m_rightEncoder.GetPosition());  
-
-  cout << frc::RobotController::GetBatteryVoltage();
   frc::Shuffleboard::GetTab("Drive Train")
     .Add("Battery Level", (double) frc::RobotController::GetBatteryVoltage()).GetEntry().SetDouble((double)frc::RobotController::GetBatteryVoltage());
+  frc::Shuffleboard::GetTab("Drive Train")
+     .Add("Distance to Goal", 0);//.GetEntry().SetDouble(m_rightEncoder.GetPosition()); 
+  frc::Shuffleboard::GetTab("Drive Train")  
+     .Add("Angle to Goal", 0);
+  frc::Shuffleboard::GetTab("Drive Train")
+     .AddBoolean("Shooter UTS", shooter_speed);
 }
  
 void Robot::AutonomousInit() {}
