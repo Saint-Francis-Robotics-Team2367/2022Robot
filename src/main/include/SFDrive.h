@@ -5,7 +5,8 @@
 #pragma once
 
 #include "rev/CANSparkMax.h"
-
+#include "frc/Timer.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 class SFDrive {
  public:
   // member variables
@@ -15,8 +16,12 @@ class SFDrive {
 
   // constructor
   SFDrive(rev::CANSparkMax* lMotor, rev::CANSparkMax* rMotor);
+  float prevTime;
+  float prev_value_speed;
+  float prev_value_turn;
   
  public:
   // methods
   void ArcadeDrive(double xSpeed, double zRotation);
+  void LimitRate(float& s, float& t);
 };
