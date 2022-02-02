@@ -34,6 +34,9 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
+#define centerToWheel 1.06
+#define PI 3.141592654
+
 class DriveBaseModule : public ModuleBase {
   float rMotorSetpoint; // Current Motor Setpoints
   float lMotorSetpoint;
@@ -41,6 +44,8 @@ class DriveBaseModule : public ModuleBase {
   float robotProportional; // PID values, for dynamic assignment
   float robotIntegral;
   float robotDerivative;
+
+  bool pressed = false;
 
   GenericPipe* ErrorModulePipe;
   GenericPipe* BrownoutModulePipe;
@@ -53,6 +58,12 @@ class DriveBaseModule : public ModuleBase {
   rev::CANSparkMax* lMotorFollower;
   rev::CANSparkMax* rMotorFollower;
   rev::CANSparkMax* rMotor;
+
+  // rev::CANEncoder* lEncoder;
+  // rev::CANEncoder* rEncoder;
+
+  // rev::SparkMaxPIDController* lPID;
+  // rev::SparkMaxPIDController* rPID;
   
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
@@ -65,7 +76,8 @@ class DriveBaseModule : public ModuleBase {
  
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
   void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
-
+  bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
+  bool PIDTurn(float angle, float totalFeet, float maxAcc, float maxVelocity);
 };
 
 #endif
