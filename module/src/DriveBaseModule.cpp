@@ -21,45 +21,46 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
   return setlFront && setrFront && setlBack && setrBack; // Failure on false
 }
 
-void DriveBaseModule::arcadeDrive(float vel, float dir) {
-  // Convert joystick input into motor outputs in voltage mode
+void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
+    double leftMotorOutput, rightMotorOutput;
+    float xSpeed = xSpeedi;
+    float zRotation = zRotationi;
 
-	if (std::abs(vel) <= yDeadband) { vel = 0; }
-	if (std::abs(dir) <= xDeadband) { dir = 0; }
+    LimitRate(xSpeed, zRotation);
 
-  float lMotorOutput;
-  float rMotorOutput;
+    if (fabs(xSpeed) < deadband)
+        xSpeed = 0;
 
-	// SFDrive Arcade Drive
-	double maxInput = std::copysign(std::max(std::abs(vel), std::abs(dir)), vel);
+    if (fabs(zRotation) < deadband)
+        zRotation = 0;
 
-	if (vel >= 0.0) {
-		if (dir >= 0.0) {
-			lMotorOutput = maxInput;
-			rMotorOutput = vel - dir;
-		} else {
-			lMotorOutput = vel + dir;
-			rMotorOutput = maxInput;
-		}
-	} else {
-		if (dir >= 0.0) {
-			lMotorOutput = vel + dir;
-			rMotorOutput = maxInput;
-		} else {
-			lMotorOutput = maxInput;
-			rMotorOutput = vel - dir;
-		}
-	}
+    if (xSpeed >= 0.0) {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = xSpeed - zRotation;
+    }
+    else {
+        leftMotorOutput = xSpeed - zRotation;
+        rightMotorOutput = xSpeed + zRotation;
+    }
 
-	lMotor->Set(lMotorOutput);
-	rMotor->Set(rMotorOutput);
+    if (leftMotorOutput != 0)
+        leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
+        
+    if (rightMotorOutput != 0)
+        rightMotorOutput = std::copysign((1/(1-deadband)) * fabs(rightMotorOutput) - (deadband/(1/deadband)), rightMotorOutput);
+
+    leftMotorOutput = std::copysign(pow(leftMotorOutput, 2), leftMotorOutput);
+    rightMotorOutput = std::copysign(pow(rightMotorOutput, 2), rightMotorOutput);
+
+    lMotor->Set(leftMotorOutput);
+    rMotor->Set(rightMotorOutput);
 }
 
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {
-  rMotor->GetEncoder().SetPosition(0);
-  lMotor->GetEncoder().SetPosition(0);
-  rMotor->GetEncoder().SetPositionConversionFactor(0.168); //check if this works!
-  lMotor->GetEncoder().SetPositionConversionFactor(0.168); 
+  lEncoder.SetPosition(0);
+  rEncoder.SetPosition(0);
+  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  rEncoder.SetPositionConversionFactor(0.168); 
 
   float currentPosition, currentVelocity, endpoint, setpoint, timeElapsed, distanceToDeccelerate = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -109,13 +110,11 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   float currentPosition, currentVelocity, timeElapsed, distanceToDeccelerate, setpoint = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
-  auto lPID = lMotor->GetPIDController();
-  auto rPID = rMotor->GetPIDController();
 
-  rMotor->GetEncoder().SetPosition(0);
-  lMotor->GetEncoder().SetPosition(0);
-  rMotor->GetEncoder().SetPositionConversionFactor(0.168); //check if this works!
-  lMotor->GetEncoder().SetPositionConversionFactor(0.168); 
+  lEncoder.SetPosition(0);
+  rEncoder.SetPosition(0);
+  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  rEncoder.SetPositionConversionFactor(0.168); 
 
   while(currentPosition < totalFeet){
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -172,28 +171,27 @@ void DriveBaseModule::periodicInit() {
     ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
   }
 
-  // Need to add PID Setters
+  // Need to add PID Setters!!
 
   ErrorModulePipe->pushQueue(new Message("Ready", INFO));
-  //PID tuned values for t-shirt cannon, having init here instead of SFDrive, might change later
-  //double m_P = 0.23, m_I = 0.04, m_D = 1.68, iZone = 0.04;
 
   double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
-  auto lPID = lMotor->GetPIDController();
-  auto rPID = rMotor->GetPIDController();
+  //lPID = lMotor->GetPIDController();
+  //rPID = rMotor->GetPIDController();
 
-  lPID.SetP(m_P);
-  lPID.SetI(m_I);
-  lPID.SetD(m_D);
-  lPID.SetIZone(iZone);
+  lMotor->GetPIDController().SetP(m_P);
+  lMotor->GetPIDController().SetI(m_I);
+  lMotor->GetPIDController().SetD(m_D);
+  lMotor->GetPIDController().SetIZone(iZone);
 
-  rPID.SetP(m_P);
-  rPID.SetI(m_I);
-  rPID.SetD(m_D);
-  rPID.SetIZone(iZone);
+  rMotor->GetPIDController().SetP(m_P);
+  rMotor->GetPIDController().SetI(m_I);
+  rMotor->GetPIDController().SetD(m_D);
+  rMotor->GetPIDController().SetIZone(iZone);
 
-  auto lEncoder = lMotor->GetEncoder();
-  auto rEncoder = rMotor->GetEncoder();
+  //redid Encoders here, as well as h file
+  lEncoder = lMotor->GetEncoder(); 
+  rEncoder = rMotor->GetEncoder();
 
   lEncoder.SetPosition(0);
   rEncoder.SetPosition(0);
@@ -219,12 +217,31 @@ void DriveBaseModule::periodicRoutine() {
   // }
 
   if (stateRef->IsTeleop()) {
-    // if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
-    //   PIDTurn(90, 5, 1, 1);
-    //   this->pressed = true;
-    // }
+    if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
+      PIDTurn(90, 5, 1, 1);
+      this->pressed = true;
+    }
   }
 	// Add rest of manipulator code...
+}
+
+void DriveBaseModule::LimitRate(float& s, float& t) {
+    double k = 5; //1/k = rate to speed up [so 0.2 seconds]
+    float currTime = frc::Timer::GetFPGATimestamp().value();
+    float deltaTime = currTime - prevTime;
+    float r_s = (s - prev_value_speed) / deltaTime;
+    float r_t = (t - prev_value_turn) / deltaTime;
+
+    if ((fabs(r_s) > k) && (fabs(s) > fabs(prev_value_speed))){
+        s = ((k * (fabs(r_s) / r_s) * deltaTime) + prev_value_speed);
+    }
+    if ((fabs(r_t) > k) && (fabs(t) > fabs(prev_value_turn))){
+        t = ((k * (fabs(r_t) / r_t) * deltaTime) + prev_value_turn);
+    }
+
+    prev_value_speed = s;
+    prev_value_turn = t;
+    prevTime = currTime;
 }
 
 std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }

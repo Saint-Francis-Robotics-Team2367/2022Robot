@@ -11,6 +11,7 @@
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
+
 #define driverStickPort 0
 #define operatorStickPort 1
 
@@ -46,6 +47,11 @@ class DriveBaseModule : public ModuleBase {
   float robotDerivative;
 
   bool pressed = false;
+  
+  const double deadband = 0.08;
+  float prevTime;
+  float prev_value_speed;
+  float prev_value_turn;
 
   GenericPipe* ErrorModulePipe;
   GenericPipe* BrownoutModulePipe;
@@ -59,11 +65,9 @@ class DriveBaseModule : public ModuleBase {
   rev::CANSparkMax* rMotorFollower;
   rev::CANSparkMax* rMotor;
 
-  // rev::CANEncoder* lEncoder;
-  // rev::CANEncoder* rEncoder;
-
-  // rev::SparkMaxPIDController* lPID;
-  // rev::SparkMaxPIDController* rPID;
+  //if you don't include getEncoder here, it doesn't build?
+  rev::SparkMaxRelativeEncoder lEncoder = lMotor->GetEncoder();
+  rev::SparkMaxRelativeEncoder rEncoder = rMotor->GetEncoder();
   
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
@@ -78,6 +82,7 @@ class DriveBaseModule : public ModuleBase {
   void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
   bool PIDTurn(float angle, float totalFeet, float maxAcc, float maxVelocity);
+  void LimitRate(float&s, float&t);
 };
 
 #endif
