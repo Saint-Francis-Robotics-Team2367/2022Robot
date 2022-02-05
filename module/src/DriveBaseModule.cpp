@@ -56,10 +56,10 @@ void DriveBaseModule::arcadeDrive(float vel, float dir) {
 }
 
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {
-  rMotor->GetEncoder().SetPosition(0);
-  lMotor->GetEncoder().SetPosition(0);
-  rMotor->GetEncoder().SetPositionConversionFactor(0.168); //check if this works!
-  lMotor->GetEncoder().SetPositionConversionFactor(0.168); 
+  rEncoder.SetPosition(0);
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
 
   float currentPosition, currentVelocity, endpoint, setpoint, timeElapsed, distanceToDeccelerate = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -96,8 +96,8 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
     // frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
 
     if(currentPosition < endpoint){
-      lMotor->GetPIDController().SetReference(outerSetpoint, rev::ControlType::kPosition);
-      rMotor->GetPIDController().SetReference(innerSetpoint, rev::ControlType::kPosition);
+      lPID.SetReference(outerSetpoint, rev::ControlType::kPosition);
+      rPID.SetReference(innerSetpoint, rev::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
@@ -109,13 +109,11 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   float currentPosition, currentVelocity, timeElapsed, distanceToDeccelerate, setpoint = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
-  auto lPID = lMotor->GetPIDController();
-  auto rPID = rMotor->GetPIDController();
 
-  rMotor->GetEncoder().SetPosition(0);
-  lMotor->GetEncoder().SetPosition(0);
-  rMotor->GetEncoder().SetPositionConversionFactor(0.168); //check if this works!
-  lMotor->GetEncoder().SetPositionConversionFactor(0.168); 
+  rEncoder.SetPosition(0);
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
 
   while(currentPosition < totalFeet){
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -139,8 +137,8 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 
     //converting currentPosition to ticks? for the motor: inches / (circum) * ticks * gearboxRatio, might look at this later
     setpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
-    lMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
-    rMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
+    lPID.SetReference(setpoint, rev::ControlType::kPosition);
+    rPID.SetReference(setpoint, rev::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
   return true;
@@ -157,30 +155,28 @@ void DriveBaseModule::periodicInit() {
   driverStick = new frc::Joystick(driverStickPort);
   operatorStick = new frc::Joystick(operatorStickPort);
 
-  lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  
 
-  rMotor = new rev::CANSparkMax(rMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
-
-  if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
-    ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-    return;
-  }
+  // if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
+  //   ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
+  //   return;
+  // }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
   }
 
-  // Need to add PID Setters
+  // Need to add PID Setters!!
 
-  ErrorModulePipe->pushQueue(new Message("Ready", INFO));
-  //PID tuned values for t-shirt cannon, having init here instead of SFDrive, might change later
-  //double m_P = 0.23, m_I = 0.04, m_D = 1.68, iZone = 0.04;
+  // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
   double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
-  auto lPID = lMotor->GetPIDController();
-  auto rPID = rMotor->GetPIDController();
+
+  // lPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
+  // *lPID = lMotor->GetPIDController();
+
+  // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
+  // *rPID = rMotor->GetPIDController();
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -192,14 +188,17 @@ void DriveBaseModule::periodicInit() {
   rPID.SetD(m_D);
   rPID.SetIZone(iZone);
 
-  auto lEncoder = lMotor->GetEncoder();
-  auto rEncoder = rMotor->GetEncoder();
+  //redid Encoders here, as well as h file
+  // lEncoder = (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
+  // *lEncoder = lMotor->GetEncoder(); 
 
-  lEncoder.SetPosition(0);
+  // rEncoder =  (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
+  // *rEncoder = rMotor->GetEncoder(); 
+
   rEncoder.SetPosition(0);
-
-  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  rEncoder.SetPositionConversionFactor(0.168); 
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
 }
 
 void DriveBaseModule::periodicRoutine() {
@@ -213,16 +212,16 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  // if (stateRef->IsTeleop()) {
-  //   arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-  //   return;
-  // }
-
   if (stateRef->IsTeleop()) {
-    // if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
-    //   PIDTurn(90, 5, 1, 1);
-    //   this->pressed = true;
-    // }
+    arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    return;
+  }
+
+  if (stateRef->IsAutonomous()) {
+    if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
+      PIDTurn(90, 5, 1, 1);
+      this->pressed = true;
+    }
   }
 	// Add rest of manipulator code...
 }
