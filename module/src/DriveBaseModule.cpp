@@ -62,10 +62,13 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
 
-  float currentPosition, currentVelocity, endpoint, setpoint, timeElapsed, distanceToDeccelerate = 0; //currentPosition is the set point
+
+  frc::SmartDashboard::PutBoolean("In Function", true);
+  float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
+  double currentPosition = 0, currentVelocity = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
-  // frc::SmartDashboard::PutNumber("endpoint", endpoint);
+  frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
 //never use while loops unless threading
@@ -93,12 +96,12 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
     double outerSetpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
     double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
     
-    // frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
-    // frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
+    frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
+    frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
 
     if(currentPosition < endpoint){
-      lPID.SetReference(outerSetpoint, rev::ControlType::kPosition);
-      rPID.SetReference(innerSetpoint, rev::ControlType::kPosition);
+      lPID.SetReference(outerSetpoint, rev::CANSparkMax::ControlType::kPosition);
+      rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
@@ -107,7 +110,8 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 
 bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity) {
   //forward movement only *implement backwards movement with if statement if necessary
-  float currentPosition, currentVelocity, timeElapsed, distanceToDeccelerate, setpoint = 0; //currentPosition is the set point
+  float timeElapsed, distanceToDeccelerate, setpoint = 0.0; //currentPosition is the set point
+  double currentVelocity = 0, currentPosition = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
 
@@ -136,10 +140,9 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
       currentPosition = totalFeet;
     }
 
-    //converting currentPosition to ticks? for the motor: inches / (circum) * ticks * gearboxRatio, might look at this later
-    setpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
-    lPID.SetReference(setpoint, rev::ControlType::kPosition);
-    rPID.SetReference(setpoint, rev::ControlType::kPosition);
+    setpoint = (currentPosition * 12) / (PI * 6); 
+    lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
+    rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
   return true;
@@ -158,10 +161,10 @@ void DriveBaseModule::periodicInit() {
 
   
 
-  // if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
-  //   ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-  //   return;
-  // }
+  if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
+    ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
+    return;
+  }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
@@ -179,15 +182,15 @@ void DriveBaseModule::periodicInit() {
   // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
   // *rPID = rMotor->GetPIDController();
 
-  lMotor->GetPIDController().SetP(m_P);
-  lMotor->GetPIDController().SetI(m_I);
-  lMotor->GetPIDController().SetD(m_D);
-  lMotor->GetPIDController().SetIZone(iZone);
+  lPID.SetP(m_P);
+  lPID.SetI(m_I);
+  lPID.SetD(m_D);
+  lPID.SetIZone(iZone);
 
-  rMotor->GetPIDController().SetP(m_P);
-  rMotor->GetPIDController().SetI(m_I);
-  rMotor->GetPIDController().SetD(m_D);
-  rMotor->GetPIDController().SetIZone(iZone);
+  rPID.SetP(m_P);
+  rPID.SetI(m_I);
+  rPID.SetD(m_D);
+  rPID.SetIZone(iZone);
 
   //redid Encoders here, as well as h file
   // lEncoder = (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
@@ -222,6 +225,8 @@ void DriveBaseModule::periodicRoutine() {
     if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
       PIDTurn(90, 5, 1, 1);
       this->pressed = true;
+      frc::SmartDashboard::PutBoolean("Pressed", this->pressed);
+
     }
   }
 	// Add rest of manipulator code...

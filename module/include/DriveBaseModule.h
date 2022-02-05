@@ -11,6 +11,7 @@
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
+#include <frc/SmartDashboard/SmartDashboard.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
