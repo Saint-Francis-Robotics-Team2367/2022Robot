@@ -57,10 +57,17 @@ void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
 }
 
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {
+<<<<<<< HEAD
   lEncoder.SetPosition(0);
   rEncoder.SetPosition(0);
   lEncoder.SetPositionConversionFactor(0.168); //check if this works!
   rEncoder.SetPositionConversionFactor(0.168); 
+=======
+  rEncoder.SetPosition(0);
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
+>>>>>>> temp-threading
 
   float currentPosition, currentVelocity, endpoint, setpoint, timeElapsed, distanceToDeccelerate = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -97,8 +104,8 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
     // frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
 
     if(currentPosition < endpoint){
-      lMotor->GetPIDController().SetReference(outerSetpoint, rev::ControlType::kPosition);
-      rMotor->GetPIDController().SetReference(innerSetpoint, rev::ControlType::kPosition);
+      lPID.SetReference(outerSetpoint, rev::ControlType::kPosition);
+      rPID.SetReference(innerSetpoint, rev::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
@@ -111,10 +118,17 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
 
+<<<<<<< HEAD
   lEncoder.SetPosition(0);
   rEncoder.SetPosition(0);
   lEncoder.SetPositionConversionFactor(0.168); //check if this works!
   rEncoder.SetPositionConversionFactor(0.168); 
+=======
+  rEncoder.SetPosition(0);
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
+>>>>>>> temp-threading
 
   while(currentPosition < totalFeet){
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -138,8 +152,8 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 
     //converting currentPosition to ticks? for the motor: inches / (circum) * ticks * gearboxRatio, might look at this later
     setpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
-    lMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
-    rMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kPosition);
+    lPID.SetReference(setpoint, rev::ControlType::kPosition);
+    rPID.SetReference(setpoint, rev::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
   return true;
@@ -156,16 +170,12 @@ void DriveBaseModule::periodicInit() {
   driverStick = new frc::Joystick(driverStickPort);
   operatorStick = new frc::Joystick(operatorStickPort);
 
-  lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  
 
-  rMotor = new rev::CANSparkMax(rMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
-
-  if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
-    ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-    return;
-  }
+  // if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
+  //   ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
+  //   return;
+  // }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
@@ -173,11 +183,23 @@ void DriveBaseModule::periodicInit() {
 
   // Need to add PID Setters!!
 
+<<<<<<< HEAD
   ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
   double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
   //lPID = lMotor->GetPIDController();
   //rPID = rMotor->GetPIDController();
+=======
+  // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
+
+  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
+
+  // lPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
+  // *lPID = lMotor->GetPIDController();
+
+  // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
+  // *rPID = rMotor->GetPIDController();
+>>>>>>> temp-threading
 
   lMotor->GetPIDController().SetP(m_P);
   lMotor->GetPIDController().SetI(m_I);
@@ -190,14 +212,21 @@ void DriveBaseModule::periodicInit() {
   rMotor->GetPIDController().SetIZone(iZone);
 
   //redid Encoders here, as well as h file
+<<<<<<< HEAD
   lEncoder = lMotor->GetEncoder(); 
   rEncoder = rMotor->GetEncoder();
+=======
+  // lEncoder = (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
+  // *lEncoder = lMotor->GetEncoder(); 
+>>>>>>> temp-threading
 
-  lEncoder.SetPosition(0);
+  // rEncoder =  (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
+  // *rEncoder = rMotor->GetEncoder(); 
+
   rEncoder.SetPosition(0);
-
-  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  rEncoder.SetPositionConversionFactor(0.168); 
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
 }
 
 void DriveBaseModule::periodicRoutine() {
@@ -211,12 +240,15 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  // if (stateRef->IsTeleop()) {
-  //   arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-  //   return;
-  // }
-
   if (stateRef->IsTeleop()) {
+<<<<<<< HEAD
+=======
+    arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    return;
+  }
+
+  if (stateRef->IsAutonomous()) {
+>>>>>>> temp-threading
     if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
       PIDTurn(90, 5, 1, 1);
       this->pressed = true;
