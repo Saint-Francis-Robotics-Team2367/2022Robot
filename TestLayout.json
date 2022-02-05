@@ -1,0 +1,119 @@
+{
+  "tabPane": [
+    {
+      "title": "Drive Train",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "2,0": {
+            "size": [
+              5,
+              4
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Battery Level",
+              "_title": "Battery Level",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": false,
+              "Y-axis/Upper bound": 13.5,
+              "Y-axis/Lower bound": 7.0,
+              "Y-axis/Unit": "V",
+              "Visible data/Shuffleboard/Drive Train/Battery Level": true
+            }
+          },
+          "0,0": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Shooter UTS",
+              "_title": "Shooter UTS",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "5,4": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Distance to Goal",
+              "_title": "Distance to Goal"
+            }
+          },
+          "7,0": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Angle to Goal",
+              "_title": "Angle to Goal",
+              "Range/Min": -180.0,
+              "Range/Max": 180.0,
+              "Visuals/Show value": true
+            }
+          },
+          "11,0": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Ball 1 Loaded",
+              "_title": "/Shuffleboard/Drive Train/Ball 1 Loaded",
+              "Colors/Color when true": "#00FFFFFF",
+              "Colors/Color when false": "#FF00FFFF"
+            }
+          },
+          "11,3": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Ball 2 Loaded",
+              "_title": "/Shuffleboard/Drive Train/Ball 2 Loaded",
+              "Colors/Color when true": "#9980E6FF",
+              "Colors/Color when false": "#FF6666FF"
+            }
+          },
+          "0,3": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///Shuffleboard/Drive Train/Intake Extended",
+              "_title": "/Shuffleboard/Drive Train/Intake Extended",
+              "Colors/Color when true": "#008000FF",
+              "Colors/Color when false": "#E64D4DFF"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1096.0
+  }
+}

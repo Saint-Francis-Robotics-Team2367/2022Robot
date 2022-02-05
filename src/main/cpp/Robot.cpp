@@ -54,7 +54,7 @@ void Robot::RobotPeriodic() {
   //frc::Shuffleboard::GetTab("Drive Train")
   //   .Add("Right Encoder", m_rightEncoder.GetPosition()).GetEntry().SetDouble(m_rightEncoder.GetPosition());  
   frc::Shuffleboard::GetTab("Drive Train") //Done
-    .Add("Battery Level", (double) frc::RobotController::GetBatteryVoltage()).GetEntry().SetDouble((double)frc::RobotController::GetBatteryVoltage()); //Done
+     .Add("Battery Level", (double) frc::RobotController::GetBatteryVoltage()).GetEntry().SetDouble((double)frc::RobotController::GetBatteryVoltage()); //Done
   frc::Shuffleboard::GetTab("Drive Train")  //Done
      .Add("Distance to Goal", 0);//.GetEntry().SetDouble(m_rightEncoder.GetPosition()); //Done
   frc::Shuffleboard::GetTab("Drive Train") //Done
