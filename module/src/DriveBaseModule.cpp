@@ -57,17 +57,10 @@ void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
 }
 
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {
-<<<<<<< HEAD
-  lEncoder.SetPosition(0);
-  rEncoder.SetPosition(0);
-  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  rEncoder.SetPositionConversionFactor(0.168); 
-=======
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
->>>>>>> temp-threading
 
   float currentPosition, currentVelocity, endpoint, setpoint, timeElapsed, distanceToDeccelerate = 0; //currentPosition is the set point
   float prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -118,17 +111,10 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
 
-<<<<<<< HEAD
-  lEncoder.SetPosition(0);
-  rEncoder.SetPosition(0);
-  lEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  rEncoder.SetPositionConversionFactor(0.168); 
-=======
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
->>>>>>> temp-threading
 
   while(currentPosition < totalFeet){
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -183,13 +169,6 @@ void DriveBaseModule::periodicInit() {
 
   // Need to add PID Setters!!
 
-<<<<<<< HEAD
-  ErrorModulePipe->pushQueue(new Message("Ready", INFO));
-
-  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
-  //lPID = lMotor->GetPIDController();
-  //rPID = rMotor->GetPIDController();
-=======
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
   double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
@@ -199,7 +178,6 @@ void DriveBaseModule::periodicInit() {
 
   // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
   // *rPID = rMotor->GetPIDController();
->>>>>>> temp-threading
 
   lMotor->GetPIDController().SetP(m_P);
   lMotor->GetPIDController().SetI(m_I);
@@ -212,13 +190,8 @@ void DriveBaseModule::periodicInit() {
   rMotor->GetPIDController().SetIZone(iZone);
 
   //redid Encoders here, as well as h file
-<<<<<<< HEAD
-  lEncoder = lMotor->GetEncoder(); 
-  rEncoder = rMotor->GetEncoder();
-=======
   // lEncoder = (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
   // *lEncoder = lMotor->GetEncoder(); 
->>>>>>> temp-threading
 
   // rEncoder =  (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
   // *rEncoder = rMotor->GetEncoder(); 
@@ -241,14 +214,11 @@ void DriveBaseModule::periodicRoutine() {
   }
 
   if (stateRef->IsTeleop()) {
-<<<<<<< HEAD
-=======
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
     return;
   }
 
   if (stateRef->IsAutonomous()) {
->>>>>>> temp-threading
     if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
       PIDTurn(90, 5, 1, 1);
       this->pressed = true;
