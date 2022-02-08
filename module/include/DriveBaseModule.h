@@ -36,7 +36,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.06
+#define centerToWheel 1.0
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {

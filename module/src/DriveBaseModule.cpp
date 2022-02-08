@@ -61,12 +61,16 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
   double currentPosition = 0, currentVelocity = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
+   
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
 //never use while loops unless threading
   while(currentPosition < endpoint){
+    if(stateRef->IsDisabled()) {
+      break;
+    }
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
     distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > endpoint - currentPosition) {
@@ -86,7 +90,11 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
       currentPosition = endpoint;
     }
     //same as other
-   
+
+    frc::SmartDashboard::PutNumber("right Encoder", rEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("left Encoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("currentPosition", currentPosition);
+    frc::SmartDashboard::PutNumber("currentVelocity", currentVelocity);
     double outerSetpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
     double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
     
@@ -98,6 +106,7 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
       rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
   return true;
 }
@@ -168,13 +177,13 @@ void DriveBaseModule::periodicInit() {
 
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
-  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
+  double m_P = 0.39, m_I = 0.00, m_D = 0.6, iZone = 0.03;
 
   // lPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
   // *lPID = lMotor->GetPIDController();
 
   // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
-  // *rPID = rMotor->GetPIDController();
+  // *rPID = rMotor->GetPIDController(
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -211,7 +220,13 @@ void DriveBaseModule::periodicRoutine() {
   }
 
   if (stateRef->IsTeleop()) {
-    arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    // arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    // return;
+        if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
+          PIDTurn(90, 0, 7, 21);
+          this->pressed = true;
+          frc::SmartDashboard::PutBoolean("Pressed", this->pressed);
+    }
     return;
   }
 
