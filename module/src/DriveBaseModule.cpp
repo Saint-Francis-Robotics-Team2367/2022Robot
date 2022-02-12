@@ -212,6 +212,7 @@ void DriveBaseModule::periodicRoutine() {
 
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
     return;
   }
 
@@ -245,4 +246,17 @@ void DriveBaseModule::LimitRate(float& s, float& t) {
     prevTime = currTime;
 }
 
+float DriveBaseModule::getGyroAngle(){
+  return(m_imu.GetAngle() - gyroInitVal);
+}
+
+void DriveBaseModule::InitGyro() {
+  gyroInitVal = getGyroAngle();
+}
+void DriveBaseModule::GyroTurn(float theta) {
+  //add PID
+  while (fabs(getGyroAngle() - theta) < 0.1) {
+    arcadeDrive(0, 0.5);
+  }
+}
 std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }
