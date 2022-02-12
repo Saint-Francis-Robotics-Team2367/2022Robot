@@ -69,7 +69,7 @@ bool ShooterModule::feedBall() {
     numBalls -= 1;
 
     if (numBalls == 1) {
-        pos1 += 2 * indexRate / PI;
+        pos1 += indexSetpoint;
         PID1.SetReference(pos1, rev::CANSparkMax::ControlType::kPosition);
     }
 
@@ -81,14 +81,20 @@ bool ShooterModule::intakeBall() {
         return false;
     }
 
-    pos0 += 2 * feedRate / PI;
-    PID0.SetReference(pos1, rev::CANSparkMax::ControlType::kPosition);
+    if (!intaking) {
+        intaking = true;
+        PID0.SetReference(feedRate, rev::CANSparkMax::ControlType::kVelocity);
+    }
 
     if (switchState) {
+        intaking = false;
+        PID0.SetReference(0, rev::CANSparkMax::ControlType::kVelocity);
+
         if (numBalls == 0) {
-            pos1 += 2 * indexRate / PI;
+            pos1 += indexSetpoint;
             PID1.SetReference(pos1, rev::CANSparkMax::ControlType::kPosition);
         }
+
         numBalls += 1;
     }
 

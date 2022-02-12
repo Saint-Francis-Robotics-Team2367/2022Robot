@@ -13,7 +13,7 @@
 #include "Macros.h"
 #include "rev/CANSparkMax.h"
 
-#define indexRate 4
+#define indexSetpoint 4
 #define feedRate 2
 
 #define motor0ID 0
@@ -33,6 +33,9 @@ class ShooterModule : public ModuleBase {
   bool switchState = false;
   bool feedButtonState = false;
   bool intakeButtonState = false;
+
+  bool intaking = false;
+  bool feeding = false;
 
   rev::CANSparkMax* motor0 = new rev::CANSparkMax(motor0ID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* motor1 = new rev::CANSparkMax(motor1ID, rev::CANSparkMax::MotorType::kBrushless);
