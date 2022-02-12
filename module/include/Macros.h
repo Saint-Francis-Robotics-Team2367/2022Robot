@@ -19,4 +19,7 @@
 // Frequency of running periodicRoutine()
 #define ErrorModuleRunInterval 80 
 #define DriveBaseModuleRunInterval 20 
+#define ShooterModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
+
+#define PI 3.141592654
