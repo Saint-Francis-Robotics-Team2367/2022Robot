@@ -18,5 +18,6 @@
 
 // Frequency of running periodicRoutine()
 #define ErrorModuleRunInterval 80 
-#define DriveBaseModuleRunInterval 20 
+#define DriveBaseModuleRunInterval 20
+#define IntakeModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
