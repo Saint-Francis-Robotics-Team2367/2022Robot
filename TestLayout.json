@@ -75,9 +75,9 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///Shuffleboard/Drive Train/Ball 1 Loaded",
-              "_title": "/Shuffleboard/Drive Train/Ball 1 Loaded",
+              "_title": "Ball 1 Loaded",
               "Colors/Color when true": "#00FFFFFF",
-              "Colors/Color when false": "#FF00FFFF"
+              "Colors/Color when false": "#000000FF"
             }
           },
           "11,3": {
@@ -88,9 +88,9 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///Shuffleboard/Drive Train/Ball 2 Loaded",
-              "_title": "/Shuffleboard/Drive Train/Ball 2 Loaded",
-              "Colors/Color when true": "#9980E6FF",
-              "Colors/Color when false": "#FF6666FF"
+              "_title": "Ball 2 Loaded",
+              "Colors/Color when true": "#00FFFFFF",
+              "Colors/Color when false": "#000000FF"
             }
           },
           "0,3": {
@@ -101,8 +101,8 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///Shuffleboard/Drive Train/Intake Extended",
-              "_title": "/Shuffleboard/Drive Train/Intake Extended",
-              "Colors/Color when true": "#008000FF",
+              "_title": "Intake Extended",
+              "Colors/Color when true": "#B399FFFF",
               "Colors/Color when false": "#E64D4DFF"
             }
           }
