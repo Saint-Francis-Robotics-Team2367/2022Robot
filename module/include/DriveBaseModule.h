@@ -58,9 +58,8 @@ class DriveBaseModule : public ModuleBase {
   GenericPipe* BrownoutModulePipe;
   GenericPipe* AutonomousModulePipe;
 
-  frc::Joystick* driverStick;
-  frc::Joystick* operatorStick;
-
+  frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
+  frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
