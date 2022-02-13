@@ -149,10 +149,6 @@ void DriveBaseModule::periodicInit() {
 
   // this->BrownoutModulePipe = pipes[1];
   // this->AutonomousModulePipe = pipes[2];
-
-  driverStick = new frc::Joystick(driverStickPort);
-  operatorStick = new frc::Joystick(operatorStickPort);
-
   
 
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
