@@ -247,7 +247,7 @@ void DriveBaseModule::LimitRate(float& s, float& t) {
 }
 
 float DriveBaseModule::getGyroAngle(){
-  return(m_imu.GetAngle() - gyroInitVal);
+  return(m_imu.GetAngle().value() - gyroInitVal);
 }
 
 void DriveBaseModule::InitGyro() {
