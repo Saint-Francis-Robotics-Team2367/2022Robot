@@ -30,13 +30,13 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+  lidarValue = lidarSensor->ReceiveInt();
 }
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {
- }
+void Robot::TestInit() {}
 
 void Robot::TestPeriodic() {
 }

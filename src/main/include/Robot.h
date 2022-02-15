@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <UdpClient.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -27,4 +28,8 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+  
+  int lidarValue = 0;
+
+  UdpClient* lidarSensor = new UdpClient(5800);
 };
