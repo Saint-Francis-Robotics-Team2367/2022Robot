@@ -212,7 +212,7 @@ void DriveBaseModule::periodicRoutine() {
 
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-    frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+    frc::SmartDashboard::PutNumber("gyro", m_imu.GetAngle().value());
     return;
   }
 

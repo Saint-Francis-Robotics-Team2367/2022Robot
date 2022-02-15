@@ -8,7 +8,7 @@
 #include "ModuleBase.h"
 #include "GenericPipe.h"
 
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
 
 #include <frc/SmartDashboard/SmartDashboard.h>
