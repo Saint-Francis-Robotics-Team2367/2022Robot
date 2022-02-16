@@ -1,6 +1,9 @@
 #include "DriveBaseModule.h"
 
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
+  motor->RestoreFactoryDefaults();
+  follower->RestoreFactoryDefaults();
+  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   motor->SetInverted(invert);
   follower->Follow(*motor, false);
   return motor->GetLastError() == rev::REVLibError::kOk;
