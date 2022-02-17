@@ -8,10 +8,11 @@
 #include "ModuleBase.h"
 #include "GenericPipe.h"
 
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
 
 #include <frc/SmartDashboard/SmartDashboard.h>
+#include <frc/ADIS16448_IMU.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
@@ -78,6 +79,8 @@ class DriveBaseModule : public ModuleBase {
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
+  float gyroInitVal = 0.0f;
+  frc::ADIS16448_IMU m_imu{};
   public:
 
   std::vector<uint8_t> getConstructorArgs();
@@ -89,6 +92,9 @@ class DriveBaseModule : public ModuleBase {
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
   bool PIDTurn(float angle, float totalFeet, float maxAcc, float maxVelocity);
   void LimitRate(float&s, float&t);
+  float getGyroAngle();
+  void InitGyro();
+  void GyroTurn(float theta);
 };
 
 #endif
