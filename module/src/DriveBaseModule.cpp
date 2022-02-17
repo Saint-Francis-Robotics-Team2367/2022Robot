@@ -1,6 +1,9 @@
 #include "DriveBaseModule.h"
 
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
+  motor->RestoreFactoryDefaults();
+  follower->RestoreFactoryDefaults();
+  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   motor->SetInverted(invert);
   follower->Follow(*motor, false);
   return motor->GetLastError() == rev::REVLibError::kOk;
@@ -170,12 +173,6 @@ void DriveBaseModule::periodicInit() {
 
   double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
 
-  // lPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
-  // *lPID = lMotor->GetPIDController();
-
-  // rPID = (rev::SparkMaxPIDController*)malloc(sizeof(rev::SparkMaxPIDController));
-  // *rPID = rMotor->GetPIDController();
-
   lPID.SetP(m_P);
   lPID.SetI(m_I);
   lPID.SetD(m_D);
@@ -186,12 +183,6 @@ void DriveBaseModule::periodicInit() {
   rPID.SetD(m_D);
   rPID.SetIZone(iZone);
 
-  //redid Encoders here, as well as h file
-  // lEncoder = (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
-  // *lEncoder = lMotor->GetEncoder(); 
-
-  // rEncoder =  (rev::SparkMaxRelativeEncoder*)malloc(sizeof(rev::SparkMaxRelativeEncoder));
-  // *rEncoder = rMotor->GetEncoder(); 
 
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
@@ -212,6 +203,7 @@ void DriveBaseModule::periodicRoutine() {
 
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    frc::SmartDashboard::PutNumber("gyro", m_imu.GetAngle().value());
     return;
   }
 
@@ -245,4 +237,17 @@ void DriveBaseModule::LimitRate(float& s, float& t) {
     prevTime = currTime;
 }
 
+float DriveBaseModule::getGyroAngle(){
+  return(m_imu.GetAngle().value() - gyroInitVal);
+}
+
+void DriveBaseModule::InitGyro() {
+  gyroInitVal = getGyroAngle();
+}
+void DriveBaseModule::GyroTurn(float theta) {
+  //add PID
+  while (fabs(getGyroAngle() - theta) < 0.1) {
+    arcadeDrive(0, 0.1);
+  }
+}
 std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }
