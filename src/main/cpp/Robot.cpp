@@ -5,22 +5,10 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include "Constructor.h"
-#include "ModuleBase.h"
-
-// All Module Includes
-#include "DriveBaseModule.h"
-#include "ErrorModule.h"
-
-void Robot::RobotInit() {
-    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule}, this)) { // Pass a reference of this object to all modules
-    // frc::DriverStation::ReportError("[Constructor] Web Construction has failed; ensure it is acyclic and constructable");
-    return;
-  }
-}
+void Robot::RobotInit() {}
 
 void Robot::RobotPeriodic() {
-
+  frc::SmartDashboard::PutNumber("Lidar", lidarSensor->ReceiveInt());
 }
  
 void Robot::AutonomousInit() {}
@@ -31,6 +19,8 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   lidarValue = lidarSensor->ReceiveInt();
+  
+  std::cout << "Lidar value: " << lidarValue << std::endl;
 }
 
 void Robot::DisabledInit() {}
