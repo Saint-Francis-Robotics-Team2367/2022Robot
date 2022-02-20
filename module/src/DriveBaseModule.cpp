@@ -24,6 +24,11 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
   return setlFront && setrFront && setlBack && setrBack; // Failure on false
 }
 
+float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
+  float sensitivity = fabs(speed) * (1 + (/*smartdashboardinput*/ - 1) * fabs(rotation));
+  return sensitivity;
+}
+
 void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     double leftMotorOutput, rightMotorOutput;
     float xSpeed = xSpeedi;
@@ -37,8 +42,8 @@ void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     if (fabs(zRotation) < deadband)
         zRotation = 0;
 
-    leftMotorOutput = xSpeed + zRotation;
-    rightMotorOutput = xSpeed - zRotation;
+    leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), xSpeed);
+    rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), xSpeed);
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
