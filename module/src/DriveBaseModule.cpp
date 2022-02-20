@@ -25,8 +25,7 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 }
 
 float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  float sensitivity = fabs(speed) * (1 + (/*smartdashboardinput*/ - 1) * fabs(rotation));
-  return sensitivity;
+  return fabs(speed) * (1 + (sliderValue - 1) * fabs(rotation));
 }
 
 void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
@@ -151,6 +150,7 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 }
 
 void DriveBaseModule::periodicInit() {
+  frc::SmartDashboard::PutNumber("Sensitivity", 1);
   this->msInterval = DriveBaseModuleRunInterval;
   
   this->ErrorModulePipe = pipes[0];
@@ -200,6 +200,8 @@ void DriveBaseModule::periodicRoutine() {
   // Autonomous -> AutonomousPipe
   // Monitor input from BrownoutPipe
   // Command manipulators from operatorStick state
+
+  sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
 
   if (!errors.empty()) { // Handle internal ModuleBase Errors
     ErrorModulePipe->pushQueue(errors.front());

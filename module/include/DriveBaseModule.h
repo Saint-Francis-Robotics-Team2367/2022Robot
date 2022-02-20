@@ -96,6 +96,7 @@ class DriveBaseModule : public ModuleBase {
   void InitGyro();
   void GyroTurn(float theta);
   float TurningSensitivity(float rightStick, float leftStick);
+  float sliderValue = 1;
 };
 
 #endif
