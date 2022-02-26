@@ -201,11 +201,11 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  if (stateRef->IsTeleop()) {
-    arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-    frc::SmartDashboard::PutNumber("gyro", m_imu.GetAngle().value());
-    return;
-  }
+  // if (stateRef->IsTeleop()) {
+  //   arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+  //   frc::SmartDashboard::PutNumber("gyro", m_imu.GetAngle().value());
+  //   return;
+  // }
 
   // if (stateRef->IsAutonomous()) {
   //   if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
@@ -216,6 +216,19 @@ void DriveBaseModule::periodicRoutine() {
   //   }
   // }
 	// Add rest of manipulator code...
+  for (int i = 0; i < pipes.size(); i++) {
+    GenericPipe* p = pipes[i];
+    Message* m = p->popQueue();
+    if (m->str == "PD") {
+      PIDDrive(m->vals[0], m->vals[1], m->vals[2]);
+    }
+    if (m->str == "PT") {
+      PIDTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3]);
+    }
+    if (m->str == "Arcade") {
+      arcadeDrive(m->vals[0], m->vals[1]);
+    }
+  }
 }
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
