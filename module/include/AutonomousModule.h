@@ -11,12 +11,11 @@
 struct pathPoint {
     float x;
     float y;
-    float r;
 };
 
 enum stage {
-    ball,
-    goal
+    ballcollection,
+    shooting
 };
 
 class AutonomousModule : public ModuleBase
@@ -25,10 +24,12 @@ public:
     std::vector<uint8_t> getConstructorArgs();
     void periodicInit();
     void periodicRoutine();
-    std::vector<std::vector<pathPoint>> paths;
+    std::vector<pathPoint> path;
 private:
     void initializePaths();
-    stage autostage;
+    stage autostage = ballcollection;
+    pathPoint robPos;
+    float robTheta;
 };
 
 #endif
