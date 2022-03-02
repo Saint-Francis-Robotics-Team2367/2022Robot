@@ -20,7 +20,9 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-
+  frc::SmartDashboard::PutNumber("output voltage", analog_input->GetVoltage());
+  frc::SmartDashboard::PutNumber("distance (mm)", GetDistance(analog_input->GetVoltage()));
+  frc::SmartDashboard::PutNumber("distance (cm)", GetDistance(analog_input->GetVoltage()) / 10);
 }
  
 void Robot::AutonomousInit() {}

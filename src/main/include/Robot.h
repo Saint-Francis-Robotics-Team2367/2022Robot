@@ -11,6 +11,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <frc/ADIS16448_IMU.h>
+#include <frc/AnalogInput.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -28,4 +29,7 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+
+  frc::AnalogInput * analog_input = new frc::AnalogInput(0);
+  double GetDistance(double voltage) {return 10 * ((147737 / (voltage * 10))^1.2134);}
 };
