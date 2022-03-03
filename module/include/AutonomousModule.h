@@ -30,6 +30,8 @@ private:
     stage autostage = ballcollection;
     pathPoint robPos;
     float robTheta;
+
+    int pathi = 0;
 };
 
 #endif

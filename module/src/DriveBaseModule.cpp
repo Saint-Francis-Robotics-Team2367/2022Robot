@@ -70,6 +70,9 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 
 //never use while loops unless threading
   while(currentPosition < endpoint){
+     if(stateRef->IsDisabled()) {
+      break;
+    }
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
     distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > endpoint - currentPosition) {
@@ -118,6 +121,9 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   lEncoder.SetPositionConversionFactor(0.168); 
 
   while(currentPosition < totalFeet){
+    if(stateRef->IsDisabled()) {
+      break;
+    }
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
     distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > totalFeet - currentPosition) {
@@ -159,12 +165,12 @@ void DriveBaseModule::periodicInit() {
   
 
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
-    ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
+    //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
     return;
   }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
-    ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
+    ///ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
   }
 
   // Need to add PID Setters!!
@@ -219,6 +225,9 @@ void DriveBaseModule::periodicRoutine() {
   for (int i = 0; i < pipes.size(); i++) {
     GenericPipe* p = pipes[i];
     Message* m = p->popQueue();
+    if (!m) {
+      continue;
+    }
     if (m->str == "PD") {
       PIDDrive(m->vals[0], m->vals[1], m->vals[2]);
     }
@@ -263,4 +272,4 @@ void DriveBaseModule::GyroTurn(float theta) {
     arcadeDrive(0, 0.1);
   }
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID}; }

@@ -13,6 +13,7 @@ class Message {
   public:
   Message();
   Message(std::string, std::vector<float>);
+  Message(std::string, int);
   std::string str;
   std::vector<float> vals;
 };

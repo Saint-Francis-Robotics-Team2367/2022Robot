@@ -3,7 +3,8 @@
  */
 
 #include "GenericPipe.h"
-Message::Message(std::string _str, std::vector<float> _val) : str(_str), vals(_val) {}
+Message::Message(std::string _str, std::vector<float> _val) : str(_str), vals(_val) {};
+Message::Message(std::string _str, int _val) :  str(_str), vals({(float)_val}) {};
 Message::Message() {}
 
 void GenericPipe::pushQueue(Message* msg) {
