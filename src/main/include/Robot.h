@@ -30,6 +30,11 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  frc::AnalogInput * analog_input = new frc::AnalogInput(0);
-  double GetDistance(double voltage) {return 10 * ((147737 / (voltage * 10))^1.2134);}
+  frc::AnalogInput sharp{0};
+  
+  double GetDistance() 
+  {
+    return 27.726 * pow(sharp.GetVoltage(), -1.2045);
+    // return 29.988 * pow(sharp.GetVoltage() , -1.173);
+  }
 };
