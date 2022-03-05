@@ -25,7 +25,7 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 }
 
 float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  return fabs(speed) * (1 + (sliderValue - 1) * fabs(rotation));
+  return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed));
 }
 
 void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
@@ -41,7 +41,7 @@ void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     if (fabs(zRotation) < deadband)
         zRotation = 0;
 
-    leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), xSpeed);
+    leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
     rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
 
     if (leftMotorOutput != 0)
@@ -63,7 +63,7 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
 
-
+\
   frc::SmartDashboard::PutBoolean("In Function", true);
   float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
   double currentPosition = 0, currentVelocity = 0;
