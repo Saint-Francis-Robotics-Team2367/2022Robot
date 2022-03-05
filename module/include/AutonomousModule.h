@@ -32,6 +32,7 @@ private:
     float robTheta;
 
     int pathi = 0;
+    bool isTrue = false;
 };
 
 #endif

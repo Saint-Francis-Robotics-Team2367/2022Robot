@@ -222,22 +222,28 @@ void DriveBaseModule::periodicRoutine() {
   //   }
   // }
 	// Add rest of manipulator code...
-  for (int i = 0; i < pipes.size(); i++) {
-    GenericPipe* p = pipes[i];
+  if(stateRef->IsAutonomousEnabled()) {
+    frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
+   // for (int i = 0; i < pipes.size(); i++) {
+    GenericPipe* p = pipes[1];
     Message* m = p->popQueue();
-    if (!m) {
-      continue;
-    }
+    if (m && !pressed) {
+    
     if (m->str == "PD") {
       PIDDrive(m->vals[0], m->vals[1], m->vals[2]);
     }
     if (m->str == "PT") {
-      PIDTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3]);
+      PIDTurn(30, 0, 7, 21);
+      frc::SmartDashboard::PutBoolean("YESSIR", true);
     }
     if (m->str == "Arcade") {
       arcadeDrive(m->vals[0], m->vals[1]);
     }
+    pressed = true;
+    }
   }
+  //}
+  
 }
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
