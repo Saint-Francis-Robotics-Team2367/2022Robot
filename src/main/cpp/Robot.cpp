@@ -30,6 +30,25 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+
+  photonlib::PhotonPipelineResult result = camera.GetLatestResult();
+  if (result.HasTargets()) {
+        // First calculate range
+        pitch_degree = units::degree_t{result.GetBestTarget().GetPitch()};
+        units::meter_t range = photonlib::PhotonUtils::CalculateDistanceToTarget(
+          CAMERA_HEIGHT, TARGET_HEIGHT, CAMERA_PITCH, pitch_degree);
+
+        // Use this range as the measurement we give to the PID controller.
+        hood_angle = 
+        forwardSpeed =
+            -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
+
+      } else {
+        // If we have no targets, stay still.
+        forwardSpeed = 0;
+      }
+
+  
 }
 
 void Robot::DisabledInit() {}
