@@ -69,12 +69,15 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 
 
 //never use while loops unless threading
+frc::SmartDashboard::PutBoolean("Done with func", false);
   while(currentPosition < endpoint){
      if(stateRef->IsDisabled()) {
       break;
     }
+    frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
-    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
+    distanceToDeccelerate = (2 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > endpoint - currentPosition) {
       currentVelocity -= (maxAcc * timeElapsed);
     }
@@ -104,7 +107,9 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
       rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
+  frc::SmartDashboard::PutBoolean("Done with func", true);
   return true;
 }
 
@@ -119,13 +124,15 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
-
+frc::SmartDashboard::PutBoolean("inPIDDRive", true);
   while(currentPosition < totalFeet){
     if(stateRef->IsDisabled()) {
       break;
     }
+    frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
-    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
+    distanceToDeccelerate = (2 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > totalFeet - currentPosition) {
       currentVelocity -= (maxAcc * timeElapsed);
     }
@@ -148,6 +155,7 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
   }
+  frc::SmartDashboard::PutBoolean("inPIDDRive", false);
   return true;
 }
 
@@ -177,7 +185,7 @@ void DriveBaseModule::periodicInit() {
 
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
-  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
+  double m_P = 0.4, m_I = 0.00, m_D = 1.68, iZone = 0.00;
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -224,25 +232,26 @@ void DriveBaseModule::periodicRoutine() {
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
     frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
-   // for (int i = 0; i < pipes.size(); i++) {
-    GenericPipe* p = pipes[1];
+  for (int i = 0; i < pipes.size(); i++) {
+    frc::SmartDashboard::PutBoolean("In Loop", true);
+    GenericPipe* p = pipes[i];
     Message* m = p->popQueue();
-    if (m && !pressed) {
-    
+    if (m) {
+    frc::SmartDashboard::PutBoolean("Message", true);
     if (m->str == "PD") {
       PIDDrive(m->vals[0], m->vals[1], m->vals[2]);
     }
     if (m->str == "PT") {
-      PIDTurn(30, 0, 7, 21);
+     // PIDTurn(360, 0, 7, 21);
+     PIDDrive(20, 7, 21);
       frc::SmartDashboard::PutBoolean("YESSIR", true);
     }
     if (m->str == "Arcade") {
       arcadeDrive(m->vals[0], m->vals[1]);
     }
-    pressed = true;
     }
   }
-  //}
+  }
   
 }
 
