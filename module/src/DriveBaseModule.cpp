@@ -60,7 +60,7 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   lEncoder.SetPositionConversionFactor(0.168); 
 
 
-  frc::SmartDashboard::PutBoolean("In Function", true);
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", true);
   float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
   double currentPosition = 0, currentVelocity = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -68,8 +68,6 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
-//never use while loops unless threading
-frc::SmartDashboard::PutBoolean("Done with func", false);
   while(currentPosition < endpoint){
      if(stateRef->IsDisabled()) {
       break;
@@ -77,6 +75,7 @@ frc::SmartDashboard::PutBoolean("Done with func", false);
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
+    //should be 2, * Vc^2, check this later
     distanceToDeccelerate = (2 * currentVelocity * currentVelocity) / (2 * maxAcc);
     if (distanceToDeccelerate > endpoint - currentPosition) {
       currentVelocity -= (maxAcc * timeElapsed);
@@ -109,7 +108,7 @@ frc::SmartDashboard::PutBoolean("Done with func", false);
     prevTime = frc::Timer::GetFPGATimestamp().value();
     frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
-  frc::SmartDashboard::PutBoolean("Done with func", true);
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", false);
   return true;
 }
 
@@ -124,7 +123,7 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
-frc::SmartDashboard::PutBoolean("inPIDDRive", true);
+frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   while(currentPosition < totalFeet){
     if(stateRef->IsDisabled()) {
       break;
@@ -154,8 +153,9 @@ frc::SmartDashboard::PutBoolean("inPIDDRive", true);
     lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
-  frc::SmartDashboard::PutBoolean("inPIDDRive", false);
+  frc::SmartDashboard::PutBoolean("inPIDDrive", false);
   return true;
 }
 
@@ -243,8 +243,8 @@ void DriveBaseModule::periodicRoutine() {
     }
     if (m->str == "PT") {
      // PIDTurn(360, 0, 7, 21);
-     PIDDrive(20, 7, 21);
-      frc::SmartDashboard::PutBoolean("YESSIR", true);
+      PIDDrive(20, 7, 21);
+      frc::SmartDashboard::PutBoolean("Comm Succesful!", true);
     }
     if (m->str == "Arcade") {
       arcadeDrive(m->vals[0], m->vals[1]);
