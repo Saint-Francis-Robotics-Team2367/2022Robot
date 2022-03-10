@@ -5,14 +5,18 @@ void AutonomousModule::periodicInit() {
     robPos.x = 0;
     robPos.y = 0;
     pathPoint p;
-    p.x = 3;
-    p.y = 3;
+    p.x = 0;
+    p.y = 8;
     pathPoint p1;
-    p1.x = -6;
-    p1.y = 6;
+    p1.x = 8;
+    p1.y = 8;
+
+    pathPoint p2;
+    p2.x = 0;
+    p2.y = 0;
     path.push_back(p);
     path.push_back(p1);
-    path.push_back(p);
+    path.push_back(p2);
     this->msInterval = AutonomousModuleRunInterval;
     isTrue = false;
 }
@@ -29,7 +33,7 @@ void AutonomousModule::periodicRoutine() {
 
         frc::SmartDashboard::PutNumber("theta", theta);
 
-        std::vector<float> mVec = {theta, 0, 7, 21};
+        std::vector<float> mVec = {theta, 0, 21, 21};
         frc::SmartDashboard::PutNumber("num iterations", 15) ;
 
         pipes[0]->pushQueue(new Message("PT", mVec));
@@ -37,6 +41,7 @@ void AutonomousModule::periodicRoutine() {
         isTrue = true;
         
         float d = sqrt(pow((path[pathi].x - robPos.x), 2) + pow((path[pathi].y - robPos.y), 2));
+        frc::SmartDashboard::PutNumber("DISTANCE FROM AUTO MODULE", d);
         
         mVec = {d, 7, 21};
         pipes[0]->pushQueue(new Message("PD", mVec));
