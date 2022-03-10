@@ -37,7 +37,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.06
+#define centerToWheel 1.1
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {
@@ -49,7 +49,8 @@ class DriveBaseModule : public ModuleBase {
   float robotDerivative;
 
   bool pressed = false;
-  
+  bool moveFlag = true;
+
   const double deadband = 0.08;
   float prevTime;
   float prev_value_speed;
