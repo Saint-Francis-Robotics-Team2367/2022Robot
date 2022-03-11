@@ -37,7 +37,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.08
+#define centerToWheel 1.072917 //Center of the robot to outer wheel or .994... for to inner wheel
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {

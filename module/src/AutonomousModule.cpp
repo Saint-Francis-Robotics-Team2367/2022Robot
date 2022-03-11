@@ -16,7 +16,7 @@ void AutonomousModule::periodicInit() {
     p2.y = 0;
     path.push_back(p);
     path.push_back(p1);
-    path.push_back(p2);
+    //path.push_back(p2);
     this->msInterval = AutonomousModuleRunInterval;
     isTrue = false;
 }
@@ -33,7 +33,7 @@ void AutonomousModule::periodicRoutine() {
 
         frc::SmartDashboard::PutNumber("theta", theta);
 
-        std::vector<float> mVec = {theta, 0, 21, 21};
+        std::vector<float> mVec = {theta, 0, 7, 21};
         frc::SmartDashboard::PutNumber("num iterations", 15) ;
 
         pipes[0]->pushQueue(new Message("PT", mVec));

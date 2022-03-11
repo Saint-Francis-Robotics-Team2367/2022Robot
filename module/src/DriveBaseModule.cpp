@@ -69,12 +69,15 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   double currentPosition = 0, currentVelocity = 0, endpoint = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
+  if(fabs(endpoint) > 360) {
+    //don't want this to happen
+    return false;
+  }
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
   while(fabs(currentPosition) < fabs(endpoint)){
      if(stateRef->IsDisabled()) {
-      return false;
       break;
     }
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
@@ -135,7 +138,6 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   while(fabs(currentPosition) < fabs(totalFeet)){
     if(stateRef->IsDisabled()) {
-      return false;
       break;
     }
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
@@ -231,14 +233,6 @@ void DriveBaseModule::periodicRoutine() {
     return;
   }
 
-  // if (stateRef->IsAutonomous()) {
-  //   if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
-  //     PIDTurn(90, 5, 1, 1);
-  //     this->pressed = true;
-  //     frc::SmartDashboard::PutBoolean("Pressed", this->pressed);
-
-  //   }
-  // }
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
     frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
@@ -250,13 +244,13 @@ void DriveBaseModule::periodicRoutine() {
     frc::SmartDashboard::PutBoolean("Message", true);
     if (m->str == "PD") {
       frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
-      if(PIDDrive(m->vals[0], 21, 21)) {
+      if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
         frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
       }
     }
     if (m->str == "PT") {
      frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
-      if(PIDTurn(m->vals[0], 0, 21, 21)) {
+      if(PIDTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
         //if no here, it does this and tries to do smtng else
       frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
     }
