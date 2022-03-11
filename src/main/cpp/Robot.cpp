@@ -39,7 +39,8 @@ void Robot::TeleopPeriodic() {
           CAMERA_HEIGHT, TARGET_HEIGHT, CAMERA_PITCH, pitch_degree);
 
         // Use this range as the measurement we give to the PID controller.
-        hood_angle = 
+        horizontal_dist = cos(CAMERA_MOUNT_ANGLE)*range;
+        
         forwardSpeed =
             -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
 
@@ -47,7 +48,6 @@ void Robot::TeleopPeriodic() {
         // If we have no targets, stay still.
         forwardSpeed = 0;
       }
-
   
 }
 
