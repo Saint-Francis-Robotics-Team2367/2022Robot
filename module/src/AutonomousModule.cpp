@@ -5,8 +5,8 @@ void AutonomousModule::periodicInit() {
     robPos.x = 0;
     robPos.y = 0;
     pathPoint p;
-    p.x = 0;
-    p.y = 8;
+    p.x = 3;
+    p.y = 3;
     pathPoint p1;
     p1.x = 8;
     p1.y = 8;
@@ -16,7 +16,7 @@ void AutonomousModule::periodicInit() {
     p2.y = 0;
     path.push_back(p);
     path.push_back(p1);
-    //path.push_back(p2);
+    path.push_back(p2);
     this->msInterval = AutonomousModuleRunInterval;
     isTrue = false;
 }
@@ -26,7 +26,8 @@ void AutonomousModule::periodicRoutine() {
  
     if ((stateRef->IsAutonomousEnabled()) && (pathi < path.size())) {
         frc::SmartDashboard::PutBoolean("IN auto module", true);
-        float theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) / (3.14159265) * 180;
+        //float theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) / (3.14159265) * 180;
+        float theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
         frc::SmartDashboard::PutNumber("IN auto module", false);
         theta = theta - robTheta;
         robTheta += theta;
@@ -34,7 +35,6 @@ void AutonomousModule::periodicRoutine() {
         frc::SmartDashboard::PutNumber("theta", theta);
 
         std::vector<float> mVec = {theta, 0, 7, 21};
-        frc::SmartDashboard::PutNumber("num iterations", 15) ;
 
         pipes[0]->pushQueue(new Message("PT", mVec));
         frc::SmartDashboard::PutBoolean("is true", isTrue);
@@ -50,7 +50,7 @@ void AutonomousModule::periodicRoutine() {
         robPos.y += path[pathi].y;
 
         pathi++;
-        return;
+        //return;
     }
 }  
 std::vector<uint8_t> AutonomousModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID}; }

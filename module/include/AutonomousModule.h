@@ -5,6 +5,7 @@
 #include "ModuleBase.h"
 #include "GenericPipe.h"
 #include <vector>
+#include <math.h>
 
 #define PATHS_FILE "paths.txt"
 

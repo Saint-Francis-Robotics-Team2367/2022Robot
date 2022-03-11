@@ -250,6 +250,7 @@ void DriveBaseModule::periodicRoutine() {
     }
     if (m->str == "PT") {
      frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
+     frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
       if(PIDTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
         //if no here, it does this and tries to do smtng else
       frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
