@@ -13,6 +13,7 @@
 
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include <frc/ADIS16448_IMU.h>
+#include <frc/PIDController.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
@@ -76,7 +77,7 @@ class DriveBaseModule : public ModuleBase {
   rev::SparkMaxPIDController lPID = lMotor->GetPIDController();
   rev::SparkMaxPIDController rPID = rMotor->GetPIDController();
 
-  
+  //frc::PIDController g;
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
@@ -91,7 +92,8 @@ class DriveBaseModule : public ModuleBase {
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
   void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
-  bool PIDTurn(float angle, float totalFeet, float maxAcc, float maxVelocity);
+  bool PIDTurn(float angle, float radius, float maxAcc, float maxVelocity);
+  bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
   void LimitRate(float&s, float&t);
   float getGyroAngle();
   void InitGyro();
