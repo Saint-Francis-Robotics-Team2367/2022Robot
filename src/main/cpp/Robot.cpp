@@ -6,14 +6,19 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
 
-void Robot::RobotPeriodic() {}
+}
+
+void Robot::RobotPeriodic() {
+
+}
  
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
+  setMotorPIDF(shooterMotor, shooterkP, shooterkI, shooterkD, shooterkFF);
 }
 
 void Robot::TeleopPeriodic() {
@@ -33,6 +38,8 @@ void Robot::TeleopPeriodic() {
         horizontal_dist = cos(CAMERA_MOUNT_ANGLE)*range;
         velocity = sqrt(2*APEX_HEIGHT*GRAV_CONST)/sin(theta_rads);
         // forwardSpeed = -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
+        setpoint = (max_turns_neo550/360) * theta_degs;
+        setShooterSetpoint(setpoint);
 
       } else {
         // If we have no targets, stay still.
@@ -56,3 +63,4 @@ int main() {
   return frc::StartRobot<Robot>();
 }
 #endif
+
