@@ -32,39 +32,35 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  const units::meter_t CAMERA_HEIGHT = 24_in;
-  const units::meter_t TARGET_HEIGHT = 5_ft;
+  const double CAMERA_HEIGHT = 2.0;
+  const double TARGET_HEIGHT = 102.0;
 
   // Angle between horizontal and the camera.
-  const units::radian_t CAMERA_PITCH = 40_deg;
+  const int CAMERA_PITCH = 40;
 
   // How far from the target we want to be
-  const units::meter_t GOAL_RANGE_METERS = 10_ft;
-  const units::meter_t APEX_HEIGHT = TARGET_HEIGHT + 3_ft;
+  const double GOAL_RANGE_METERS = 10.0;
+  const double APEX_HEIGHT = TARGET_HEIGHT + 3;
+  const double CAMERA_MOUNT_ANGLE = 40;
 
-  units::degree_t pitch_degree;
-  units::meter_t horizontal_dist = 0;
-
+  double pitch_degree;
+  double horizontal_dist = 0;
+  
   double velocity = 0; 
   const double GRAV_CONST = 32.17;
-  units::radian_t theta_rads; 
-  units::degrees_t theta_degs;
-  units::degree_t central_degs;
+  double theta_rads; 
+  double theta_degs;
+  double central_degs;
   const double pi = 3.14159;
 
 
   // PID constants should be tuned per robot
   const double P_GAIN = 0.1;
   const double D_GAIN = 0.0;
-  frc2::PIDController controller{P_GAIN, 0.0, D_GAIN};
+
+  float range = 0;
 
   // Change this to match the name of your camera
   photonlib::PhotonCamera camera{"photonvision"};
 
-  frc::XboxController xboxController{0};
-
-  // Drive motors
-  frc::PWMVictorSPX leftMotor{0};
-  frc::PWMVictorSPX rightMotor{1};
-  frc::DifferentialDrive drive{leftMotor, rightMotor};
 };
