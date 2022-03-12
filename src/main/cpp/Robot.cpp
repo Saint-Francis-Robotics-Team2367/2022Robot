@@ -11,7 +11,12 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-
+  frc::SmartDashboard::PutNumber("range", range);
+  frc::SmartDashboard::PutNumber("velocity", velocity);
+  frc::SmartDashboard::PutNumber("theta_degs", theta_degs);
+  frc::SmartDashboard::PutNumber("setpoint", setpoint);
+  frc::SmartDashboard::PutNumber("horiz dist", horizontal_dist);
+  frc::SmartDashboard::PutNumber("vdist from apex", dist_from_apex);
 }
  
 void Robot::AutonomousInit() {}
@@ -22,7 +27,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-
+  frc::SmartDashboard::GetNumber("vdist from apex", 3);
   photonlib::PhotonPipelineResult result = camera.GetLatestResult();
   if (result.HasTargets()) {
         // First calculate range

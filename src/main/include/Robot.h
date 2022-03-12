@@ -43,9 +43,10 @@ class Robot : public frc::TimedRobot {
   // Angle between horizontal and the camera.
   const int CAMERA_PITCH = 40;
 
+  double dist_from_apex = 3;    
   // How far from the target we want to be
   const double GOAL_RANGE_METERS = 10.0;
-  const double APEX_HEIGHT = TARGET_HEIGHT + 3;
+  const double APEX_HEIGHT = TARGET_HEIGHT + dist_from_apex;
   const double CAMERA_MOUNT_ANGLE = 40;
 
   double pitch_degree;
