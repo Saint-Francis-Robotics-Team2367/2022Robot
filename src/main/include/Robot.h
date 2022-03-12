@@ -75,7 +75,7 @@ class Robot : public frc::TimedRobot {
   const float shooterkFF = 0.000194;
   float maxShooterOutput = 1;
   float minShooterOutput = -0.1;
-  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
 
   double setpoint = 0;
 
@@ -84,6 +84,7 @@ class Robot : public frc::TimedRobot {
 
 };
 
+/*
 bool Robot::setShooterSetpoint(double setpoint){
 
    
@@ -113,3 +114,4 @@ bool Robot::setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, 
 
 }
 
+*/
