@@ -38,11 +38,12 @@ void Robot::TeleopPeriodic() {
         units::meter_t range = photonlib::PhotonUtils::CalculateDistanceToTarget(
           CAMERA_HEIGHT, TARGET_HEIGHT, CAMERA_PITCH, pitch_degree);
 
+        theta_rads = atan((2*APEX_HEIGHT*(range+sqrt(range**2-(TARGET_HEIGHT*(range**2)/APEX_HEIGHT))))/(range**2));
+        theta_degs = theta_rads * (180 / pi));
         // Use this range as the measurement we give to the PID controller.
         horizontal_dist = cos(CAMERA_MOUNT_ANGLE)*range;
-        
-        forwardSpeed =
-            -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
+        velocity = sqrt(2*APEX_HEIGHT*GRAV_CONST/sin(theta_rads));
+        forwardSpeed = -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
 
       } else {
         // If we have no targets, stay still.
