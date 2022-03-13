@@ -137,10 +137,7 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
   double currentPosition = 0, currentVelocity = 0, endpoint = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
-  if(fabs(endpoint) > 360) {
-    //don't want this to happen
-    return false;
-  }
+  
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
@@ -306,41 +303,38 @@ void DriveBaseModule::periodicRoutine() {
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
-    // return;
-    // if(!pressed) {
-    //   PIDGyroTurn(360, 0, 7, 21);
-    //   pressed = true;
-    // }
   }
 
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
     frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
-  for (int i = 0; i < pipes.size(); i++) {
+  // for (int i = 0; i < pipes.size(); i++) {
     frc::SmartDashboard::PutBoolean("In Loop", true);
-    GenericPipe* p = pipes[i];
+    GenericPipe* p = pipes[1];
+    
     Message* m = p->popQueue();
     if (m) {
-    frc::SmartDashboard::PutBoolean("Message", true);
-    if (m->str == "PD") {
-      frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
-      if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
-        frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
+      frc::SmartDashboard::PutBoolean("Message", true);
+      if (m->str == "PD") {
+        frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
+        if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
+          frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
+        }
+      }
+
+      if (m->str == "PT") {
+        frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
+        frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
+          if(PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
+            //if no here, it does this and tries to do smtng else
+          frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
+        }
+      }
+      if (m->str == "Arcade") {
+        arcadeDrive(m->vals[0], m->vals[1]);
       }
     }
-    if (m->str == "PT") {
-     frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
-     frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
-      if(PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
-        //if no here, it does this and tries to do smtng else
-      frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
-    }
-    }
-    if (m->str == "Arcade") {
-      arcadeDrive(m->vals[0], m->vals[1]);
-    }
-    }
-  }
+  // }
 
   }
   
@@ -370,13 +364,16 @@ float DriveBaseModule::getGyroAngle(){
 }
 
 void DriveBaseModule::InitGyro() {
-  gyroInitVal = getGyroAngle();
+  gyroInitVal = getGyroAngle() + gyroInitVal;
 }
 void DriveBaseModule::GyroTurn(float theta) {
   //add PID
   while (fabs(getGyroAngle() - theta) > 1) {
+    if (stateRef->IsDisabled()) break;  
+    frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
     if (getGyroAngle() < theta) {
       arcadeDrive(0, 0.2);
+      //would adding a return here and below help? so it's not loopish, might be jerkish though
     }
     else {
       arcadeDrive(0, -0.2);
@@ -384,5 +381,6 @@ void DriveBaseModule::GyroTurn(float theta) {
     }
   }
   arcadeDrive(0, 0); //need this to end motors
+  return;
 }
 std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID}; }

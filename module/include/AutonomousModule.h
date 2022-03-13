@@ -34,6 +34,7 @@ private:
 
     int pathi = 0;
     bool isTrue = false;
+    bool resetPath = false;
 };
 
 #endif
