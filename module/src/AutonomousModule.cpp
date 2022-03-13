@@ -46,8 +46,8 @@ void AutonomousModule::periodicRoutine() {
         mVec = {d, 7, 21};
         pipes[0]->pushQueue(new Message("PD", mVec));
 
-        robPos.x += path[pathi].x;
-        robPos.y += path[pathi].y;
+        robPos.x = path[pathi].x;
+        robPos.y = path[pathi].y;
 
         pathi++;
         //return;
