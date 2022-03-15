@@ -24,6 +24,10 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
   return setlFront && setrFront && setlBack && setrBack; // Failure on false
 }
 
+float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
+  return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed));
+}
+
 void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     double leftMotorOutput, rightMotorOutput;
     float xSpeed = xSpeedi;
@@ -37,8 +41,8 @@ void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     if (fabs(zRotation) < deadband)
         zRotation = 0;
 
-    leftMotorOutput = xSpeed + zRotation;
-    rightMotorOutput = xSpeed - zRotation;
+    leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
+    rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
@@ -59,7 +63,7 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
 
-
+\
   frc::SmartDashboard::PutBoolean("In Function", true);
   float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
   double currentPosition = 0, currentVelocity = 0;
@@ -146,6 +150,7 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 }
 
 void DriveBaseModule::periodicInit() {
+  frc::SmartDashboard::PutNumber("Sensitivity", 1);
   this->msInterval = DriveBaseModuleRunInterval;
   
   this->ErrorModulePipe = pipes[0];
@@ -195,6 +200,8 @@ void DriveBaseModule::periodicRoutine() {
   // Autonomous -> AutonomousPipe
   // Monitor input from BrownoutPipe
   // Command manipulators from operatorStick state
+
+  sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
 
   if (!errors.empty()) { // Handle internal ModuleBase Errors
     ErrorModulePipe->pushQueue(errors.front());
