@@ -81,7 +81,7 @@ class Robot : public frc::TimedRobot {
   double setpoint = 0;
 
   // Change this to match the name of your camera
-  photonlib::PhotonCamera camera{"photonvision"};
+  photonlib::PhotonCamera camera{"guccicam"};
 
 };
 
