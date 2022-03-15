@@ -30,8 +30,12 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::GetNumber("vdist from apex", 3);
   photonlib::PhotonPipelineResult result = camera.GetLatestResult();
   if (result.HasTargets()) {
+        frc::SmartDashboard::PutBoolean("camera", true);
+
+ 
         // First calculate range
-        // pitch_degree = units::degree_t{result.GetBestTarget().GetPitch()};
+        // pitch_degree = units::debgree_t{result.GetBestTarget().GetPitch()};
+        
         pitch_degree = 0;
 
         float range = result.GetBestTarget().GetCameraRelativePose().X().value();
@@ -47,6 +51,8 @@ void Robot::TeleopPeriodic() {
         // setShooterSetpoint(setpoint);
 
       } else {
+          frc::SmartDashboard::PutBoolean("camera", false);
+
         // If we have no targets, stay still.
         // forwardSpeed = 0;
         std::cout << "no targets" << std::endl;
@@ -68,4 +74,3 @@ int main() {
   return frc::StartRobot<Robot>();
 }
 #endif
-
