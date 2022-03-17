@@ -139,7 +139,7 @@ void Robot::TeleopPeriodic() {
         // forwardSpeed = 0;
 
 
-        //Use Gyro to get approximate posiiton
+        //Use Gyro to get approximate posiiton, but how when it's in its own module, can we create two instances of it?, make sure Gyro turn is also within the bounds 0, 330 or whatever
 
         //My thoughts
         //Have a GoalInitPos (remember auto paths reset init pos!!!!!!)
