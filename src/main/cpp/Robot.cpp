@@ -7,50 +7,25 @@
 
 
 void Robot::RobotInit() {
+  rev::SparkMaxPIDController johnsonMotorPID = johnsonMotor->GetPIDController();
+  johnsonMotorPID.SetP(0.5);
+  johnsonMotorPID.SetReference(7, rev::CANSparkMax::ControlType::kPosition);
 
 }
 
 void Robot::RobotPeriodic() {
-  frc::SmartDashboard::PutNumber("range", range);
-  frc::SmartDashboard::PutNumber("velocity", velocity);
-  frc::SmartDashboard::PutNumber("theta_degs", theta_degs);
-  frc::SmartDashboard::PutNumber("setpoint", setpoint);
-  frc::SmartDashboard::PutNumber("horiz dist", horizontal_dist);
-  frc::SmartDashboard::PutNumber("vdist from apex", dist_from_apex);
+  neo->Set(1);
+  //johnsonMotor->Set(1)
 }
  
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  // setMotorPIDF(shooterMotor, shooterkP, shooterkI, shooterkD, shooterkFF);
+  
 }
 
 void Robot::TeleopPeriodic() {
-  frc::SmartDashboard::GetNumber("vdist from apex", 3);
-  photonlib::PhotonPipelineResult result = camera.GetLatestResult();
-  if (result.HasTargets()) {
-        // First calculate range
-        // pitch_degree = units::degree_t{result.GetBestTarget().GetPitch()};
-        pitch_degree = 0;
-
-        float range = result.GetBestTarget().GetCameraRelativePose().X().value();
-
-        theta_rads = atan((2*APEX_HEIGHT*(range+sqrt(pow(range, 2)-(TARGET_HEIGHT*(pow(range, 2))/APEX_HEIGHT))))/(pow(range, 2)));
-        theta_degs = theta_rads * (180 / pi);
-        central_degs = 90 - theta_degs;
-        // Use this range as the measurement we give to the PID controller.
-        horizontal_dist = cos(CAMERA_MOUNT_ANGLE)*range;
-        velocity = sqrt(2*APEX_HEIGHT*GRAV_CONST)/sin(theta_rads);
-        // forwardSpeed = -controller.Calculate(range.value(), GOAL_RANGE_METERS.value());
-        setpoint = (max_turns_neo550/360) * theta_degs;
-        // setShooterSetpoint(setpoint);
-
-      } else {
-        // If we have no targets, stay still.
-        // forwardSpeed = 0;
-        std::cout << "no targets" << std::endl;
-      }
   
 }
 

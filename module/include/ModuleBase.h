@@ -1,30 +1,30 @@
-// Krishna Mani FRC 2020 : Base class for all robot threaded modules
+// // Krishna Mani FRC 2020 : Base class for all robot threaded modules
 
-#ifndef MODULEBASE_H
-#define MODULEBASE_H
+// #ifndef MODULEBASE_H
+// #define MODULEBASE_H
 
-#include <vector>
-#include <queue>
-#include <thread>
-#include <chrono>
+// #include <vector>
+// #include <queue>
+// #include <thread>
+// #include <chrono>
 
-#include "GenericPipe.h"
-#include "Robot.h"
+// #include "GenericPipe.h"
+// #include "Robot.h"
 
-class ModuleBase {
-	public:
-	std::vector<GenericPipe*> pipes;
-	std::queue<Message*> errors;
+// class ModuleBase {
+// 	public:
+// 	std::vector<GenericPipe*> pipes;
+// 	std::queue<Message*> errors;
 
-	int msInterval; 
-	Robot* stateRef;
+// 	int msInterval; 
+// 	Robot* stateRef;
 
-	void init(std::vector<GenericPipe*>, Robot*);
+// 	void init(std::vector<GenericPipe*>, Robot*);
 	
-	virtual std::vector<uint8_t> getConstructorArgs() = 0;
-	virtual void periodicRoutine() = 0;
-	virtual void periodicInit() = 0;
+// 	virtual std::vector<uint8_t> getConstructorArgs() = 0;
+// 	virtual void periodicRoutine() = 0;
+// 	virtual void periodicInit() = 0;
 
-};
+// };
 
-#endif
+// #endif
