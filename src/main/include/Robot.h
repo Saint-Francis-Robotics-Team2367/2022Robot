@@ -76,43 +76,28 @@ class Robot : public frc::TimedRobot {
   const float shooterkFF = 0.000194;
   float maxShooterOutput = 1;
   float minShooterOutput = -0.1;
-  // rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+
+  float currentTurretPosition = 90; //testing
+
+  bool pressed = false;
+  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
+
+
+  rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::SparkMaxPIDController hoodMotorPID = shooterMotor->GetPIDController();
+
+  rev::CANSparkMax * turretMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::SparkMaxPIDController turretMotorPID = shooterMotor->GetPIDController();
+
+
 
   double setpoint = 0;
+  frc::Joystick* driverStick =  new frc::Joystick(0);
 
   // Change this to match the name of your camera
   photonlib::PhotonCamera camera{"photonvision"};
 
 };
 
-/*
-bool Robot::setShooterSetpoint(double setpoint){
 
-   
-    shooterMotor->GetPIDController().SetReference(setpoint, rev::ControlType::kVelocity);
-        
-    return 0;
-
-}
-
-bool Robot::setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, double F){
-
-    motor->GetPIDController().SetP(P);
-    motor->GetPIDController().SetI(I);
-    motor->GetPIDController().SetD(D);
-    motor->GetPIDController().SetFF(F);
-    motor->GetPIDController().SetOutputRange(minShooterOutput, maxShooterOutput);
-
-    std::cout<<"P: "<<motor->GetPIDController().GetP()<<std::endl;
-    std::cout<<"I: "<<motor->GetPIDController().GetI()<<std::endl;
-    std::cout<<"D: "<<motor->GetPIDController().GetD()<<std::endl;
-    std::cout<<"FF: "<<motor->GetPIDController().GetFF()<<std::endl;
-    std::cout<<"Equals: "<<(motor->GetPIDController().GetP() == P)<<"I "<<(motor->GetPIDController().GetI() == I)<<" D "<<(motor->GetPIDController().GetD() == D) <<"FF "<<(motor->GetPIDController().GetFF() == F)<<std::endl;
-
-
-    return ((motor->GetPIDController().GetP() == P) && (motor->GetPIDController().GetI() == I) &&
-            (motor->GetPIDController().GetD() == D) && (motor->GetPIDController().GetFF() == F));
-
-}
-
-*/
