@@ -1,32 +1,9 @@
 #include "IntakeModule.h"
 
 void IntakeModule::intake(frc::Joystick* driverStick, frc::Joystick* operatorStick) {
-  double basePos = 0.0;
-  double outPos = 2.5; // change to position of the motor at full extension
-
-  if (driverStick->GetRawButtonPressed(1))
-  {
-    if (intakeActive)
-    {
-      intakeAction->Set(-1.0);
-      intakeRoller->StopMotor();
-    }
-    else
-    {
-      intakeAction->Set(1.0);
-      intakeRoller->Set(1.0);
-    }
-    intakeActive = !intakeActive;
-  }
-
-  if ((intakeActive && iActEncoder.GetPosition() >=  outPos) || (!intakeActive && iActEncoder.GetPosition() <= basePos))
-    intakeAction->StopMotor();
-
-  if (operatorStick->GetRawButtonPressed(1))
-  {
-    if (intakeActive)
-      intakeRoller->Set(-1.0);
-  }
+   indexMotors[0] = new rev::CANSparkMax(indexID0, rev::CANSparkMax::MotorType::kBrushed);
+   indexMotors[1] = new rev::CANSparkMax(indexID1, rev::CANSparkMax::MotorType::kBrushed);
+   indexMotors[2] = new rev::CANSparkMax(indexID2, rev::CANSparkMax::MotorType::kBrushed);
 }
 
 void IntakeModule::periodicInit() {
@@ -34,21 +11,15 @@ void IntakeModule::periodicInit() {
 }
 
 void IntakeModule::periodicRoutine() {
-  // Use mode of robot to determine control source
-  // Autonomous -> AutonomousPipe
-  // Monitor input from BrownoutPipe
-  // Command manipulators from operatorStick state
+  // Use mode of robo
+  Message* m;
+  if (stateRef->IsAutonomousEnabled())
+    m = pipes[0]->popQueue();
+  else if (stateRef->IsTeleopEnabled()) 
+    m = pipes[1]->popQueue();
 
-  // if (stateRef->IsAutonomous()) {
-  //   if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
-  //     PIDTurn(90, 5, 1, 1);
-  //     this->pressed = true;
-  //     frc::SmartDashboard::PutBoolean("Pressed", this->pressed);
+  if (!m) return;
 
-  //   }
-  // }
-	// Add rest of manipulator code...
-  Message* m = pipes[0]->popQueue();
   if (m->str == "disable")
   {
     intakeAction->Set(-1.0);
@@ -70,15 +41,29 @@ void IntakeModule::periodicRoutine() {
   }
 
   if (m->str == "shooting") {
-    if (m->val)
+    if (m->vals[0])
       for (int i = 0;i < 3; i++) {
-        indexMotors[i].Set(1.0);
+        indexMotors[i]->Set(1.0);
       }
     else
-      or (int i = 0;i < 3; i++) {
-        indexMotors[i].Set(0.0);
+      for (int i = 0;i < 3; i++) {
+        indexMotors[i]->Set(0.0);
       }
   }
+
+  if (m->str == "index") {
+    if (m->vals[0]) {
+      indexMotors[0]->Set(1.0);
+      indexMotors[1]->Set(1.0);
+    }
+    else {
+      indexMotors[0]->Set(0.0);
+      indexMotors[1]->Set(0.0);
+    }
+    
+  }
+
+
 }
 
-std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID}; }
+std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID}; }

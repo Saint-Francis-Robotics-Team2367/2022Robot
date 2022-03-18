@@ -16,3 +16,4 @@
 #define DriveBaseModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
 #define AutonomousModuleRunInterval 30
+#define IntakeModuleRunInterval 30

@@ -10,6 +10,9 @@
 
 #define intakeActionID 16
 #define intakeRollerID 17
+#define indexID0 1
+#define indexID1 2
+#define indexID2 3
 
 class IntakeModule : public ModuleBase {
 private:
@@ -19,6 +22,13 @@ private:
   rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
 
   rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
+  double basePos = 0.0;
+  double outPos = 2.5;
+
+
+  rev::CANSparkMax* indexMotors[3];
+
+
 
 public:
   std::vector<uint8_t> getConstructorArgs();
