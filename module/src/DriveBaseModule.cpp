@@ -63,33 +63,46 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
 
-\
-  frc::SmartDashboard::PutBoolean("In Function", true);
-  float endpoint, timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
-  double currentPosition = 0, currentVelocity = 0;
+  if (angle < 0) {
+    maxAcc *= -1;
+    maxVelocity *= -1;
+  }
+
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", true);
+  float timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
+  double currentPosition = 0, currentVelocity = 0, endpoint = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
+  if(fabs(endpoint) > 360) {
+    //don't want this to happen
+    return false;
+  }
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
 
 
-//never use while loops unless threading
-  while(currentPosition < endpoint){
+  while(fabs(currentPosition) < fabs(endpoint)){
+     if(stateRef->IsDisabled()) {
+      break;
+    }
+    frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
+    //should be 2, * Vc^2, check this later
     distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
-    if (distanceToDeccelerate > endpoint - currentPosition) {
+    if (fabs(distanceToDeccelerate) > fabs(endpoint - currentPosition)) {
       currentVelocity -= (maxAcc * timeElapsed);
     }
     else //increase velocity
     {
       currentVelocity += (maxAcc * timeElapsed);
-      if (currentVelocity > maxVelocity)
+      if (fabs(currentVelocity) > fabs(maxVelocity))
       {
         currentVelocity = maxVelocity;
       }
     }
-
     currentPosition += currentVelocity * timeElapsed;
-    if(currentPosition > endpoint) {
+    
+    if(fabs(currentPosition) > fabs(endpoint)) {
       currentPosition = endpoint;
     }
     //same as other
@@ -100,14 +113,86 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
     frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
     frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
 
-    if(currentPosition < endpoint){
+    if(fabs(currentPosition) < fabs(endpoint)){
       lPID.SetReference(outerSetpoint, rev::CANSparkMax::ControlType::kPosition);
       rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
     }
     prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", false);
   return true;
 }
+
+bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity) {
+  rEncoder.SetPosition(0);
+  lEncoder.SetPosition(0);
+  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.168); 
+
+  if (angle < 0) {
+    maxAcc *= -1;
+    maxVelocity *= -1;
+  }
+
+  InitGyro();
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", true);
+  float timeElapsed, distanceToDeccelerate = 0.0; //currentPosition is the set point
+  double currentPosition = 0, currentVelocity = 0, endpoint = 0;
+  float prevTime = frc::Timer::GetFPGATimestamp().value();
+  endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
+  
+  frc::SmartDashboard::PutNumber("endpoint", endpoint);
+
+
+  while(fabs(currentPosition) < fabs(endpoint)){
+     if(stateRef->IsDisabled()) {
+      break;
+    }
+    frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
+    timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
+    //should be 2, * Vc^2, check this later
+    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
+    if (fabs(distanceToDeccelerate) > fabs(endpoint - currentPosition)) {
+      currentVelocity -= (maxAcc * timeElapsed);
+    }
+    else //increase velocity
+    {
+      currentVelocity += (maxAcc * timeElapsed);
+      if (fabs(currentVelocity) > fabs(maxVelocity))
+      {
+        currentVelocity = maxVelocity;
+      }
+    }
+    currentPosition += currentVelocity * timeElapsed;
+    
+    if(fabs(currentPosition) > fabs(endpoint)) {
+      currentPosition = endpoint;
+    }
+    //same as other
+   
+    double outerSetpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
+    double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
+    
+    frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
+    frc::SmartDashboard::PutNumber("innerSet", innerSetpoint);
+
+    if(fabs(currentPosition) < fabs(endpoint)){
+      lPID.SetReference(outerSetpoint, rev::CANSparkMax::ControlType::kPosition);
+      rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
+    }
+
+
+    prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
+  }
+
+  GyroTurn(angle);
+  frc::SmartDashboard::PutBoolean("In PIDTurn Function", false);
+  return true;
+}
+
 
 bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity) {
   //forward movement only *implement backwards movement with if statement if necessary
@@ -115,29 +200,38 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   double currentVelocity = 0, currentPosition = 0;
   float prevTime = frc::Timer::GetFPGATimestamp().value();
 
+  if (totalFeet < 0) {
+    maxAcc *= -1;
+    maxVelocity *= -1;
+  }
 
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
-
-  while(currentPosition < totalFeet){
+frc::SmartDashboard::PutBoolean("inPIDDrive", true);
+  while(fabs(currentPosition) < fabs(totalFeet)){
+    if(stateRef->IsDisabled()) {
+      break;
+    }
+    frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
     distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
-    if (distanceToDeccelerate > totalFeet - currentPosition) {
+    if (fabs(distanceToDeccelerate) > fabs(totalFeet - currentPosition)) {
       currentVelocity -= (maxAcc * timeElapsed);
     }
     else //increase velocity
     {
       currentVelocity += (maxAcc * timeElapsed);
-      if (currentVelocity > maxVelocity)
+      if (fabs(currentVelocity) > fabs(maxVelocity))
       {
         currentVelocity = maxVelocity;
       }
     }
 
     currentPosition += currentVelocity * timeElapsed;
-    if(currentPosition > totalFeet) {
+    if(fabs(currentPosition) > fabs(totalFeet)) {
       currentPosition = totalFeet;
     }
 
@@ -145,7 +239,9 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
     lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
+    frc::SmartDashboard::PutNumber("prevTime", prevTime);
   }
+  frc::SmartDashboard::PutBoolean("inPIDDrive", false);
   return true;
 }
 
@@ -164,19 +260,19 @@ void DriveBaseModule::periodicInit() {
   
 
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
-    ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
+    //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
     return;
   }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
-    ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
+    ///ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
   }
 
   // Need to add PID Setters!!
 
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
-  double m_P = 0.39, m_I = 0.02, m_D = 2.13, iZone = 0.03;
+  double m_P = 0.4, m_I = 0.00, m_D = 1.68, iZone = 0.00;
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -203,6 +299,9 @@ void DriveBaseModule::periodicRoutine() {
 
   sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
 
+  if (stateRef->IsDisabled()) {
+    return;
+  }
   if (!errors.empty()) { // Handle internal ModuleBase Errors
     ErrorModulePipe->pushQueue(errors.front());
     errors.pop();
@@ -210,19 +309,42 @@ void DriveBaseModule::periodicRoutine() {
 
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-    frc::SmartDashboard::PutNumber("gyro", m_imu.GetAngle().value());
-    return;
+    frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
   }
 
-  // if (stateRef->IsAutonomous()) {
-  //   if (!this->pressed && driverStick->GetRawButtonPressed(1)) {
-  //     PIDTurn(90, 5, 1, 1);
-  //     this->pressed = true;
-  //     frc::SmartDashboard::PutBoolean("Pressed", this->pressed);
-
-  //   }
-  // }
 	// Add rest of manipulator code...
+  if(stateRef->IsAutonomousEnabled()) {
+    frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
+  // for (int i = 0; i < pipes.size(); i++) {
+    frc::SmartDashboard::PutBoolean("In Loop", true);
+    GenericPipe* p = pipes[1];
+    
+    Message* m = p->popQueue();
+    if (m) {
+      frc::SmartDashboard::PutBoolean("Message", true);
+      if (m->str == "PD") {
+        frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
+        if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
+          frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
+        }
+      }
+
+      if (m->str == "PT") {
+        frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
+        frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
+          if(PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
+            //if no here, it does this and tries to do smtng else
+          frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
+        }
+      }
+      if (m->str == "Arcade") {
+        arcadeDrive(m->vals[0], m->vals[1]);
+      }
+    }
+  // }
+
+  }
+  
 }
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
@@ -249,12 +371,23 @@ float DriveBaseModule::getGyroAngle(){
 }
 
 void DriveBaseModule::InitGyro() {
-  gyroInitVal = getGyroAngle();
+  gyroInitVal = getGyroAngle() + gyroInitVal;
 }
 void DriveBaseModule::GyroTurn(float theta) {
   //add PID
-  while (fabs(getGyroAngle() - theta) < 0.1) {
-    arcadeDrive(0, 0.1);
+  while (fabs(getGyroAngle() - theta) > 1) {
+    if (stateRef->IsDisabled()) break;  
+    frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
+    if (getGyroAngle() < theta) {
+      arcadeDrive(0, 0.2);
+      //would adding a return here and below help? so it's not loopish, might be jerkish though
+    }
+    else {
+      arcadeDrive(0, -0.2);
+    
+    }
   }
+  arcadeDrive(0, 0); //need this to end motors
+  return;
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID}; }
