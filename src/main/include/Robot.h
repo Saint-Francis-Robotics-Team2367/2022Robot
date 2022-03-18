@@ -15,6 +15,8 @@
 #include <photonlib/PhotonCamera.h>
 #include <math.h>
 #include <rev/CANSparkMax.h>
+#include <Test.h>
+#include "frc/Errors.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -34,14 +36,17 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
   //Change ID slot there to test
-  rev::CANSparkMax * neo = new rev::CANSparkMax(12, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * neo = new rev::CANSparkMax(18, rev::CANSparkMax::MotorType::kBrushless);
 
   //Johnson Motor, uncomment/change ID's when testing
   //rev::CANSparkMax * johnsonMotor = new rev::CANSparkMax(15, rev::CANSparkMax::MotorType::kBrushed);
-
+  bool tested_motors = false;
+  int count = 0;
 
   // Change this to match the name of your camera
   photonlib::PhotonCamera camera{"photonvision"};
+  Test* TestFunctions = new Test();
+
 
 };
 
