@@ -48,6 +48,37 @@ void IntakeModule::periodicRoutine() {
   //   }
   // }
 	// Add rest of manipulator code...
+  Message* m = pipes[0]->popQueue();
+  if (m->str == "disable")
+  {
+    intakeAction->Set(-1.0);
+    intakeRoller->StopMotor();
+  }
+  if (m->str == "activate")
+  {
+    intakeAction->Set(1.0);
+    intakeRoller->Set(1.0);
+  }
+
+  if ((intakeActive && iActEncoder.GetPosition() >=  outPos) || (!intakeActive && iActEncoder.GetPosition() <= basePos))
+    intakeAction->StopMotor();
+
+  if (m->str == "outtake")
+  {
+    if (intakeActive)
+      intakeRoller->Set(-1.0);
+  }
+
+  if (m->str == "shooting") {
+    if (m->val)
+      for (int i = 0;i < 3; i++) {
+        indexMotors[i].Set(1.0);
+      }
+    else
+      or (int i = 0;i < 3; i++) {
+        indexMotors[i].Set(0.0);
+      }
+  }
 }
 
-std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID}; }
+std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID}; }
