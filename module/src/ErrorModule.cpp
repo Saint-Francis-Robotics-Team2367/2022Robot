@@ -6,24 +6,24 @@ void ErrorModule::periodicInit() {
 }
 
 void ErrorModule::periodicRoutine() {
-  if (!errors.empty()) { // The Error Module is throwing Errors
-    // frc::DriverStation::ReportError("[ErrorModule] " + priorities[(int)errors.front()->val] + errors.front()->str + "\n");
-    errors.pop();
-  }
+  // if (!errors.empty()) { // The Error Module is throwing Errors
+  //   // frc::DriverStation::ReportError("[ErrorModule] " + priorities[(int)errors.front()->val] + errors.front()->str + "\n");
+  //   errors.pop();
+  // }
 
-  Message* msg;	
-  std::string trace = "";
+  // Message* msg;	
+  // std::string trace = "";
 
-  for (uint8_t i = 0; i < pipes.size(); i++) { // First Module is used for FileIO module, which does not report errors
-    msg = pipes[i]->popQueue();
+  // for (uint8_t i = 0; i < pipes.size(); i++) { // First Module is used for FileIO module, which does not report errors
+  //   msg = pipes[i]->popQueue();
 
-    if (!msg) { continue; } // No Errors present
+  //   if (!msg) { continue; } // No Errors present
 
 
-    trace += "[" + prefixes[i] + "] " + priorities[(int)msg->val] + msg->str + "\n";
+  //   trace += "[" + prefixes[i] + "] " + priorities[(int)msg->vals[0]] + msg->str + "\n";
 
-    // Do file IO to write errors to log
-  }
+  //   // Do file IO to write errors to log
+  // }
 
   // if (!trace.empty()) frc::DriverStation::ReportError(trace);
 }
