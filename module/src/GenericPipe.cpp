@@ -3,7 +3,14 @@
  */
 
 #include "GenericPipe.h"
-Message::Message(std::string _str, float _val) : str(_str), val(_val) {}
+#include "iostream"
+Message::Message(std::string _str, std::vector<float> _val) : str(_str){
+  for (int i = 0; i < _val.size(); i++) {
+    vals.push_back(_val[i]);
+    std::cout << _val[i] << std::endl;
+  }
+};
+Message::Message(std::string _str, int _val) :  str(_str), vals({(float)_val}) {};
 Message::Message() {}
 
 void GenericPipe::pushQueue(Message* msg) {
@@ -19,7 +26,7 @@ Message* GenericPipe::popQueue() {
   if (!_deque.empty()) {
     Message* msg = _deque.front();
 
-    ret.val = msg->val;
+    ret.vals = msg->vals;
     ret.str = msg->str;
 
     _deque.pop_front();
