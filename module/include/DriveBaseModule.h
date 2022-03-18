@@ -8,10 +8,12 @@
 #include "ModuleBase.h"
 #include "GenericPipe.h"
 
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
 
 #include <frc/SmartDashboard/SmartDashboard.h>
+#include <frc/ADIS16448_IMU.h>
+#include <frc/PIDController.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
@@ -36,7 +38,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.06
+#define centerToWheel 1.072917 //Center of the robot to outer wheel or .994... for to inner wheel
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {
@@ -48,7 +50,8 @@ class DriveBaseModule : public ModuleBase {
   float robotDerivative;
 
   bool pressed = false;
-  
+  bool moveFlag = true;
+
   const double deadband = 0.08;
   float prevTime;
   float prev_value_speed;
@@ -73,10 +76,12 @@ class DriveBaseModule : public ModuleBase {
   rev::SparkMaxPIDController lPID = lMotor->GetPIDController();
   rev::SparkMaxPIDController rPID = rMotor->GetPIDController();
 
-  
+  //frc::PIDController g;
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
+  float gyroInitVal = 0.0f;
+  frc::ADIS16448_IMU m_imu{};
   public:
 
   std::vector<uint8_t> getConstructorArgs();
@@ -86,8 +91,14 @@ class DriveBaseModule : public ModuleBase {
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
   void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
-  bool PIDTurn(float angle, float totalFeet, float maxAcc, float maxVelocity);
+  bool PIDTurn(float angle, float radius, float maxAcc, float maxVelocity);
+  bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
   void LimitRate(float&s, float&t);
+  float getGyroAngle();
+  void InitGyro();
+  void GyroTurn(float theta);
+  float TurningSensitivity(float rightStick, float leftStick);
+  float sliderValue = 0.43;
 };
 
 #endif

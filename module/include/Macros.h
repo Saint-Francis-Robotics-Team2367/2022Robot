@@ -2,12 +2,7 @@
 
 #define ErrorModuleID 0
 #define DriveBaseModuleID 1
-#define BrownoutModuleID 2
-#define AutonomousModuleID 3
-#define PneumaticsModuleID 4
-#define InetEthModuleID 5
-#define ShuffleboardModuleID 6
-#define ErrorFileIOModuleID 7
+#define AutonomousModuleID 2
 
 // Error loglevel
 #define INFO 0
@@ -18,6 +13,6 @@
 
 // Frequency of running periodicRoutine()
 #define ErrorModuleRunInterval 80 
-#define DriveBaseModuleRunInterval 20
-#define IntakeModuleRunInterval 20 
+#define DriveBaseModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
+#define AutonomousModuleRunInterval 30
