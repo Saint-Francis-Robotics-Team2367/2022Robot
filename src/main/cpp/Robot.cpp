@@ -13,6 +13,7 @@
 using namespace std;
 #include "Constructor.h"
 #include "ModuleBase.h"
+#include "Shuffleboard.h"
 
 // // All Module Includes
 #include "DriveBaseModule.h"
@@ -26,10 +27,7 @@ void Robot::RobotInit() {
   }
 }
 
-bool shooter_speed() {return false;}
-bool ballOneLoaded() {return true;}
-bool ballTwoLoaded() {return false;}
-bool intakeExtended() {return true;}
+Shuffleboard* sb = new Shuffleboard{};
 
 void Robot::RobotPeriodic() {
   //frc::Shuffleboard::GetTab("Drive Train") //Done
@@ -40,12 +38,15 @@ void Robot::RobotPeriodic() {
   //   .Add("Left Encoder", m_leftEncoder.GetPosition()).GetEntry().SetDouble(m_leftEncoder.GetPosition()); 
   //frc::Shuffleboard::GetTab("Drive Train")
   //   .Add("Right Encoder", m_rightEncoder.GetPosition()).GetEntry().SetDouble(m_rightEncoder.GetPosition());  
+   sb->refreshValues();   
+
+   /*
   frc::Shuffleboard::GetTab("Drive Train") //Done
      .Add("Battery Level", (double) frc::RobotController::GetBatteryVoltage()).GetEntry().SetDouble((double)frc::RobotController::GetBatteryVoltage()); //Done
   frc::Shuffleboard::GetTab("Drive Train")  //Done
      .Add("Distance to Goal", 0);//.GetEntry().SetDouble(m_rightEncoder.GetPosition()); //Done
   frc::Shuffleboard::GetTab("Drive Train") //Done
-     .Add("Angle to Goal", 0); //Done
+     .Add("Angle to Goal", 0); //Done   
   frc::Shuffleboard::GetTab("Drive Train") //Done
      .AddBoolean("Shooter UTS", shooter_speed); //Done
   frc::Shuffleboard::GetTab("Drive Train")
@@ -54,6 +55,7 @@ void Robot::RobotPeriodic() {
      .AddBoolean("Ball 1 Loaded", ballOneLoaded);
   frc::Shuffleboard::GetTab("Drive Train")
      .AddBoolean("Ball 2 Loaded", ballTwoLoaded);
+   */
 }
  
 void Robot::AutonomousInit() {}
