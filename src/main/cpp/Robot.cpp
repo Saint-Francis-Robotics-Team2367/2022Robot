@@ -11,32 +11,19 @@
 
 // roboRIO-TEAM-frc.local
 using namespace std;
+#include "Constructor.h"
+#include "ModuleBase.h"
+
+// // All Module Includes
+#include "DriveBaseModule.h"
+#include "ErrorModule.h"
+#include "AutonomousModule.h"
 
 void Robot::RobotInit() {
-  // Restore factory defaults on drive motors
-  m_leftLeadMotor->RestoreFactoryDefaults();
-  m_rightLeadMotor->RestoreFactoryDefaults();
-  m_leftFollowMotor->RestoreFactoryDefaults();
-  m_rightFollowMotor->RestoreFactoryDefaults();
-
-  // Set current limit for drive motors
-  m_leftLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
-  m_rightLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
-  m_leftFollowMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
-  m_rightLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
-
-  // Set drive motors to brake mode
-  m_leftLeadMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  m_rightLeadMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  m_leftFollowMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  m_rightFollowMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-
-  // Set followers and inverts for drive motors
-  m_leftLeadMotor->SetInverted(true);
-  m_leftFollowMotor->Follow(*m_leftLeadMotor, false);
-  m_rightLeadMotor->SetInverted(false);
-  m_rightFollowMotor->Follow(*m_rightLeadMotor, false);
-
+    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule}, this)) { // Pass a reference of this object to all modules
+    // frc::DriverStation::ReportError("[Constructor] Web Construction has failed; ensure it is acyclic and constructable");
+    return;
+  }
 }
 
 bool shooter_speed() {return false;}
@@ -73,37 +60,3 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  m_leftEncoder.SetPosition(0);
-  m_rightEncoder.SetPosition(0);
-  m_leftEncoder.SetPositionConversionFactor(0.168);
-  m_rightEncoder.SetPositionConversionFactor(0.168);
-}
-
-void Robot::TeleopPeriodic() {
-  left_y = m_stick->GetRawAxis(1);
-  right_x = m_stick->GetRawAxis(4);
-
-  m_robotDrive->ArcadeDrive(-left_y, right_x);
-}
-
-void Robot::DisabledInit() {}
-void Robot::DisabledPeriodic() {}
-
-void Robot::TestInit() {
-  tested_motors = false;
-}
-
-void Robot::TestPeriodic() {
-  if (tested_motors == false) {
-    TestFunctions->checkMotorIDs();
-    tested_motors = true;
-  } else {
-    exit(0);
-  }
-}
-
-#ifndef RUNNING_FRC_TESTS
-int main() {
-  return frc::StartRobot<Robot>();
-}
-#endif
