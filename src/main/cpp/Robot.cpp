@@ -30,17 +30,29 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+     
 }
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {
- }
+  solenoid_valve->Set(false);
+}
 
 void Robot::TestPeriodic() {
   // 2 neo 550s 
   // solenoid at the last five seconds
+
+  if (operatorStick->GetRawButtonPressed(3)) { // X
+    c_leftMotor->Set(1.0);
+  }  
+  if (operatorStick->GetRawButtonPressed(2)) { // B
+    c_rightMotor->Set(1.0);
+  } 
+  if (operatorStick->GetRawButtonPressed(4)) { // Y, solenoid
+    solenoid_valve->Set(true);
+  }
   
 }
 

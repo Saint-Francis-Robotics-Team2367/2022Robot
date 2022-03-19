@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <frc/Solenoid.h>
 //#include <frc/ADIS16448_IMU.h>
 
 class Robot : public frc::TimedRobot {
@@ -28,4 +29,14 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+
+  frc::Joystick * operatorStick;
+  int c_rightMotorID = 0;
+  int c_leftMotorID = 0;
+
+  rev::CANSparkMax *c_rightMotor = new rev::CANSparkMax(c_rightMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+  rev::CANSparkMax *c_leftMotor = new rev::CANSparkMax(c_leftMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+
+  frc::Solenoid *solenoid_valve = new frc::Solenoid::Solenoid(1);
+  
 };
