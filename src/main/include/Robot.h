@@ -37,6 +37,8 @@ class Robot : public frc::TimedRobot {
   // rev::CANSparkMax *c_rightMotor = new rev::CANSparkMax(c_rightMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
   // rev::CANSparkMax *c_leftMotor = new rev::CANSparkMax(c_leftMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
 
-  // frc::Solenoid *solenoid_valve = new frc::Solenoid::Solenoid(1);
+  // frc::Solenoid *leftSolenoid = new frc::Solenoid::Solenoid(0);
+  // frc::Solenoid *rightSolenoid = new frc::Solenoid::Solenoid(1);
+
   
 };
