@@ -18,10 +18,13 @@ class IntakeModule : public ModuleBase {
 private:
   bool intakeActive = false;
 
-  rev::CANSparkMax* intakeAction = new rev::CANSparkMax(intakeActionID, rev::CANSparkMax::MotorType::kBrushless);
-  rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::CANSparkMax* intakeAction = new rev::CANSparkMax(intakeActionID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
 
-  rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
+  rev::CANSparkMax* intakeRoller;
+  rev::CANSparkMax* intakeAction;
+
+  //rev::SparkMaxRelativeEncoder iActEncoder;
   double basePos = 0.0;
   double outPos = 2.5;
 

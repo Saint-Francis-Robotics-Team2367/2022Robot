@@ -303,8 +303,10 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  if (stateRef->IsTeleop()) {
+  if (stateRef->IsTeleopEnabled()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    std::vector<float> v;
+    pipes[2]->pushQueue(new Message("activate", v));
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
   }
 
@@ -386,4 +388,4 @@ void DriveBaseModule::GyroTurn(float theta) {
   arcadeDrive(0, 0); //need this to end motors
   return;
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, IntakeModuleID}; }

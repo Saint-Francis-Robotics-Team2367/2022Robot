@@ -3,7 +3,7 @@
 #define ErrorModuleID 0
 #define DriveBaseModuleID 1
 #define AutonomousModuleID 2
-
+#define IntakeModuleID 3
 // Error loglevel
 #define INFO 0
 #define LOW 1
