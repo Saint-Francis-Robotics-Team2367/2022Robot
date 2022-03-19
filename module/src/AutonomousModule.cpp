@@ -8,8 +8,8 @@ void AutonomousModule::periodicInit() {
     p.x = 3;
     p.y = 3;
     pathPoint p1;
-    p1.x = -8;
-    p1.y = 8;
+    p1.x = -3;
+    p1.y = 3;
 
     pathPoint p2;
     p2.x = 0;
@@ -41,34 +41,37 @@ void AutonomousModule::periodicRoutine() {
  
     if ((stateRef->IsAutonomousEnabled()) && (pathi < path.size())) {
         resetPath = false;
-        frc::SmartDashboard::PutBoolean("reset path", resetPath);
-        frc::SmartDashboard::PutBoolean("IN auto module", true);
-        //float theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) / (3.14159265) * 180;
+
+        pathPoint delta;
+        delta.x = (path[pathi].x - robPos.x);
+        delta.y = (path[pathi].y - robPos.y);
+
+        float d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
+        pathPoint unitDir;
+        unitDir.x = delta.x / d;
+        unitDir.y = delta.y / d;
+
+        delta.x = delta.x + unitDir.x * coordOffset;
+        delta.y = delta.y + unitDir.y * coordOffset;
+
+
+
         float theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
-        
-        frc::SmartDashboard::PutNumber("IN auto module", false);
         theta = theta - robTheta;
         robTheta += theta;
-
-        frc::SmartDashboard::PutNumber("theta", theta);
 
         std::vector<float> mVec = {theta, 0, 7, 21};
 
         pipes[0]->pushQueue(new Message("PT", mVec));
         
-        float d = sqrt(pow((path[pathi].x - robPos.x), 2) + pow((path[pathi].y - robPos.y), 2));
-        frc::SmartDashboard::PutNumber("DISTANCE FROM AUTO MODULE", d);
-        
+        d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
         mVec = {d, 7, 21};
         pipes[0]->pushQueue(new Message("PD", mVec));
 
-        robPos.x = path[pathi].x;
-        robPos.y = path[pathi].y;
+        robPos.x += delta.x;
+        robPos.y += delta.y;
 
         pathi++;
-        frc::SmartDashboard::PutNumber("Robot Theta", robTheta);
-        
-        
         
     }
 }  

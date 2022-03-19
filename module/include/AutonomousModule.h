@@ -35,6 +35,8 @@ private:
     int pathi = 0;
     bool isTrue = false;
     bool resetPath = false;
+
+    float coordOffset = 0; // how much the robot should go past the path point to pick up the ball
 };
 
 #endif
