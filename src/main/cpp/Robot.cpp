@@ -39,6 +39,9 @@ void Robot::TestInit() {
  }
 
 void Robot::TestPeriodic() {
+  // 2 neo 550s 
+  // solenoid at the last five seconds
+  
 }
 
 #ifndef RUNNING_FRC_TESTS
