@@ -64,10 +64,11 @@ void ClimberModule::periodicRoutine() {
     if (m) {
       frc::SmartDashboard::PutBoolean("Message", true);
       if (m->str == "climb") {
-        climber(m->vals[0]);
+        climber(m->vals[0], c_leftMotor, c_rightMotor, leftSolenoid, rightSolenoid);
       }
-  }
+    }
 
+  }
 }
 
 std::vector<uint8_t> ClimberModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID}; }

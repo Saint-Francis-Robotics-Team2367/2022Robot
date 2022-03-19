@@ -3,7 +3,7 @@
 #define ErrorModuleID 0
 #define DriveBaseModuleID 1
 #define AutonomousModuleID 2
-#define ClimberModule 6
+#define ClimberModuleID 6
 
 // Error loglevel
 #define INFO 0
@@ -18,4 +18,4 @@
 #define ControllerModuleRunInterval 35
 #define AutonomousModuleRunInterval 30
 // arbitrary value, pls change
-#define ClimberModule 500
+#define ClimberModuleRunInterval 70
