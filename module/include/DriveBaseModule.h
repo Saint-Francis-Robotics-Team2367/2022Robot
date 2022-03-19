@@ -64,7 +64,6 @@ class DriveBaseModule : public ModuleBase {
   frc::Joystick* driverStick;
   frc::Joystick* operatorStick;
 
-
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
 

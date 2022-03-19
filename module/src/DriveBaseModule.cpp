@@ -310,6 +310,23 @@ void DriveBaseModule::periodicRoutine() {
   if (stateRef->IsTeleop()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+
+    if (operatorStick->GetRawButton(5)){
+      pipes[2]->pushQueue(new Message("climb", 0));
+    }
+    if (operatorStick->GetRawButton(6)) { // right bumper
+      pipes[2]->pushQueue(new Message("climb", 1));
+    } 
+    if (operatorStick->GetRawAxis(2)){ // left trigger
+      pipes[2]->pushQueue(new Message("climb", 2));
+
+    } 
+    if (operatorStick->GetRawAxis(3)) { // right trigger
+      pipes[2]->pushQueue(new Message("climb", 3));
+    } 
+    if (operatorStick->GetRawButtonPressed(4)) { // Y, solenoid
+      pipes[2]->pushQueue(new Message("climb", 4));
+    }
   }
 
 	// Add rest of manipulator code...
@@ -390,4 +407,4 @@ void DriveBaseModule::GyroTurn(float theta) {
   arcadeDrive(0, 0); //need this to end motors
   return;
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, ClimberModule}; }
