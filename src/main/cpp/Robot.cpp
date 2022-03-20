@@ -13,9 +13,9 @@
 #include "IntakeModule.h"
 #include "ErrorModule.h"
 #include "AutonomousModule.h"
-
+#include "ShooterModule.h"
 void Robot::RobotInit() {
-    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule}, this)) { // Pass a reference of this object to all modules
+    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule, new ShooterModule}, this)) { // Pass a reference of this object to all modules
      std::cout << "poopoo" << std::endl;
      return;
   }

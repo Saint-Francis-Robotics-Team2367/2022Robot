@@ -18,13 +18,13 @@ class IntakeModule : public ModuleBase {
 private:
   bool intakeActive = false;
 
-  // rev::CANSparkMax* intakeAction = new rev::CANSparkMax(intakeActionID, rev::CANSparkMax::MotorType::kBrushless);
-  // rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax* intakeAction = new rev::CANSparkMax(intakeActionID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
 
-  rev::CANSparkMax* intakeRoller;
-  rev::CANSparkMax* intakeAction;
+  //rev::CANSparkMax* intakeRoller;
+  //rev::CANSparkMax* intakeAction;
 
-  //rev::SparkMaxRelativeEncoder iActEncoder;
+  rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
   double basePos = 0.0;
   double outPos = 2.5;
 
@@ -37,8 +37,6 @@ public:
   std::vector<uint8_t> getConstructorArgs();
   void periodicInit();
   void periodicRoutine();
-
-  void intake(frc::Joystick* driverStick, frc::Joystick* operatorStick);
 };
 
 #endif
