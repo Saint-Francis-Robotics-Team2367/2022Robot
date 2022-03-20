@@ -3,6 +3,7 @@
 #define ErrorModuleID 0
 #define DriveBaseModuleID 1
 #define AutonomousModuleID 2
+#define ShooterModuleID 4
 
 // Error loglevel
 #define INFO 0
@@ -16,3 +17,4 @@
 #define DriveBaseModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
 #define AutonomousModuleRunInterval 30
+#define ShooterModuleRunInterval 25
