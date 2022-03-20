@@ -10,18 +10,18 @@
 
 // // All Module Includes
 #include "DriveBaseModule.h"
+#include "IntakeModule.h"
 #include "ErrorModule.h"
 #include "AutonomousModule.h"
 
 void Robot::RobotInit() {
-    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule}, this)) { // Pass a reference of this object to all modules
-    // frc::DriverStation::ReportError("[Constructor] Web Construction has failed; ensure it is acyclic and constructable");
-    return;
+    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule}, this)) { // Pass a reference of this object to all modules
+     std::cout << "poopoo" << std::endl;
+     return;
   }
 }
 
 void Robot::RobotPeriodic() {
-
 }
  
 void Robot::AutonomousInit() {}

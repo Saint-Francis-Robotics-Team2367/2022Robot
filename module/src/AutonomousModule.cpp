@@ -75,4 +75,4 @@ void AutonomousModule::periodicRoutine() {
         
     }
 }  
-std::vector<uint8_t> AutonomousModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID}; }
+std::vector<uint8_t> AutonomousModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, IntakeModuleID}; }
