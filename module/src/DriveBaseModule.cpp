@@ -305,9 +305,22 @@ void DriveBaseModule::periodicRoutine() {
 
   if (stateRef->IsTeleopEnabled()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-    std::vector<float> v;
-    pipes[2]->pushQueue(new Message("activate", v));
+    
+   
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+
+    if(driverStick->GetRawButtonPressed(5)) {
+      std::vector<float> v;
+      if(!intakeOn) {
+        pipes[2]->pushQueue(new Message("activate", v));
+        pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
+        intakeOn = true;
+      } else {
+        pipes[2]->pushQueue(new Message("disable", v));
+        pipes[2]->pushQueue(new Message("index", 0));
+        intakeOn = false;
+      }
+    }
   }
 
 	// Add rest of manipulator code...

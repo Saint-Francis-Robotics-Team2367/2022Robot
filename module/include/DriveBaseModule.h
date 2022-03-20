@@ -50,6 +50,7 @@ class DriveBaseModule : public ModuleBase {
   float robotDerivative;
 
   bool pressed = false;
+  bool intakeOn = false;
   bool moveFlag = true;
 
   const double deadband = 0.08;

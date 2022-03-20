@@ -25,13 +25,17 @@ void IntakeModule::periodicRoutine() {
     if (m->str == "activate")
     {
       intakeAction->Set(1.0);
-      intakeRoller->Set(1.0);
-      std::cout << "activating shooter" << std::endl;
+      intakeRoller->Set(-1.0);
+      std::cout << "activating intake" << std::endl;
     }
     if (m->str == "outtake")
     {
       if (intakeActive)
-        intakeRoller->Set(-1.0);
+        intakeRoller->Set(1.0);
+
+      for (int i = 0;i < 3; i++) {
+        indexMotors[i]->Set(-1.0);
+      }
     }
 
     if (m->str == "shooting") {
@@ -46,7 +50,7 @@ void IntakeModule::periodicRoutine() {
     }
 
     if (m->str == "index") {
-      if (m->vals[0]) {
+      if (m->vals[0] == 1) {
         indexMotors[0]->Set(1.0);
         indexMotors[1]->Set(1.0);
       }
