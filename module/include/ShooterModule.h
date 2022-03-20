@@ -1,39 +1,23 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
-#pragma once
 
-#include <frc/TimedRobot.h>
-#include <frc/Joystick.h>
-#include <unistd.h>
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
-//#include <frc/ADIS16448_IMU.h>
-
-#include <photonlib/PhotonCamera.h>
+#include "Macros.h"
+#include "ModuleBase.h"
+#include "GenericPipe.h"
+#include <vector>
 #include <math.h>
-#include <rev/CANSparkMax.h>
 
-class Robot : public frc::TimedRobot {
- public:
-  void RobotInit() override;
-  void RobotPeriodic() override;
 
-  void AutonomousInit() override;
-  void AutonomousPeriodic() override;
+class ShooterModule : public ModuleBase
+{
+public:
+    std::vector<uint8_t> getConstructorArgs();
+    void periodicInit();
+    void periodicRoutine();
+    void align_shooter();
+private:
+    void initializePaths();
 
-  void TeleopInit() override;
-  void TeleopPeriodic() override;
-
-  void DisabledInit() override;
-  void DisabledPeriodic() override;
-
-  void TestInit() override;
-  void TestPeriodic() override;
-
-  bool setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, double F);
+    bool setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, double F);
 
   bool setShooterSetpoint(double setpoint);
 
@@ -69,6 +53,8 @@ class Robot : public frc::TimedRobot {
   double max_turns_neo550 = 132.0 + (2/9);
 
   const int shooterMotorID = 3;
+  const int hoodMotorID = 4;
+  const int turretMotorID = 5;
 
   const float shooterkP = 0.000090892;
   const float shooterkI = 0.0; 
@@ -77,18 +63,19 @@ class Robot : public frc::TimedRobot {
   float maxShooterOutput = 1;
   float minShooterOutput = -0.1;
 
-  float currentTurretPosition = 90; //testing
-
   bool pressed = false;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
   rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
+  rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
+  
 
+  rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
+  rev::SparkMaxRelativeEncoder hoodMotorEncoder = hoodMotor->GetEncoder();
 
-  rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  rev::SparkMaxPIDController hoodMotorPID = shooterMotor->GetPIDController();
-
-  rev::CANSparkMax * turretMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  rev::SparkMaxPIDController turretMotorPID = shooterMotor->GetPIDController();
+  rev::CANSparkMax * turretMotor = new rev::CANSparkMax(turretMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::SparkMaxPIDController turretMotorPID = turretMotor->GetPIDController();
+  rev::SparkMaxRelativeEncoder turretMotorEncoder = turretMotor->GetEncoder();
 
 
 
@@ -97,7 +84,16 @@ class Robot : public frc::TimedRobot {
 
   // Change this to match the name of your camera
   photonlib::PhotonCamera camera{"photonvision"};
+  photonlib::PhotonPipelineResult prevVisionResult;
+  
+  bool track = true;
+  float turretTheta = 90;
 
+  const float visionP  = 0.01;
+  const float visionI = 0.0;
+  const float visionD = 0.2;
+  //frc2::PIDController* visionpid = new frc2::PIDController(visionP, visionI, visionD, ShooterModuleRunInterval);
+
+  float turretLimitPos = 180;
+  float turretLimitNeg = 0;
 };
-
-
