@@ -27,6 +27,8 @@ if (joystickInput == 0) { // left bumper
   } 
   if (joystickInput == 4) { // Y, solenoid
     leftSolenoid->Set(true);
+  }
+  if (joystickInput == 5) { // B, solenoid
     rightSolenoid->Set(true);
   }
 

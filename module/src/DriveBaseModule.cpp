@@ -327,6 +327,9 @@ void DriveBaseModule::periodicRoutine() {
     if (operatorStick->GetRawButtonPressed(4)) { // Y, solenoid
       pipes[2]->pushQueue(new Message("climb", 4));
     }
+    if (operatorStick->GetRawButtonPressed(2)) { // Y, solenoid
+      pipes[2]->pushQueue(new Message("climb", 5));
+    }
   }
 
 	// Add rest of manipulator code...
