@@ -12,7 +12,7 @@
 #define intakeRollerID 10
 #define indexID0 1
 #define indexID1 2
-#define indexID2 69
+#define indexID2 18
 
 class IntakeModule : public ModuleBase {
 private:
