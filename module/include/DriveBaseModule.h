@@ -15,13 +15,11 @@
 #include <frc/ADIS16448_IMU.h>
 #include <frc/PIDController.h>
 
+#include <frc/Solenoid.h>
+#include <frc/PneumaticsModuleType.h>
+
 #define driverStickPort 0
 #define operatorStickPort 1
-
-#define lMotorLeaderID 12 // Change these according to hardware
-#define lMotorFollowerID 13
-#define rMotorLeaderID 15
-#define rMotorFollowerID 14
 
 // Values that are assigned on init 
 #define PIDProportional 1
@@ -38,7 +36,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.072917 //Center of the robot to outer wheel or .994... for to inner wheel
+#define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {
@@ -50,6 +48,7 @@ class DriveBaseModule : public ModuleBase {
   float robotDerivative;
 
   bool pressed = false;
+  bool intakeOn = false;
   bool moveFlag = true;
 
   const double deadband = 0.08;
@@ -57,12 +56,17 @@ class DriveBaseModule : public ModuleBase {
   float prev_value_speed;
   float prev_value_turn;
 
+  bool activateClimber = false;
+  float climbSpeed = 0.75;
+  bool leftSolenoidPressed = false;
+  bool rightSolenoidPressed = false;
+
   GenericPipe* ErrorModulePipe;
   GenericPipe* BrownoutModulePipe;
   GenericPipe* AutonomousModulePipe;
 
-  frc::Joystick* driverStick;
-  frc::Joystick* operatorStick;
+  frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
+  frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
@@ -75,6 +79,12 @@ class DriveBaseModule : public ModuleBase {
 
   rev::SparkMaxPIDController lPID = lMotor->GetPIDController();
   rev::SparkMaxPIDController rPID = rMotor->GetPIDController();
+
+  frc::Solenoid *leftSolenoid = new frc::Solenoid::Solenoid(frc::PneumaticsModuleType::CTREPCM, 0);
+  frc::Solenoid *rightSolenoid = new frc::Solenoid::Solenoid(frc::PneumaticsModuleType::CTREPCM, 1);
+
+  rev::CANSparkMax *c_rightMotor = new rev::CANSparkMax(c_rightMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+  rev::CANSparkMax *c_leftMotor = new rev::CANSparkMax(c_leftMotorID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
 
   //frc::PIDController g;
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction

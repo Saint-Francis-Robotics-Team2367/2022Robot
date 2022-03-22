@@ -3,7 +3,8 @@
 #define ErrorModuleID 0
 #define DriveBaseModuleID 1
 #define AutonomousModuleID 2
-#define ClimberModuleID 6
+#define IntakeModuleID 3
+#define ShooterModuleID 4
 
 // Error loglevel
 #define INFO 0
@@ -17,5 +18,23 @@
 #define DriveBaseModuleRunInterval 20 
 #define ControllerModuleRunInterval 35
 #define AutonomousModuleRunInterval 30
-// arbitrary value, pls change
-#define ClimberModuleRunInterval 70
+#define IntakeModuleRunInterval 30
+#define ShooterModuleRunInterval 25
+
+//motorIDs
+#define Shooter1 1
+#define Shooter2 3
+#define shooterIndexer 2
+#define intakeActionID 8
+#define intakeRollerID 14
+#define indexID0 12
+#define indexID1 16
+#define indexID2 10
+#define lMotorLeaderID 15
+#define lMotorFollowerID 11
+#define rMotorLeaderID 9
+#define rMotorFollowerID 13
+
+// arbitrary ids for climber
+#define c_rightMotorID 60
+#define c_leftMotorID 61

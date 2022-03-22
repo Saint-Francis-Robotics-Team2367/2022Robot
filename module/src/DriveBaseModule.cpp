@@ -127,8 +127,8 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity) {
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
-  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.168); 
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
 
   if (angle < 0) {
     maxAcc *= -1;
@@ -172,7 +172,7 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
     }
     //same as other
    
-    double outerSetpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
+    double outerSetpoint = (currentPosition * 12) / (PI * 4); // for now this is ticks (maybe rotations / gearRatio if not then)
     double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
     
     frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
@@ -207,8 +207,8 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
-  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.168); 
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
 frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   while(fabs(currentPosition) < fabs(totalFeet)){
     if(stateRef->IsDisabled()) {
@@ -235,7 +235,7 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
       currentPosition = totalFeet;
     }
 
-    setpoint = (currentPosition * 12) / (PI * 6); 
+    setpoint = (currentPosition * 12) / (PI * 4); 
     lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
@@ -253,10 +253,6 @@ void DriveBaseModule::periodicInit() {
 
   // this->BrownoutModulePipe = pipes[1];
   // this->AutonomousModulePipe = pipes[2];
-
-  driverStick = new frc::Joystick(driverStickPort);
-  operatorStick = new frc::Joystick(operatorStickPort);
-
   
 
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
@@ -289,6 +285,10 @@ void DriveBaseModule::periodicInit() {
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
+
+  // climber
+  leftSolenoid->Set(false);
+  rightSolenoid->Set(false);
 }
 
 void DriveBaseModule::periodicRoutine() {
@@ -307,41 +307,61 @@ void DriveBaseModule::periodicRoutine() {
     errors.pop();
   }
 
-  if (stateRef->IsTeleop()) {
+  if (stateRef->IsTeleopEnabled()) {
     arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+    
+   
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
-
     if (operatorStick->GetRawButton(5)){
-      pipes[2]->pushQueue(new Message("climb", 0));
+      c_leftMotor->Set(climbSpeed*-1);
     }
     if (operatorStick->GetRawButton(6)) { // right bumper
-      pipes[2]->pushQueue(new Message("climb", 1));
+      c_rightMotor->Set(climbSpeed*-1);
     } 
     if (operatorStick->GetRawAxis(2)){ // left trigger
-      pipes[2]->pushQueue(new Message("climb", 2));
+      c_leftMotor->Set(climbSpeed);
 
     } 
     if (operatorStick->GetRawAxis(3)) { // right trigger
-      pipes[2]->pushQueue(new Message("climb", 3));
+      c_rightMotor->Set(climbSpeed);
     } 
-    if (operatorStick->GetRawButtonPressed(4)) { // Y, solenoid
-      pipes[2]->pushQueue(new Message("climb", 4));
+    if ((operatorStick->GetRawButtonPressed(4)) && (leftSolenoidPressed == false)) { // Y, solenoid
+      leftSolenoid->Set(true);
+      leftSolenoidPressed = true;
     }
+    // if ((operatorStick->GetRawButtonPressed(4)) && (leftSolenoidPressed)) { // Y, solenoid
+    //   leftSolenoid->Set(false);
+    //   leftSolenoidPressed = false;
+    // }
     if (operatorStick->GetRawButtonPressed(2)) { // Y, solenoid
-      pipes[2]->pushQueue(new Message("climb", 5));
+      rightSolenoid->Set(true);
     }
-  }
+    
+      // std::vector<float> v;
+      // if(!intakeOn) {
+      //   pipes[2]->pushQueue(new Message("activate", v));
+      //   pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
+      //   intakeOn = true;
+      // } else {
+      //   pipes[2]->pushQueue(new Message("disable", v));
+      //   pipes[2]->pushQueue(new Message("index", 0));a
+      //   intakeOn = false;
+      // }
+    
+  //   if(driverStick->GetRawButtonPressed(1)) {
+  //     pipes[3]->pushQueue(new Message("test", 1));
+  //   }
+  //   else {
+  //     pipes[3]->pushQueue(new Message("test", 0));
+  //   }
+  // }
 
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
-    frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
-  // for (int i = 0; i < pipes.size(); i++) {
-    frc::SmartDashboard::PutBoolean("In Loop", true);
     GenericPipe* p = pipes[1];
     
     Message* m = p->popQueue();
     if (m) {
-      frc::SmartDashboard::PutBoolean("Message", true);
       if (m->str == "PD") {
         frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
         if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
@@ -360,8 +380,9 @@ void DriveBaseModule::periodicRoutine() {
       if (m->str == "Arcade") {
         arcadeDrive(m->vals[0], m->vals[1]);
       }
+      pipes[1]->pushQueue(new Message("done", 0));
     }
-  // }
+   }
 
   }
   
@@ -410,4 +431,4 @@ void DriveBaseModule::GyroTurn(float theta) {
   arcadeDrive(0, 0); //need this to end motors
   return;
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, ClimberModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, IntakeModuleID, ShooterModuleID}; }
