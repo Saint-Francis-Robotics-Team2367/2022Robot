@@ -28,18 +28,18 @@ void ShooterModule::periodicRoutine() {
         m = pipes[0]->popQueue();
     }
 
-    photonlib::PhotonPipelineResult result = camera.GetLatestResult();
-    if (!result.HasTargets()) {
-        result = prevVisionResult;
-    }
+    // photonlib::PhotonPipelineResult result = camera.GetLatestResult();
+    // if (!result.HasTargets()) {
+    //     result = prevVisionResult;
+    // }
     if (m) {
         if (m->str == "shoot") {
-            float range;
-            if (stateRef->IsAutonomousEnabled()) 
-                range = m->vals[0];
-            else {
-                float range = result.GetBestTarget().GetCameraRelativePose().X().value();
-            }
+            // float range;
+            // if (stateRef->IsAutonomousEnabled()) 
+            //     range = m->vals[0];
+            // else {
+            //     float range = result.GetBestTarget().GetCameraRelativePose().X().value();
+            // }
             // theta_rads = atan((2*APEX_HEIGHT*(range+sqrt(pow(range, 2)-(TARGET_HEIGHT*(pow(range, 2))/APEX_HEIGHT))))/(pow(range, 2)));
             // theta_degs = theta_rads * (180 / pi);
             // central_degs = 90 - theta_degs; // Use this range as the measurement we give to the PID controller.

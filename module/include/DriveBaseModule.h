@@ -18,11 +18,6 @@
 #define driverStickPort 0
 #define operatorStickPort 1
 
-#define lMotorLeaderID 12 // Change these according to hardware
-#define lMotorFollowerID 13
-#define rMotorLeaderID 15
-#define rMotorFollowerID 14
-
 // Values that are assigned on init 
 #define PIDProportional 1
 #define PIDIntegral 0
@@ -38,7 +33,7 @@
 #define xDeadband 0.08
 #define yDeadband 0.08
 
-#define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel
+#define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
 #define PI 3.141592654
 
 class DriveBaseModule : public ModuleBase {

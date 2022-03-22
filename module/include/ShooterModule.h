@@ -64,13 +64,13 @@ private:
   float minShooterOutput = -0.1;
 
   bool pressed = false;
-  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushless);
   rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
   rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
 
 
-  rev::CANSparkMax * shoot1 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
-  rev::CANSparkMax * shoot2 = new rev::CANSparkMax(8, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shoot1 = new rev::CANSparkMax(Shooter1, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shoot2 = new rev::CANSparkMax(Shooter2, rev::CANSparkMax::MotorType::kBrushless);
 
   // rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
   // rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
@@ -86,7 +86,7 @@ private:
   frc::Joystick* driverStick =  new frc::Joystick(0);
 
   // Change this to match the name of your camera
-  photonlib::PhotonCamera camera{"photonvision"};
+  //photonlib::PhotonCamera camera{"photonvision"};
   photonlib::PhotonPipelineResult prevVisionResult;
   
   bool track = true;

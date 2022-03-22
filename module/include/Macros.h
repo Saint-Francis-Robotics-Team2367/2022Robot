@@ -20,3 +20,17 @@
 #define AutonomousModuleRunInterval 30
 #define IntakeModuleRunInterval 30
 #define ShooterModuleRunInterval 25
+
+//motorIDs
+#define Shooter1 1
+#define Shooter2 3
+#define shooterIndexer 2
+#define intakeActionID 8
+#define intakeRollerID 14
+#define indexID0 12
+#define indexID1 16
+#define indexID2 10
+#define lMotorLeaderID 15
+#define lMotorFollowerID 11
+#define rMotorLeaderID 9
+#define rMotorFollowerID 13
