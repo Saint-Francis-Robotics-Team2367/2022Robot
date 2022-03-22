@@ -52,7 +52,7 @@ private:
 
   double max_turns_neo550 = 132.0 + (2/9);
 
-  const int shooterMotorID = 3;
+  const int shooterMotorID = 22;
   const int hoodMotorID = 4;
   const int turretMotorID = 5;
 
@@ -64,18 +64,21 @@ private:
   float minShooterOutput = -0.1;
 
   bool pressed = false;
-  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
   rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
   rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
-  
 
-  rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
-  rev::SparkMaxRelativeEncoder hoodMotorEncoder = hoodMotor->GetEncoder();
 
-  rev::CANSparkMax * turretMotor = new rev::CANSparkMax(turretMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  rev::SparkMaxPIDController turretMotorPID = turretMotor->GetPIDController();
-  rev::SparkMaxRelativeEncoder turretMotorEncoder = turretMotor->GetEncoder();
+  rev::CANSparkMax * shoot1 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shoot2 = new rev::CANSparkMax(8, rev::CANSparkMax::MotorType::kBrushless);
+
+  // rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
+  // rev::SparkMaxRelativeEncoder hoodMotorEncoder = hoodMotor->GetEncoder();
+
+  // rev::CANSparkMax * turretMotor = new rev::CANSparkMax(turretMotorID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::SparkMaxPIDController turretMotorPID = turretMotor->GetPIDController();
+  // rev::SparkMaxRelativeEncoder turretMotorEncoder = turretMotor->GetEncoder();
 
 
 

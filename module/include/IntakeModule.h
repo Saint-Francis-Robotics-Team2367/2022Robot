@@ -8,11 +8,11 @@
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
-#define intakeActionID 16
-#define intakeRollerID 17
+#define intakeActionID 11
+#define intakeRollerID 10
 #define indexID0 1
 #define indexID1 2
-#define indexID2 3
+#define indexID2 69
 
 class IntakeModule : public ModuleBase {
 private:

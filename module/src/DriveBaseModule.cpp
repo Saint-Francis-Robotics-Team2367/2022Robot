@@ -321,6 +321,12 @@ void DriveBaseModule::periodicRoutine() {
         intakeOn = false;
       }
     }
+    if(driverStick->GetRawButtonPressed(1)) {
+      pipes[3]->pushQueue(new Message("test", 1));
+    }
+    else {
+      pipes[3]->pushQueue(new Message("test", 0));
+    }
   }
 
 	// Add rest of manipulator code...
@@ -398,4 +404,4 @@ void DriveBaseModule::GyroTurn(float theta) {
   arcadeDrive(0, 0); //need this to end motors
   return;
 }
-std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, IntakeModuleID}; }
+std::vector<uint8_t> DriveBaseModule::getConstructorArgs() { return std::vector<uint8_t> {ErrorModuleID,  AutonomousModuleID, IntakeModuleID, ShooterModuleID}; }
