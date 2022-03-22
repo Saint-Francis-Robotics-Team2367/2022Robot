@@ -127,8 +127,8 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity) {
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
-  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.168); 
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
 
   if (angle < 0) {
     maxAcc *= -1;
@@ -172,7 +172,7 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
     }
     //same as other
    
-    double outerSetpoint = (currentPosition * 12) / (PI * 6); // for now this is ticks (maybe rotations / gearRatio if not then)
+    double outerSetpoint = (currentPosition * 12) / (PI * 4); // for now this is ticks (maybe rotations / gearRatio if not then)
     double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
     
     frc::SmartDashboard::PutNumber("outerSet", outerSetpoint);
@@ -207,8 +207,8 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
 
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
-  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.168); 
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
 frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   while(fabs(currentPosition) < fabs(totalFeet)){
     if(stateRef->IsDisabled()) {
@@ -235,7 +235,7 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
       currentPosition = totalFeet;
     }
 
-    setpoint = (currentPosition * 12) / (PI * 6); 
+    setpoint = (currentPosition * 12) / (PI * 4); 
     lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     prevTime = frc::Timer::GetFPGATimestamp().value();
