@@ -280,7 +280,7 @@ void DriveBaseModule::periodicRoutine()
 
   sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
 
-  arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+  arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
 
   frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
 /*
