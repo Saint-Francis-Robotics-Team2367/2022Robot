@@ -309,25 +309,37 @@ void DriveBaseModule::periodicRoutine() {
    
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
 
-    if(driverStick->GetRawButtonPressed(5)) {
-      // std::vector<float> v;
-      // if(!intakeOn) {
-      //   pipes[2]->pushQueue(new Message("activate", v));
-      //   pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
-      //   intakeOn = true;
-      // } else {
-      //   pipes[2]->pushQueue(new Message("disable", v));
-      //   pipes[2]->pushQueue(new Message("index", 0));a
-      //   intakeOn = false;
-      // }
+    if(driverStick->GetRawButton(5)) {
+      std::vector<float> v;
+      if(!intakeOn) {
+        pipes[2]->pushQueue(new Message("activate", v));
+        intakeOn = true;
+      } else {
+        pipes[2]->pushQueue(new Message("disable", v));
+        intakeOn = false;
+      }
     }
-  //   if(driverStick->GetRawButtonPressed(1)) {
-  //     pipes[3]->pushQueue(new Message("test", 1));
-  //   }
-  //   else {
-  //     pipes[3]->pushQueue(new Message("test", 0));
-  //   }
-  // }
+    if(driverStick->GetRawButton(6)) {
+      std::vector<float> v;
+      if(!intakeOn) {
+        pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
+        index = true;
+      } else {
+        pipes[2]->pushQueue(new Message("index", 0));
+        index = false;
+      }
+    }
+    if(driverStick->GetRawButton(1)) {
+      if (!tested) {
+        pipes[3]->pushQueue(new Message("test", 1));
+        tested = true;
+      }
+    }
+    else {
+      pipes[3]->pushQueue(new Message("test", 0));
+      tested = false;
+    }
+ }  
 
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
@@ -359,7 +371,7 @@ void DriveBaseModule::periodicRoutine() {
 
   }
   
-}
+
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
     double k = 5; //1/k = rate to speed up [so 0.2 seconds]

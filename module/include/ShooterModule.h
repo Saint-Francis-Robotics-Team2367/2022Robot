@@ -52,9 +52,9 @@ private:
 
   double max_turns_neo550 = 132.0 + (2/9);
 
-  const int shooterMotorID = 22;
-  const int hoodMotorID = 4;
-  const int turretMotorID = 5;
+  // const int shooterMotorID = 22;
+  // const int hoodMotorID = 4;
+  // const int turretMotorID = 5;
 
   const float shooterkP = 0.000090892;
   const float shooterkI = 0.0; 
@@ -65,7 +65,7 @@ private:
 
   bool pressed = false;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);
-  rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
+  //rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
   //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder(rev::CANEncoder::EncoderType::kNoSensor, 4000);
   //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
 

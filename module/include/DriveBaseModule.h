@@ -95,6 +95,9 @@ class DriveBaseModule : public ModuleBase {
   void GyroTurn(float theta);
   float TurningSensitivity(float rightStick, float leftStick);
   float sliderValue = 0.43;
+
+  bool tested = false;
+  bool index = false;
 };
 
 #endif

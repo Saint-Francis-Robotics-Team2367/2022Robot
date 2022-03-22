@@ -20,6 +20,8 @@ private:
   //rev::CANSparkMax* intakeAction;
 
   rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
+  rev::SparkMaxPIDController iActPIDController = intakeAction->GetPIDController();
+  
   double basePos = 0.0;
   double outPos = 2.5;
 
