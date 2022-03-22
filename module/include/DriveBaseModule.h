@@ -5,8 +5,6 @@
 #include <math.h> 
 
 #include "Macros.h"
-#include "ModuleBase.h"
-#include "GenericPipe.h"
 
 #include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
@@ -36,7 +34,7 @@
 #define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
 #define PI 3.141592654
 
-class DriveBaseModule : public ModuleBase {
+class DriveBaseModule{
   float rMotorSetpoint; // Current Motor Setpoints
   float lMotorSetpoint;
 
@@ -52,10 +50,6 @@ class DriveBaseModule : public ModuleBase {
   float prevTime;
   float prev_value_speed;
   float prev_value_turn;
-
-  GenericPipe* ErrorModulePipe;
-  GenericPipe* BrownoutModulePipe;
-  GenericPipe* AutonomousModulePipe;
 
   frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);

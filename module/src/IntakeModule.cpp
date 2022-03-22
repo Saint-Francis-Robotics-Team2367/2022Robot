@@ -2,7 +2,6 @@
 
 
 void IntakeModule::periodicInit() {
-  this->msInterval = IntakeModuleRunInterval;
   indexMotors[0] = new rev::CANSparkMax(indexID0, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[1] = new rev::CANSparkMax(indexID1, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[2] = new rev::CANSparkMax(indexID2, rev::CANSparkMax::MotorType::kBrushed);
@@ -14,17 +13,7 @@ void IntakeModule::periodicInit() {
 
 void IntakeModule::periodicRoutine() {
   // Use mode of robo
-  if (stateRef->IsDisabled()) return;
-
-  Message* m = nullptr;
-  if (stateRef->IsAutonomousEnabled())
-    m = pipes[1]->popQueue();
-  else if (stateRef->IsTeleopEnabled()) 
-    m = pipes[0]->popQueue();
-
-  while (m) {
-    Message* sm = pipes[2]->popQueue();
-
+/*
     if (m) {
       if (m->str == "disable")
       {
@@ -74,7 +63,5 @@ void IntakeModule::periodicRoutine() {
     else if (stateRef->IsTeleopEnabled()) 
       m = pipes[0]->popQueue();
   }
-    
+*/    
 }
-
-std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID, ShooterModuleID}; }

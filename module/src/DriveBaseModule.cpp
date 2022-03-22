@@ -81,9 +81,6 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
 
 
   while(fabs(currentPosition) < fabs(endpoint)){
-     if(stateRef->IsDisabled()) {
-      break;
-    }
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -146,9 +143,6 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
 
 
   while(fabs(currentPosition) < fabs(endpoint)){
-     if(stateRef->IsDisabled()) {
-      break;
-    }
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -211,9 +205,6 @@ bool DriveBaseModule::PIDDrive(float totalFeet, float maxAcc, float maxVelocity)
   lEncoder.SetPositionConversionFactor(0.64); 
 frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   while(fabs(currentPosition) < fabs(totalFeet)){
-    if(stateRef->IsDisabled()) {
-      break;
-    }
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("rEncoder", rEncoder.GetPosition());
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - prevTime;
@@ -247,14 +238,7 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
 
 void DriveBaseModule::periodicInit() {
   frc::SmartDashboard::PutNumber("Sensitivity", 1);
-  this->msInterval = DriveBaseModuleRunInterval;
   
-  this->ErrorModulePipe = pipes[0];
-
-  // this->BrownoutModulePipe = pipes[1];
-  // this->AutonomousModulePipe = pipes[2];
-  
-
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
     //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
     return;
@@ -287,7 +271,8 @@ void DriveBaseModule::periodicInit() {
   lEncoder.SetPositionConversionFactor(0.168); 
 }
 
-void DriveBaseModule::periodicRoutine() {
+void DriveBaseModule::periodicRoutine()
+{
   // Use mode of robot to determine control source
   // Autonomous -> AutonomousPipe
   // Monitor input from BrownoutPipe
@@ -295,83 +280,90 @@ void DriveBaseModule::periodicRoutine() {
 
   sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
 
-  if (stateRef->IsDisabled()) {
-    return;
+  arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
+
+  frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+/*
+  if (driverStick->GetRawButton(5))
+  {
+    std::vector<float> v;
+    if (!intakeOn)
+    {
+      pipes[2]->pushQueue(new Message("activate", v));
+      intakeOn = true;
+    }
+    else
+    {
+      pipes[2]->pushQueue(new Message("disable", v));
+      intakeOn = false;
+    }
   }
-  if (!errors.empty()) { // Handle internal ModuleBase Errors
-    ErrorModulePipe->pushQueue(errors.front());
-    errors.pop();
+  if (driverStick->GetRawButton(6))
+  {
+    std::vector<float> v;
+    if (!intakeOn)
+    {
+      pipes[2]->pushQueue(new Message("index", 1)); // put 0 and 1 for temp right now
+      index = true;
+    }
+    else
+    {
+      pipes[2]->pushQueue(new Message("index", 0));
+      index = false;
+    }
   }
+  if (driverStick->GetRawButton(1))
+  {
+    if (!tested)
+    {
+      pipes[3]->pushQueue(new Message("test", 1));
+      tested = true;
+    }
+  }
+  else
+  {
+    pipes[3]->pushQueue(new Message("test", 0));
+    tested = false;
+  }
+*/
+  // Add rest of manipulator code...
 
-  if (stateRef->IsTeleopEnabled()) {
-    arcadeDrive(driverStick->GetRawAxis(1), driverStick->GetRawAxis(4));
-    
-   
-    frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+/*
+  if (stateRef->IsAutonomousEnabled())
+  {
+    GenericPipe *p = pipes[1];
 
-    if(driverStick->GetRawButton(5)) {
-      std::vector<float> v;
-      if(!intakeOn) {
-        pipes[2]->pushQueue(new Message("activate", v));
-        intakeOn = true;
-      } else {
-        pipes[2]->pushQueue(new Message("disable", v));
-        intakeOn = false;
-      }
-    }
-    if(driverStick->GetRawButton(6)) {
-      std::vector<float> v;
-      if(!intakeOn) {
-        pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
-        index = true;
-      } else {
-        pipes[2]->pushQueue(new Message("index", 0));
-        index = false;
-      }
-    }
-    if(driverStick->GetRawButton(1)) {
-      if (!tested) {
-        pipes[3]->pushQueue(new Message("test", 1));
-        tested = true;
-      }
-    }
-    else {
-      pipes[3]->pushQueue(new Message("test", 0));
-      tested = false;
-    }
- }  
-
-	// Add rest of manipulator code...
-  if(stateRef->IsAutonomousEnabled()) {
-    GenericPipe* p = pipes[1];
-    
-    Message* m = p->popQueue();
-    if (m) {
-      if (m->str == "PD") {
+    Message *m = p->popQueue();
+    if (m)
+    {
+      if (m->str == "PD")
+      {
         frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
-        if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
+        if (PIDDrive(m->vals[0], m->vals[1], m->vals[2]))
+        {
           frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
         }
       }
 
-      if (m->str == "PT") {
+      if (m->str == "PT")
+      {
         frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
         frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
-          if(PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3])) {
-            //if no here, it does this and tries to do smtng else
+        if (PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3]))
+        {
+          // if no here, it does this and tries to do smtng else
           frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
         }
       }
-      if (m->str == "Arcade") {
+      if (m->str == "Arcade")
+      {
         arcadeDrive(m->vals[0], m->vals[1]);
       }
       pipes[1]->pushQueue(new Message("done", 0));
     }
-   }
-
   }
-  
-
+*/
+}
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
     double k = 5; //1/k = rate to speed up [so 0.2 seconds]
@@ -402,7 +394,6 @@ void DriveBaseModule::InitGyro() {
 void DriveBaseModule::GyroTurn(float theta) {
   //add PID
   while (fabs(getGyroAngle() - theta) > 1) {
-    if (stateRef->IsDisabled()) break;  
     frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
     if (getGyroAngle() < theta) {
       arcadeDrive(0, 0.2);

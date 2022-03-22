@@ -5,24 +5,25 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include "Constructor.h"
-#include "ModuleBase.h"
-
 // // All Module Includes
 #include "DriveBaseModule.h"
 #include "IntakeModule.h"
-#include "ErrorModule.h"
-#include "AutonomousModule.h"
-#include "ShooterModule.h"
+
+DriveBaseModule compRobotDrive;
+IntakeModule compIntake;
+
 void Robot::RobotInit() {
-    if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule, new ShooterModule}, this)) { // Pass a reference of this object to all modules
+    /*if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule, new ShooterModule}, this)) { // Pass a reference of this object to all modules
      std::cout << "poopoo" << std::endl;
      return;
-  }
+  }*/
+  compRobotDrive.periodicInit();
+  compIntake.periodicInit();
 }
 
 void Robot::RobotPeriodic() {
-  
+  compRobotDrive.periodicRoutine();
+  compIntake.periodicRoutine();
 }
  
 void Robot::AutonomousInit() {}

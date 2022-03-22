@@ -2,14 +2,12 @@
 #define INTAKEMODULE_H
 
 #include "Macros.h"
-#include "ModuleBase.h"
-#include "GenericPipe.h"
 
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
 
-class IntakeModule : public ModuleBase {
+class IntakeModule{
 private:
   bool intakeActive = false;
 
@@ -21,7 +19,8 @@ private:
 
   rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
   rev::SparkMaxPIDController iActPIDController = intakeAction->GetPIDController();
-  
+  frc::Joystick* driverStick = new frc::Joystick(0);
+  frc::Joystick* operatorStick = new frc::Joystick(1);
   double basePos = 0.0;
   double outPos = 2.5;
 
@@ -31,7 +30,6 @@ private:
 
 
 public:
-  std::vector<uint8_t> getConstructorArgs();
   void periodicInit();
   void periodicRoutine();
 };
