@@ -24,6 +24,7 @@ void AutonomousModule::initializePaths() {
                 
                 path.push_back(shootingp);
                 shootingPoints[path.size() - 1] = true;
+                sindex += 2
             }
             else if (pathi == currpath) {
                 pathPoint p;
