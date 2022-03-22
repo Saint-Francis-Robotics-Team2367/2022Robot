@@ -1,5 +1,6 @@
 #include "Macros.h"
 #include <rev/CANSparkMax.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Joystick.h>
 #include <vector>
 #include <math.h>
@@ -53,13 +54,17 @@ private:
   // const int shooterMotorID = 22;
   // const int hoodMotorID = 4;
   // const int turretMotorID = 5;
-
-  const float shooterkP = 0.000090892;
-  const float shooterkI = 0.0; 
-  const float shooterkD = 0.162;
-  const float shooterkFF = 0.000194;
-  float maxShooterOutput = 1;
-  float minShooterOutput = -0.1;
+  // motor max RPM
+  const double MaxRPM = 5700;
+  
+  double kP = 0.00008;
+  double kI = 0.0; 
+  double Iz = 0.0;
+  double kD = 0.0;
+  double FF = 0.00017;
+  double maxShooterOutput = 0.1;
+  double minShooterOutput = -1.0;
+  double shootSpeedSetPoint = -4000;
 
   bool pressed = false;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);

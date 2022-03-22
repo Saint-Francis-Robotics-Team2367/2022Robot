@@ -17,18 +17,35 @@ void ShooterModule::periodicInit() {
     // turretMotorPID.SetP(0.2);
     // turretMotorPID.SetI(0);
     // turretMotorPID.SetD(0.7);
+
+
     shoot2->Follow(*shoot1, true);
+    shoot2->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    shoot1->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
+    // if PID coefficients on SmartDashboard have changed, write new values to controller
+    shootPid.SetP(kP);
+    shootPid.SetI(kI);
+    shootPid.SetD(kD);
+    shootPid.SetIZone(Iz);
+    shootPid.SetFF(FF);
+    shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
+    frc::SmartDashboard::PutNumber("shootSpeedSetPoint", shootSpeedSetPoint); 
 }
 
 void ShooterModule::periodicRoutine() {
+
+
     frc::SmartDashboard::PutNumber("shooterSpeed", shootEncoder.GetVelocity());
     if(driverStick->GetRawButton(2))
     {
-        shoot1->Set(-1.0);
-        if(shootEncoder.GetVelocity() < -4900)
+        shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
+        shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
+    
+        shootPid.SetReference(shootSpeedSetPoint , rev::CANSparkMax::ControlType::kVelocity, 0);
+        if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
         {
             shooterMotor->Set(-1.0);
-            
         }
         else    
         {
@@ -37,7 +54,11 @@ void ShooterModule::periodicRoutine() {
             
     }
     else
+    {
         shoot1->StopMotor();
+        //shootPid.SetReference(0.0, rev::CANSparkMax::ControlType::kVelocity);
+    }
+
     if (driverStick->GetRawButton(4))
         shooterMotor->Set(-1.0);
     else
