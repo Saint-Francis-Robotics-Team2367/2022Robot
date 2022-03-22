@@ -13,8 +13,8 @@
         "tiles": {
           "2,0": {
             "size": [
-              4,
-              3
+              7,
+              4
             ],
             "content": {
               "_type": "Graph",
@@ -25,7 +25,8 @@
               "Y-axis/Automatic bounds": false,
               "Y-axis/Upper bound": 13.5,
               "Y-axis/Lower bound": 7.0,
-              "Y-axis/Unit": "V"
+              "Y-axis/Unit": "V",
+              "Visible data/Shuffleboard/Drive Train/Battery Level": true
             }
           },
           "0,0": {
@@ -39,31 +40,6 @@
               "_title": "Shooter UTS",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "5,3": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive Train/Distance to Goal",
-              "_title": "Distance to Goal"
-            }
-          },
-          "6,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///Shuffleboard/Drive Train/Angle to Goal",
-              "_title": "Angle to Goal",
-              "Range/Min": -180.0,
-              "Range/Max": 180.0,
-              "Visuals/Show value": true
             }
           },
           "9,0": {
@@ -103,6 +79,78 @@
               "_title": "Intake Extended",
               "Colors/Color when true": "#B399FFFF",
               "Colors/Color when false": "#E64D4DFF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "PIDs",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/PIDs/P Value",
+              "_title": "P Value"
+            }
+          },
+          "1,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/PIDs/I Value",
+              "_title": "I Value"
+            }
+          },
+          "2,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/PIDs/D Value",
+              "_title": "D Value"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Match Data",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Match Data/Field 1",
+              "_title": "Field 1"
             }
           }
         }
