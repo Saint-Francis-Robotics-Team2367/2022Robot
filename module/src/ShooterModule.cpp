@@ -1,5 +1,5 @@
 #include "ShooterModule.h"
-#include <frc/SmartDashboard/SmartDashboard.h>
+#include "frc/smartdashboard/SmartDashboard.h"
 
 void ShooterModule::periodicInit() {
     //Shooter Motor inits
@@ -17,10 +17,37 @@ void ShooterModule::periodicInit() {
     // turretMotorPID.SetP(0.2);
     // turretMotorPID.SetI(0);
     // turretMotorPID.SetD(0.7);
+    shoot2->Follow(*shoot1, true);
 }
 
 void ShooterModule::periodicRoutine() {
-    if (stateRef->IsDisabled()) return;
+    frc::SmartDashboard::PutNumber("shooterSpeed", shootEncoder.GetVelocity());
+    if(driverStick->GetRawButton(2))
+    {
+        shoot1->Set(-1.0);
+        if(shootEncoder.GetVelocity() < -4900)
+        {
+            shooterMotor->Set(-1.0);
+            
+        }
+        else    
+        {
+            shooterMotor->StopMotor();
+        }
+            
+    }
+    else
+        shoot1->StopMotor();
+    if (driverStick->GetRawButton(4))
+        shooterMotor->Set(-1.0);
+    else
+    {
+      if(!driverStick->GetRawButton(2))
+        shooterMotor->StopMotor();
+    }
+         
+    
+    /*
     Message* m = nullptr;
     if (stateRef->IsAutonomousEnabled()) {
         m = pipes[1]->popQueue();
@@ -60,7 +87,5 @@ void ShooterModule::periodicRoutine() {
         }
     }
 
-
+*/
 }
-
-std::vector<uint8_t> ShooterModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID, IntakeModuleID}; }

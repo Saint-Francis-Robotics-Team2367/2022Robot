@@ -1,20 +1,18 @@
-
-
 #include "Macros.h"
-#include "ModuleBase.h"
-#include "GenericPipe.h"
+#include <rev/CANSparkMax.h>
+#include <frc/Joystick.h>
 #include <vector>
 #include <math.h>
-
-
-class ShooterModule : public ModuleBase
+class ShooterModule
 {
 public:
-    std::vector<uint8_t> getConstructorArgs();
     void periodicInit();
     void periodicRoutine();
     void align_shooter();
 private:
+
+  frc::Joystick* driverStick = new frc::Joystick(0);
+  frc::Joystick* operatorStick = new frc::Joystick(1);
     void initializePaths();
 
     bool setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, double F);
@@ -71,8 +69,11 @@ private:
 
 
   rev::CANSparkMax * shoot1 = new rev::CANSparkMax(Shooter1, rev::CANSparkMax::MotorType::kBrushless);
-  rev::CANSparkMax * shoot2 = new rev::CANSparkMax(Shooter2, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shoot2 = new rev::CANSparkMax(Shooter2, rev::CANSparkMax::MotorType::kBrushless); 
 
+  rev::SparkMaxRelativeEncoder shootEncoder = shoot1->GetEncoder();
+  rev::SparkMaxPIDController shootPid =       shoot1->GetPIDController();
+  
   // rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
   // rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
   // rev::SparkMaxRelativeEncoder hoodMotorEncoder = hoodMotor->GetEncoder();
@@ -84,11 +85,10 @@ private:
 
 
   double setpoint = 0;
-  frc::Joystick* driverStick =  new frc::Joystick(0);
 
   // Change this to match the name of your camera
   //photonlib::PhotonCamera camera{"photonvision"};
-  photonlib::PhotonPipelineResult prevVisionResult;
+  //photonlib::PhotonPipelineResult prevVisionResult;
   
   bool track = true;
   float turretTheta = 90;

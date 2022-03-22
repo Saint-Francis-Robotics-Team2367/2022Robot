@@ -8,22 +8,22 @@
 // // All Module Includes
 #include "DriveBaseModule.h"
 #include "IntakeModule.h"
+#include "ShooterModule.h"
 
 DriveBaseModule compRobotDrive;
 IntakeModule compIntake;
+ShooterModule compShooter;
 
 void Robot::RobotInit() {
-    /*if (!Constructor::constructThreadedRobot(std::vector<ModuleBase*> {new ErrorModule, new DriveBaseModule, new AutonomousModule, new IntakeModule, new ShooterModule}, this)) { // Pass a reference of this object to all modules
-     std::cout << "poopoo" << std::endl;
-     return;
-  }*/
   compRobotDrive.periodicInit();
   compIntake.periodicInit();
+  compShooter.periodicInit();
 }
 
 void Robot::RobotPeriodic() {
   compRobotDrive.periodicRoutine();
   compIntake.periodicRoutine();
+  compShooter.periodicRoutine();
 }
  
 void Robot::AutonomousInit() {}

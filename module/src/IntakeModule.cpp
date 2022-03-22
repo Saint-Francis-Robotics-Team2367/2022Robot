@@ -1,17 +1,74 @@
 #include "IntakeModule.h"
-
+#include "frc/SmartDashboard/SmartDashboard.h"
 
 void IntakeModule::periodicInit() {
   indexMotors[0] = new rev::CANSparkMax(indexID0, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[1] = new rev::CANSparkMax(indexID1, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[2] = new rev::CANSparkMax(indexID2, rev::CANSparkMax::MotorType::kBrushed);
-  iActEncoder.SetPosition(0);
-  iActPIDController.SetP(0.2);
-  intakeAction->SetSmartCurrentLimit(5);
+  intakeAction->SetSmartCurrentLimit(4);
+  frc::SmartDashboard::PutNumber("intakeSpeed", -0.5);
+  frc::SmartDashboard::PutNumber("armCurrent", 4);
+  frc::SmartDashboard::PutNumber("armSpeedUp", .5);
+  frc::SmartDashboard::PutNumber("armSpeedDown", .5);
+  intakeAction->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   //iActEncoder.SetPositionConversionFactor(0.04);
 }
 
 void IntakeModule::periodicRoutine() {
+
+  if(driverStick->GetRawAxis(2) > 0.05)
+  {
+    intakeAction->SetSmartCurrentLimit(frc::SmartDashboard::GetNumber("armCurrent", 4));
+    intakeAction->Set( driverStick->GetRawAxis(2) * frc::SmartDashboard::GetNumber("armSpeedUp", .5) );
+  }
+  else if (driverStick->GetRawAxis(3) > 0.05)
+  {
+    intakeAction->SetSmartCurrentLimit(frc::SmartDashboard::GetNumber("armCurrent", 4));
+    intakeAction->Set( -1.0 * frc::SmartDashboard::GetNumber("armSpeedDown", .5) * driverStick->GetRawAxis(3) );
+  }
+  else
+  {
+    intakeAction->StopMotor();
+  }
+
+  if(driverStick->GetRawButton(1))
+  {
+    indexMotors[0]->Set(-1.0);
+    indexMotors[1]->Set(-1.0);
+    indexMotors[2]->Set(-1.0);
+  }
+  else if(! (driverStick->GetRawButton(5) | driverStick->GetRawButton(6)))
+  {
+    indexMotors[0]->StopMotor();
+    indexMotors[1]->StopMotor();
+    indexMotors[2]->StopMotor();
+  }
+  if(driverStick->GetRawButton(5))
+  {
+    indexMotors[0]->Set(-1.0);
+    intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));
+  }
+  else
+  {
+    if(!driverStick->GetRawButton(1))
+      indexMotors[0]->StopMotor();
+    intakeRoller->StopMotor();
+  }
+
+  if(driverStick->GetRawButton(6))
+  {
+    indexMotors[1]->Set(-1.0);
+    indexMotors[2]->Set(-1.0);
+  }
+  else
+  {
+    if(! driverStick->GetRawButton(1))
+    {
+    indexMotors[1]->StopMotor();
+    indexMotors[2]->StopMotor();
+    }
+  }
+
   // Use mode of robo
 /*
     if (m) {

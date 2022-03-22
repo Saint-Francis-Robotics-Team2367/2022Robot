@@ -6,7 +6,6 @@
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
-
 class IntakeModule{
 private:
   bool intakeActive = false;
@@ -14,11 +13,6 @@ private:
   rev::CANSparkMax* intakeAction = new rev::CANSparkMax(intakeActionID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* intakeRoller = new rev::CANSparkMax(intakeRollerID, rev::CANSparkMax::MotorType::kBrushless);
 
-  //rev::CANSparkMax* intakeRoller;
-  //rev::CANSparkMax* intakeAction;
-
-  rev::SparkMaxRelativeEncoder iActEncoder = intakeAction->GetEncoder();
-  rev::SparkMaxPIDController iActPIDController = intakeAction->GetPIDController();
   frc::Joystick* driverStick = new frc::Joystick(0);
   frc::Joystick* operatorStick = new frc::Joystick(1);
   double basePos = 0.0;
