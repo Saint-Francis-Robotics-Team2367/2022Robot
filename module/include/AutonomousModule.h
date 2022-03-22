@@ -7,6 +7,10 @@
 #include <vector>
 #include <math.h>
 
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #define PATHS_FILE "paths.txt"
 
 struct pathPoint {
@@ -26,6 +30,7 @@ public:
     void periodicInit();
     void periodicRoutine();
     std::vector<pathPoint> path;
+    bool shootingPoints[7] = {0};
 private:
     void initializePaths();
     stage autostage = ballcollection;
@@ -37,6 +42,8 @@ private:
     bool resetPath = false;
 
     float coordOffset = 0; // how much the robot should go past the path point to pick up the ball
+
+    float shootingDistance = 4;
 };
 
 #endif

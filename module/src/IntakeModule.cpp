@@ -15,6 +15,7 @@ void IntakeModule::periodicRoutine() {
     m = pipes[1]->popQueue();
   else if (stateRef->IsTeleopEnabled()) 
     m = pipes[0]->popQueue();
+  Message* sm = pipes[2]->popQueue();
 
   if (!m) {
     if (m->str == "disable")
@@ -38,8 +39,8 @@ void IntakeModule::periodicRoutine() {
       }
     }
 
-    if (m->str == "shooting") {
-      if (m->vals[0])
+    if (sm->str == "shooting") {
+      if (sm->vals[0])
         for (int i = 0;i < 3; i++) {
           indexMotors[i]->Set(1.0);
         }
@@ -66,4 +67,4 @@ void IntakeModule::periodicRoutine() {
     
 }
 
-std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID}; }
+std::vector<uint8_t> IntakeModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID, ShooterModuleID}; }

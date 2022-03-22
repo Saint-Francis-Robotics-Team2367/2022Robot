@@ -325,14 +325,10 @@ void DriveBaseModule::periodicRoutine() {
 
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
-    frc::SmartDashboard::PutBoolean("InAutoEnabled1", true);
-  // for (int i = 0; i < pipes.size(); i++) {
-    frc::SmartDashboard::PutBoolean("In Loop", true);
     GenericPipe* p = pipes[1];
     
     Message* m = p->popQueue();
     if (m) {
-      frc::SmartDashboard::PutBoolean("Message", true);
       if (m->str == "PD") {
         frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
         if(PIDDrive(m->vals[0], m->vals[1], m->vals[2])) {
@@ -351,6 +347,7 @@ void DriveBaseModule::periodicRoutine() {
       if (m->str == "Arcade") {
         arcadeDrive(m->vals[0], m->vals[1]);
       }
+      pipes[1]->pushQueue(new Message("done", 0));
     }
   // }
 

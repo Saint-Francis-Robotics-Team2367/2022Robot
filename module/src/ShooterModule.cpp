@@ -65,6 +65,8 @@ void ShooterModule::periodicRoutine() {
             }
             pipes[2]->pushQueue(new Message("shooting", 0));
             shooterMotorPID.SetReference(0, rev::CANSparkMax::ControlType::kVelocity);
+
+            pipes[1]->pushQueue(new Message("done", 0));
         }
         if (m->str == "track") {
             if (m->vals[0]) {
@@ -96,4 +98,4 @@ void ShooterModule::periodicRoutine() {
 
 }
 
-std::vector<uint8_t> ShooterModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID}; }
+std::vector<uint8_t> ShooterModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, AutonomousModuleID, IntakeModuleID}; }

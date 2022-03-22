@@ -1,46 +1,67 @@
 #include "AutonomousModule.h"
 #include <frc/SmartDashboard/SmartDashboard.h>
-
+#include "paths.h"
 void AutonomousModule::periodicInit() {
-    robPos.x = 0;
-    robPos.y = 0;
-    pathPoint p;
-    p.x = 3;
-    p.y = 3;
-    pathPoint p1;
-    p1.x = -3;
-    p1.y = 3;
-
-    pathPoint p2;
-    p2.x = 0;
-    p2.y = 0;
-    path.push_back(p);
-    path.push_back(p1);
-    path.push_back(p2);
+    initializePaths();
     this->msInterval = AutonomousModuleRunInterval;
+}
+
+void AutonomousModule::initializePaths() {
+        int pathi = 0;
+        int sindex = 0;
+
+        while(sindex < paths.length()){ 
+            if (paths[sindex] == '*') {
+                pathi++;
+            }
+            else if ((pathi == currpath) && (paths[sindex] == 's')) {
+                pathPoint finalp = path[path.size() - 1];
+                float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
+                
+                pathPoint shootingp;
+                shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
+                shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
+                
+                path.push_back(shootingp);
+                shootingPoints[path.size() - 1] = true;
+            }
+            else if (pathi == currpath) {
+                pathPoint p;
+                p.x = atof(paths.substr(sindex, 6).c_str());
+                p.y = atof(paths.substr(sindex + 7, 6).c_str());
+                path.push_back(p);
+                sindex += 14;
+            }
+        }
+        pathi = 1;
+        robPos = path[0];
 }
 
 void AutonomousModule::periodicRoutine() {
     if (stateRef->IsDisabled()) {
-        frc::SmartDashboard::PutBoolean("IN auto module", false); 
         if (!resetPath) {
-        frc::SmartDashboard::PutBoolean("reset path", false);
-            Message* m = pipes[0]->popQueue(); //this is nothing...?
+            Message* m = pipes[0]->popQueue();
             while (m) {
                 m = pipes[0]->popQueue();
             }
-            pathi = 0;
-            robPos.x = 0;
-            robPos.y = 0;
+            pathi = 1;
+            robPos = path[0];
             robTheta = 0;
             resetPath = true;
-            frc::SmartDashboard::PutBoolean("reset path", resetPath);
         }
         return;
     }
  
     if ((stateRef->IsAutonomousEnabled()) && (pathi < path.size())) {
         resetPath = false;
+        Message* m = pipes[0]->popQueue();
+        if ((!m) && (pathi > 0)) return;
+
+        if (shootingPoints[pathi - 1]) {
+            pipes[2]->pushQueue(new Message("shoot", 0));
+
+            while (!pipes[2]->popQueue()) {continue;}
+        }
 
         pathPoint delta;
         delta.x = (path[pathi].x - robPos.x);
@@ -72,7 +93,8 @@ void AutonomousModule::periodicRoutine() {
         robPos.y += delta.y;
 
         pathi++;
-        
+
     }
+        
 }  
-std::vector<uint8_t> AutonomousModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, IntakeModuleID}; }
+std::vector<uint8_t> AutonomousModule::getConstructorArgs() { return std::vector<uint8_t> {DriveBaseModuleID, IntakeModuleID, ShooterModuleID}; }
