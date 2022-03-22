@@ -310,24 +310,24 @@ void DriveBaseModule::periodicRoutine() {
     frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
 
     if(driverStick->GetRawButtonPressed(5)) {
-      std::vector<float> v;
-      if(!intakeOn) {
-        pipes[2]->pushQueue(new Message("activate", v));
-        pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
-        intakeOn = true;
-      } else {
-        pipes[2]->pushQueue(new Message("disable", v));
-        pipes[2]->pushQueue(new Message("index", 0));
-        intakeOn = false;
-      }
+      // std::vector<float> v;
+      // if(!intakeOn) {
+      //   pipes[2]->pushQueue(new Message("activate", v));
+      //   pipes[2]->pushQueue(new Message("index", 1)); //put 0 and 1 for temp right now
+      //   intakeOn = true;
+      // } else {
+      //   pipes[2]->pushQueue(new Message("disable", v));
+      //   pipes[2]->pushQueue(new Message("index", 0));a
+      //   intakeOn = false;
+      // }
     }
-    if(driverStick->GetRawButtonPressed(1)) {
-      pipes[3]->pushQueue(new Message("test", 1));
-    }
-    else {
-      pipes[3]->pushQueue(new Message("test", 0));
-    }
-  }
+  //   if(driverStick->GetRawButtonPressed(1)) {
+  //     pipes[3]->pushQueue(new Message("test", 1));
+  //   }
+  //   else {
+  //     pipes[3]->pushQueue(new Message("test", 0));
+  //   }
+  // }
 
 	// Add rest of manipulator code...
   if(stateRef->IsAutonomousEnabled()) {
@@ -355,7 +355,7 @@ void DriveBaseModule::periodicRoutine() {
       }
       pipes[1]->pushQueue(new Message("done", 0));
     }
-  // }
+   }
 
   }
   

@@ -64,9 +64,10 @@ private:
   float minShooterOutput = -0.1;
 
   bool pressed = false;
-  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);
   rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
-  rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
+  //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder(rev::CANEncoder::EncoderType::kNoSensor, 4000);
+  //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
 
 
   rev::CANSparkMax * shoot1 = new rev::CANSparkMax(Shooter1, rev::CANSparkMax::MotorType::kBrushless);

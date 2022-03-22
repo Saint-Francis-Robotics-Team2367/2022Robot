@@ -20,6 +20,7 @@ void ShooterModule::periodicInit() {
 }
 
 void ShooterModule::periodicRoutine() {
+    if (stateRef->IsDisabled()) return;
     Message* m;
     if (stateRef->IsAutonomousEnabled()) {
         m = pipes[1]->popQueue();
@@ -52,11 +53,11 @@ void ShooterModule::periodicRoutine() {
             //     continue;
             // }
 
-            shooterMotorPID.SetReference(velocity, rev::CANSparkMax::ControlType::kVelocity);
+            //shooterMotorPID.SetReference(velocity, rev::CANSparkMax::ControlType::kVelocity);
 
-            while (fabs(shooterMotorEncoder.GetVelocity() - setpoint) > 0.2) {
-                continue;
-            }
+            // while (fabs(shooterMotorEncoder.GetVelocity() - setpoint) > 0.2) {
+            //     continue;
+            // }
 
             pipes[2]->pushQueue(new Message("shooting", 1));
             float shootStart = frc::Timer::GetFPGATimestamp().value();
@@ -64,7 +65,7 @@ void ShooterModule::periodicRoutine() {
                 continue;
             }
             pipes[2]->pushQueue(new Message("shooting", 0));
-            shooterMotorPID.SetReference(0, rev::CANSparkMax::ControlType::kVelocity);
+            //shooterMotorPID.SetReference(0, rev::CANSparkMax::ControlType::kVelocity);
 
             pipes[1]->pushQueue(new Message("done", 0));
         }

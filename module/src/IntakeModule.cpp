@@ -10,6 +10,8 @@ void IntakeModule::periodicInit() {
 
 void IntakeModule::periodicRoutine() {
   // Use mode of robo
+  if (stateRef->IsDisabled()) return;
+
   Message* m = nullptr;
   if (stateRef->IsAutonomousEnabled())
     m = pipes[1]->popQueue();
@@ -17,7 +19,7 @@ void IntakeModule::periodicRoutine() {
     m = pipes[0]->popQueue();
   Message* sm = pipes[2]->popQueue();
 
-  if (!m) {
+  if (m) {
     if (m->str == "disable")
     {
       intakeAction->Set(-1.0);
@@ -39,7 +41,7 @@ void IntakeModule::periodicRoutine() {
       }
     }
 
-    if (sm->str == "shooting") {
+    if ((sm) && (sm->str == "shooting")) {
       if (sm->vals[0])
         for (int i = 0;i < 3; i++) {
           indexMotors[i]->Set(1.0);
@@ -62,8 +64,8 @@ void IntakeModule::periodicRoutine() {
     }
   }
 
-  if ((intakeActive && iActEncoder.GetPosition() >=  outPos) || (!intakeActive && iActEncoder.GetPosition() <= basePos))
-    intakeAction->StopMotor();
+  // if ((intakeActive && iActEncoder.GetPosition() >=  outPos) || (!intakeActive && iActEncoder.GetPosition() <= basePos))
+  //   intakeAction->StopMotor();
     
 }
 
