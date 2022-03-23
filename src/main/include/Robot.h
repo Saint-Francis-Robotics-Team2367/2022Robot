@@ -10,13 +10,29 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <string>
+
 //#include <frc/ADIS16448_IMU.h>
 
 #include <photonlib/PhotonCamera.h>
 #include <math.h>
 #include <rev/CANSparkMax.h>
 
+
+
 class Robot : public frc::TimedRobot {
+
+   struct pathPoint {
+    float x;
+    float y;
+  };
+
+  enum stage {
+    ballcollection,
+    shooting
+  };
+
+
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -33,11 +49,27 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  bool setMotorPIDF(rev::CANSparkMax* motor, double P, double I, double D, double F);
+  //Auto Stuff
+  void initializePaths();
 
-  bool setShooterSetpoint(double setpoint);
-
+  float goalPosition = 90; //if we have a 90 degree gyro thing to face towards the goal, else use photon....needs testing either way
+  stage autostage = ballcollection;
+  pathPoint robPos;
+  float robTheta;
+  std::vector<pathPoint> path;
+  int pathi = 0;
+  bool isTrue = false;
+  bool resetPath = false;
+  float coordOffset = 0; // how much the robot should go past the path point to pick up the bal
+  float shootingDistance = 4;
+  bool shootingPoints[7] = {0};
   bool tested = false;
+
+  float d = 0;
+  float theta = 0;
+  bool moveFlag = false;
+  bool turnFlag = false;
+  bool shootFlag = false;
 
 };
 

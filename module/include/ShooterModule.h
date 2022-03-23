@@ -10,7 +10,7 @@ public:
     void periodicInit();
     void periodicRoutine();
     void align_shooter();
-    void shoot();
+    bool shoot();
     void stopShooting();
 private:
 
@@ -69,6 +69,7 @@ private:
   double shootSpeedSetPoint = -4000;
 
   bool pressed = false;
+  bool shooterFlag = false;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);
   //rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
   //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder(rev::CANEncoder::EncoderType::kNoSensor, 4000);
@@ -79,7 +80,7 @@ private:
   rev::CANSparkMax * shoot2 = new rev::CANSparkMax(Shooter2, rev::CANSparkMax::MotorType::kBrushless); 
 
   rev::SparkMaxRelativeEncoder shootEncoder = shoot1->GetEncoder();
-  rev::SparkMaxPIDController shootPid =       shoot1->GetPIDController();
+  rev::SparkMaxPIDController shootPid = shoot1->GetPIDController();
   
   // rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
   // rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();

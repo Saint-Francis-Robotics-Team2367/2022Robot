@@ -4,6 +4,12 @@
 #include <vector>
 #include <math.h> 
 
+#include <iostream>
+#include <fstream>
+#include <string>
+
+#define PATHS_FILE "paths.txt"
+
 #include "Macros.h"
 
 #include <rev/CANSparkMax.h>
@@ -74,8 +80,10 @@ class DriveBaseModule{
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
+
   float gyroInitVal = 0.0f;
   frc::ADIS16448_IMU m_imu{};
+
   public:
 
   std::vector<uint8_t> getConstructorArgs();
@@ -103,6 +111,8 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
+
+  
   photonlib::PhotonCamera cam{"guccicam"};
 };
 

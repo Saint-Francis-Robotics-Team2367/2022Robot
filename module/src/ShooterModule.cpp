@@ -1,5 +1,6 @@
 #include "ShooterModule.h"
 #include "frc/smartdashboard/SmartDashboard.h"
+#include <frc/TimedRobot.h>
 
 void ShooterModule::periodicInit() {
     //Shooter Motor inits
@@ -111,14 +112,23 @@ void ShooterModule::periodicRoutine() {
 */
 }
 
-void ShooterModule::shoot() {
+bool ShooterModule::shoot() {
     shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
     shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
 
     shootPid.SetReference(shootSpeedSetPoint , rev::CANSparkMax::ControlType::kVelocity, 0);
-    if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
+    //Do we need this stuff in Auto or can we just stop as soon as shooterIndexer is set to max
+    if(shooterFlag) {
+        float shootStart = frc::Timer::GetFPGATimestamp().value();
+        //little timer over here
+        if(frc::Timer::GetFPGATimestamp().value() - shootStart > 0.5) {
+            shooterFlag = false;
+            return true;
+        }
+    } else if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
     {
-        shooterMotor->Set(-1.0);
+        shooterMotor->Set(-1.0); //shooter indexer
+        shooterFlag = true;
     }
     else    
     {
