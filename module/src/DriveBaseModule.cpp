@@ -421,7 +421,7 @@ void DriveBaseModule::periodicRoutine()
   }
 
   frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
-  
+
 /*
   if (driverStick->GetRawButton(5))
   {
@@ -574,9 +574,9 @@ void DriveBaseModule::alignToGoal() {
     frc::SmartDashboard::PutNumber("distance", y);
 
     if (fabs(v) > 3)
-      m_robotDrive->ArcadeDrive(0, v * 0.02);
+      arcadeDrive(0, v * 0.02);
     else {
-      m_robotDrive->ArcadeDrive(-y, 0);
+      arcadeDrive(-y, 0);
     }
   }
   else {
