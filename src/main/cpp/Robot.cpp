@@ -32,47 +32,48 @@ void Robot::RobotPeriodic() {
 }
  
 void Robot::AutonomousInit() { 
-  // int pathi = 0;
-  //       int sindex = 0;
+  int pathi = 0;
+        int sindex = 0;
 
-  //       while(sindex < paths.length()){ 
-  //           if (paths[sindex] == '*') {
-  //               pathi++;
-  //           }
-  //           else if ((pathi == currpath) && (paths[sindex] == 's')) {
-  //               pathPoint finalp = path[path.size() - 1];
-  //               float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
+        while(sindex < paths.length()){ 
+            if (paths[sindex] == '*') {
+                pathi++;
+            }
+            else if ((pathi == currpath) && (paths[sindex] == 's')) {
+                pathPoint finalp = path[path.size() - 1];
+                float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
 
-  //               std::cout << "dtogoal " << dToGoal << std::endl;
+                std::cout << "dtogoal " << dToGoal << std::endl;
                 
-  //               pathPoint shootingp;
-  //               shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
-  //               shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
+                pathPoint shootingp;
+                shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
+                shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
                 
-  //               path.push_back(shootingp);
-  //               shootingPoints[path.size() - 1] = true;
-  //               sindex += 2;
-  //           }
-  //           else if (pathi == currpath) {
-  //               pathPoint p;
-  //               p.x = atof(paths.substr(sindex, 6).c_str());
-  //               p.y = atof(paths.substr(sindex + 7, 6).c_str());
-  //               path.push_back(p);
-  //               sindex += 14;
-  //           }
-  //       }
-  //       pathi = 1;
-  //       robPos = path[0];
+                path.push_back(shootingp);
+                shootingPoints[path.size() - 1] = true;
+                sindex += 2;
+            }
+            else if (pathi == currpath) {
+                pathPoint p;
+                p.x = atof(paths.substr(sindex, 6).c_str());
+                p.y = atof(paths.substr(sindex + 7, 6).c_str());
+                path.push_back(p);
+                sindex += 14;
+            }
+        }
+        pathi = 1;
+        robPos = path[0];
 
-  //       for (int i = 0; i < path.size(); i++) {
-  //           std::cout << path[i].x << ' ' << path[i].y << std::endl;
-  //       }
+        for (int i = 0; i < path.size(); i++) {
+            std::cout << path[i].x << ' ' << path[i].y << std::endl;
+        }
 }
 void Robot::AutonomousPeriodic() {
   // //testing PID's during comp
   if ((!tested) && (compRobotDrive.PIDDriveTick(2, 7, 21))) {
     tested = true;
   }
+
 
   //***HAVE INDEXEING BE OPEN (maybe just two) AND ON ALL THE TIME (would this ruin ball?), so all 3 indexing motors on, then activate shooter when needed
   if(pathi < path.size()) {

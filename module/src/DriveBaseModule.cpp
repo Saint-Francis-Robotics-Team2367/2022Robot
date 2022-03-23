@@ -201,7 +201,8 @@ bool DriveBaseModule::PIDGyroTurnTick(float angle, float radius, float maxAcc, f
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime;
     distanceToDeccelerate, endpoint = 0.0; //currentPosition is the set point
     currentVelocity = pidprevVelocity;
-    currentPosition = pidprevPosition + currentVelocity * timeElapsed;
+    currentPosition = pidprevPosition;
+    //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
   }
   pidprevPosition = currentPosition;
   
@@ -327,7 +328,8 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
     timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime;
     distanceToDeccelerate, setpoint = 0.0; //currentPosition is the set point
     currentVelocity = pidprevVelocity;
-    currentPosition = pidprevPosition + currentVelocity * timeElapsed;
+    currentPosition = pidprevPosition; //commented this out, adds it twice
+    //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
   }
   pidprevPosition = currentPosition;
 
