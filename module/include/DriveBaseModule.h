@@ -13,6 +13,10 @@
 #include <frc/ADIS16448_IMU.h>
 #include <frc/PIDController.h>
 
+#include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonPipelineResult.h>
+#include <photonlib/PhotonTrackedTarget.h>
+
 #define driverStickPort 0
 #define operatorStickPort 1
 
@@ -91,6 +95,7 @@ class DriveBaseModule{
   void GyroTurn(float theta);
   bool GyroTurnTick(float theta);
   float TurningSensitivity(float rightStick, float leftStick);
+  void alignToGoal();
   float sliderValue = 0.43;
 
   bool tested = false;
@@ -98,6 +103,7 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
+  photonlib::PhotonCamera cam{"guccicam"};
 };
 
 #endif

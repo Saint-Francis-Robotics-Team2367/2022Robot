@@ -416,7 +416,12 @@ void DriveBaseModule::periodicRoutine()
 
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
 
+  if(driverStick->GetRawButton(5)) {
+    alignToGoal();
+  }
+
   frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+  
 /*
   if (driverStick->GetRawButton(5))
   {
@@ -557,4 +562,24 @@ bool DriveBaseModule::GyroTurnTick(float theta) {
   }
   arcadeDrive(0, 0); //need this to end motors
   return true;
+}
+
+void DriveBaseModule::alignToGoal() {
+  if (cam.HasTargets()) {
+    frc::SmartDashboard::PutBoolean("camera", true);
+    photonlib::PhotonPipelineResult result = cam.GetLatestResult();
+    float v = result.GetBestTarget().GetYaw();
+    frc::SmartDashboard::PutNumber("yaw", v);
+    float y = result.GetBestTarget().GetCameraRelativePose().X().value();
+    frc::SmartDashboard::PutNumber("distance", y);
+
+    if (fabs(v) > 3)
+      m_robotDrive->ArcadeDrive(0, v * 0.02);
+    else {
+      m_robotDrive->ArcadeDrive(-y, 0);
+    }
+  }
+  else {
+    frc::SmartDashboard::PutBoolean("camera", false);
+  }
 }
