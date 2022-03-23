@@ -110,3 +110,22 @@ void ShooterModule::periodicRoutine() {
 
 */
 }
+
+void ShooterModule::shoot() {
+    shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
+    shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
+
+    shootPid.SetReference(shootSpeedSetPoint , rev::CANSparkMax::ControlType::kVelocity, 0);
+    if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
+    {
+        shooterMotor->Set(-1.0);
+    }
+    else    
+    {
+        shooterMotor->StopMotor();
+    }
+}
+
+void ShooterModule::stopShooting() {
+    shoot1->StopMotor();
+}

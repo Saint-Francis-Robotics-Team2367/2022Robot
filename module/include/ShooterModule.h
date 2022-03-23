@@ -10,6 +10,8 @@ public:
     void periodicInit();
     void periodicRoutine();
     void align_shooter();
+    void shoot();
+    void stopShooting();
 private:
 
   frc::Joystick* driverStick = new frc::Joystick(0);

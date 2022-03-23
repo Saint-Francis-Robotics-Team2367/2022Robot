@@ -9,10 +9,12 @@
 #include "DriveBaseModule.h"
 #include "IntakeModule.h"
 #include "ShooterModule.h"
+#include "AutonomousModule.h"
 
 DriveBaseModule compRobotDrive;
 IntakeModule compIntake;
 ShooterModule compShooter;
+AutonomousModule automod;
 
 void Robot::RobotInit() {
   compRobotDrive.periodicInit();
@@ -26,8 +28,14 @@ void Robot::RobotPeriodic() {
   compShooter.periodicRoutine();
 }
  
-void Robot::AutonomousInit() {}
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousInit() { automod.periodicInit();}
+void Robot::AutonomousPeriodic() {
+  if ((!tested) && (compRobotDrive.PIDDriveTick(2, 7, 21))) {
+    tested = true;
+  }
+}
+
+
 
 void Robot::TeleopInit() {
   //Move this somewhere else later

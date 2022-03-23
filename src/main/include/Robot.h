@@ -37,6 +37,8 @@ class Robot : public frc::TimedRobot {
 
   bool setShooterSetpoint(double setpoint);
 
+  bool tested = false;
+
 };
 
 

@@ -40,13 +40,13 @@ void IntakeModule::periodicRoutine() {
     indexMotors[1]->Set(-1.0);
     indexMotors[2]->Set(-1.0);
   }
-  else if(! (driverStick->GetRawButton(5) | driverStick->GetRawButton(6)))
+  else if(! (driverStick->GetRawButton(3) | driverStick->GetRawButton(6)))
   {
     indexMotors[0]->StopMotor();
     indexMotors[1]->StopMotor();
     indexMotors[2]->StopMotor();
   }
-  if(driverStick->GetRawButton(5))
+  if(driverStick->GetRawButton(3))
   {
     indexMotors[0]->Set(-1.0);
     intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));

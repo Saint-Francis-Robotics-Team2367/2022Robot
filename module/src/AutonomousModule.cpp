@@ -1,6 +1,8 @@
 #include "AutonomousModule.h"
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include "paths.h"
+#include "ShooterModule.h"
+
 void AutonomousModule::periodicInit() {
     initializePaths();
     this->msInterval = AutonomousModuleRunInterval;
@@ -17,6 +19,8 @@ void AutonomousModule::initializePaths() {
             else if ((pathi == currpath) && (paths[sindex] == 's')) {
                 pathPoint finalp = path[path.size() - 1];
                 float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
+
+                std::cout << "dtogoal " << dToGoal << std::endl;
                 
                 pathPoint shootingp;
                 shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
@@ -36,22 +40,22 @@ void AutonomousModule::initializePaths() {
         }
         pathi = 1;
         robPos = path[0];
+
+        for (int i = 0; i < path.size(); i++) {
+            std::cout << path[i].x << ' ' << path[i].y << std::endl;
+        }
 }
 
 void AutonomousModule::periodicRoutine() {
-    if (stateRef->IsDisabled()) {
-        if (!resetPath) {
-            Message* m = pipes[0]->popQueue();
-            while (m) {
-                m = pipes[0]->popQueue();
-            }
-            pathi = 1;
-            robPos = path[0];
-            robTheta = 0;
-            resetPath = true;
-        }
-        return;
-    }
+    // if (stateRef->IsDisabled()) {
+    //     if (!resetPath) {
+    //         pathi = 1;
+    //         robPos = path[0];
+    //         robTheta = 0;
+    //         resetPath = true;
+    //     }
+    //     return;
+    // }
  
     if ((stateRef->IsAutonomousEnabled()) && (pathi < path.size())) {
         resetPath = false;
