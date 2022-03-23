@@ -204,7 +204,7 @@ bool DriveBaseModule::PIDGyroTurnTick(float angle, float radius, float maxAcc, f
     currentPosition = pidprevPosition;
     //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
   }
-  pidprevPosition = currentPosition;
+  //pidprevPosition = currentPosition;
   
   rEncoder.SetPositionConversionFactor(0.64); //check if this works!
   lEncoder.SetPositionConversionFactor(0.64); 
@@ -214,7 +214,7 @@ bool DriveBaseModule::PIDGyroTurnTick(float angle, float radius, float maxAcc, f
     maxVelocity *= -1;
   }
 
-  pidprevPosition = currentPosition;
+  //pidprevPosition = currentPosition;
 
 
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
@@ -255,6 +255,7 @@ bool DriveBaseModule::PIDGyroTurnTick(float angle, float radius, float maxAcc, f
 
     pidprevTime = frc::Timer::GetFPGATimestamp().value();
     pidprevVelocity = currentVelocity;
+    pidprevPosition = currentPosition;
     return false;
   }
   else if (!GyroTurnTick(angle)) {
@@ -331,7 +332,7 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
     currentPosition = pidprevPosition; //commented this out, adds it twice
     //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
   }
-  pidprevPosition = currentPosition;
+  //pidprevPosition = currentPosition;
 
   if (totalFeet < 0) {
     maxAcc *= -1;
@@ -365,6 +366,7 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
     rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
     pidprevTime = frc::Timer::GetFPGATimestamp().value();
     pidprevVelocity = currentVelocity;
+    pidprevPosition = currentPosition;
     return false;
 
   }
