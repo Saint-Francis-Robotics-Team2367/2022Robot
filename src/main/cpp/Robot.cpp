@@ -90,13 +90,20 @@ void Robot::AutonomousPeriodic() {
         turnFlag = false;
       }
 
-    } else if (moveFlag) {
+    } else if (moveFlag) { //does this logic work?, NOT RETURNING ANYTHIGN IN PIDDRIVESIMPLETICK
       if(compRobotDrive.PIDDriveSimpleTick(d)) {
         moveFlag = false;
-        compIntake.disable();
+        //which intakes, all 3 right because doing 1 ball at a time, all 3 for some time, then when shoot you shoot
+
+
+
+       // compIntake.disable();
       }
       else if (compRobotDrive.getDistanceTraversed() < (0.85 * d)) {
-        compIntake.activate();
+
+
+
+       // compIntake.activate();
       }
     } 
     else if(shootFlag) {
@@ -107,6 +114,7 @@ void Robot::AutonomousPeriodic() {
         shootFlag = false;
       }
     } else {
+      //do we disable INTAKE HERE TOO !!!!!!!!!
       pathPoint delta;
       delta.x = (path[pathi].x - robPos.x);
       delta.y = (path[pathi].y - robPos.y);

@@ -409,11 +409,11 @@ void DriveBaseModule::periodicInit() {
   lEncoder.SetPositionConversionFactor(0.168); 
 }
 bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
-  setpoint = (totalFeet * 12) / (PI * 4);
+  double setpoint = (totalFeet * 12) / (PI * 4);
+  lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
+  rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
 
-
-  rPID.SetReference(totalFeet);
-  lPID.SetReference(totalFeet);
+  return rEncoder.GetPosition() >= 0.95 * totalFeet;  //ADDED THIS
 }
 
 void DriveBaseModule::periodicRoutine()
@@ -574,7 +574,7 @@ bool DriveBaseModule::GyroTurnTick(float theta) {
   float P = 0.2;
   if (fabs(getGyroAngle() - theta) > 1) {
     frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
-    arcadeDrive(0,  (theta - getGyroAngle()) * P)
+    arcadeDrive(0,  (theta - getGyroAngle()) * P);
     return false;
   }
   arcadeDrive(0, 0); //need this to end motors
@@ -602,5 +602,5 @@ void DriveBaseModule::alignToGoal() {
 }
 
 float DriveBaseModule::getDistanceTraversed(){
-  return (lEncoder.GetPosition() / 12 * (PI * 4);)
+  return (lEncoder.GetPosition() / 12 * (PI * 4));
 }
