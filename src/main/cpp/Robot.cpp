@@ -77,14 +77,7 @@ void Robot::AutonomousPeriodic() {
 
   //***HAVE INDEXEING BE OPEN (maybe just two) AND ON ALL THE TIME (would this ruin ball?), so all 3 indexing motors on, then activate shooter when needed
   if(pathi < path.size()) {
-    if(shootFlag) {
-      //I added a timestamp for half a second of waiting time in the shoot() method, check if needed !!!!!, added because shooterIndexer needs a bit of time
-      if(compShooter.shoot()) {
-        //maybe add turning here if need be...
-        compShooter.stopShooting();
-        shootFlag = false;
-      }
-    } else if(turnFlag) {
+    if(turnFlag) {
       if(compRobotDrive.PIDGyroTurnTick(theta, 0, 7, 21)) {
         turnFlag = false;
       }
@@ -93,11 +86,15 @@ void Robot::AutonomousPeriodic() {
       if(compRobotDrive.PIDDriveTick(d, 7, 21)) {
         moveFlag = false;
       }
+    } 
+    else if(shootFlag) {
+      //I added a timestamp for half a second of waiting time in the shoot() method, check if needed !!!!!, added because shooterIndexer needs a bit of time
+      if(compShooter.shoot()) {
+        //maybe add turning here if need be...
+        compShooter.stopShooting();
+        shootFlag = false;
+      }
     } else {
-      if (shootingPoints[pathi - 1]) { //Make sure no indexing error here.... if pathi is 0
-        //maybe add aiming and gyro stuff here if time if it's not aiming towards the goal already
-        shootFlag == true;
-      } 
 
       pathPoint delta;
       delta.x = (path[pathi].x - robPos.x);
@@ -127,6 +124,11 @@ void Robot::AutonomousPeriodic() {
       robPos.x += delta.x;
       robPos.y += delta.y;
       pathi++;
+
+      if (shootingPoints[pathi]) { //Make sure no indexing error here.... if pathi is 0
+        //maybe add aiming and gyro stuff here if time if it's not aiming towards the goal already
+        shootFlag == true;
+      } 
     }
   }
 }
