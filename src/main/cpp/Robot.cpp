@@ -93,17 +93,15 @@ void Robot::AutonomousPeriodic() {
     } else if (moveFlag) { //does this logic work?, NOT RETURNING ANYTHIGN IN PIDDRIVESIMPLETICK
       if(compRobotDrive.PIDDriveSimpleTick(d)) {
         moveFlag = false;
-        //which intakes, all 3 right because doing 1 ball at a time, all 3 for some time, then when shoot you shoot
+        //which intakes, all 3 right because doing 1 ball at a time, all 3 for some time, then when shoot you shoot\
 
-
-
-       // compIntake.disable();
+       compIntake.disable(); 
       }
       else if (compRobotDrive.getDistanceTraversed() < (0.85 * d)) {
 
 
 
-       // compIntake.activate();
+       compIntake.enable();
       }
     } 
     else if(shootFlag) {

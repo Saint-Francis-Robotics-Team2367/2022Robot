@@ -22,10 +22,12 @@ private:
   rev::CANSparkMax* indexMotors[3];
 
 
-
 public:
   void periodicInit();
   void periodicRoutine();
+  void enable();
+  void disable();
+
 };
 
 #endif

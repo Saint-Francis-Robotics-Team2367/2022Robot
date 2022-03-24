@@ -119,6 +119,7 @@ class DriveBaseModule{
 
   
   photonlib::PhotonCamera cam{"guccicam"};
+  bool encoderZeroed = false;
 };
 
 #endif

@@ -125,3 +125,17 @@ void IntakeModule::periodicRoutine() {
   }
 */    
 }
+
+void IntakeModule::enable() {
+   indexMotors[0]->Set(-1.0);
+   indexMotors[1]->Set(-1.0);
+   indexMotors[2]->Set(-1.0);
+   intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));
+}
+
+void IntakeModule::disable() {
+   indexMotors[0]->StopMotor();
+   indexMotors[1]->StopMotor();
+   indexMotors[2]->StopMotor();
+   intakeRoller->StopMotor();
+}

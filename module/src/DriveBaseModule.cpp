@@ -405,13 +405,22 @@ void DriveBaseModule::periodicInit() {
 
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
-  rEncoder.SetPositionConversionFactor(0.168); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.168); 
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
 }
 bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
+  if (!encoderZeroed) {
+    lEncoder.SetPosition(0);
+    rEncoder.SetPosition(0);
+    encoderZeroed = true;
+  }
   double setpoint = (totalFeet * 12) / (PI * 4);
   lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
   rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
+
+  if (rEncoder.GetPosition() >= 0.95 * totalFeet) {
+    encoderZeroed = false;
+  }
 
   return rEncoder.GetPosition() >= 0.95 * totalFeet;  //ADDED THIS
 }
@@ -427,6 +436,8 @@ void DriveBaseModule::periodicRoutine()
   // Command manipulators from operatorStick state
 
   sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
+  frc::SmartDashboard::PutNumber("Right Encoder", rEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Left Encoder", lEncoder.GetPosition());
 
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
 
@@ -602,5 +613,7 @@ void DriveBaseModule::alignToGoal() {
 }
 
 float DriveBaseModule::getDistanceTraversed(){
-  return (lEncoder.GetPosition() / 12 * (PI * 4));
+  lEncoder.SetPositionConversionFactor(0.64);
+  //return (lEncoder.GetPosition() / 12 * (PI * 4));
+  return (lEncoder.GetPosition());
 }
