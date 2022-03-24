@@ -32,59 +32,71 @@ void Robot::RobotPeriodic() {
 }
  
 void Robot::AutonomousInit() { 
-  int pathi = 0;
-        int sindex = 0;
+  int sindex = 0;
+  pathi = 0;
+  paths.clear();
 
-        while(sindex < paths.length()){ 
-            if (paths[sindex] == '*') {
-                pathi++;
-            }
-            else if ((pathi == currpath) && (paths[sindex] == 's')) {
-                pathPoint finalp = path[path.size() - 1];
-                float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
+  while(sindex < paths.length()){ 
+      if (paths[sindex] == '*') {
+          pathi++;
+          sindex++;
+      }
+      else if ((pathi == currpath) && (paths[sindex] == 's')) {
+          pathPoint finalp = path[path.size() - 1];
+          float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
 
-                std::cout << "dtogoal " << dToGoal << std::endl;
-                
-                pathPoint shootingp;
-                shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
-                shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
-                
-                path.push_back(shootingp);
-                shootingPoints[path.size() - 1] = true;
-                sindex += 2;
-            }
-            else if (pathi == currpath) {
-                pathPoint p;
-                p.x = atof(paths.substr(sindex, 6).c_str());
-                p.y = atof(paths.substr(sindex + 7, 6).c_str());
-                path.push_back(p);
-                sindex += 14;
-            }
-        }
-        pathi = 1;
-        robPos = path[0];
+          std::cout << "dtogoal " << dToGoal << std::endl;
+          
+          pathPoint shootingp;
+          shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
+          shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
+          
+          path.push_back(shootingp);
+          shootingPoints[path.size() - 1] = true;
+          sindex += 2;
+      }
+      else if ((pathi == currpath) && (paths[sindex] == 'r')) {
+          pathPoint finalp = path[path.size() - 1];
+          
+          path.push_back(finalp);
+          shootingPoints[path.size() - 1] = true;
+          sindex += 2;
+      }
+      else if (pathi == currpath) {
+          pathPoint p;
+          p.x = atof(paths.substr(sindex, 6).c_str());
+          p.y = atof(paths.substr(sindex + 7, 6).c_str());
+          path.push_back(p);
+          sindex += 14;
+      }
+  }
 
-        for (int i = 0; i < path.size(); i++) {
-            std::cout << path[i].x << ' ' << path[i].y << std::endl;
-        }
+  robTheta = startingThetas[currpath];
+  pathi = 1;
+  robPos = path[0];
+
 }
 void Robot::AutonomousPeriodic() {
   // //testing PID's during comp
-  if ((!tested) && (compRobotDrive.PIDDriveTick(2, 7, 21))) {
-    tested = true;
-  }
+  // if ((!tested) && (compRobotDrive.PIDDriveTick(2, 7, 21))) {
+  //   tested = true;
+  // }
 
 
   //***HAVE INDEXEING BE OPEN (maybe just two) AND ON ALL THE TIME (would this ruin ball?), so all 3 indexing motors on, then activate shooter when needed
   if(pathi < path.size()) {
     if(turnFlag) {
-      if(compRobotDrive.PIDGyroTurnTick(theta, 0, 7, 21)) {
+      if(compRobotDrive.GyroTurnTick(theta)) {
         turnFlag = false;
       }
 
     } else if (moveFlag) {
-      if(compRobotDrive.PIDDriveTick(d, 7, 21)) {
+      if(compRobotDrive.PIDDriveSimpleTick(d)) {
         moveFlag = false;
+        compIntake.disable();
+      }
+      else if (compRobotDrive.getDistanceTraversed() < (0.85 * d)) {
+        compIntake.activate();
       }
     } 
     else if(shootFlag) {
@@ -95,7 +107,6 @@ void Robot::AutonomousPeriodic() {
         shootFlag = false;
       }
     } else {
-
       pathPoint delta;
       delta.x = (path[pathi].x - robPos.x);
       delta.y = (path[pathi].y - robPos.y);
@@ -112,6 +123,7 @@ void Robot::AutonomousPeriodic() {
       theta = theta - robTheta;
       robTheta += theta;
       turnFlag = true;
+      compRobotDrive.InitGyro();
 
         //turn theta amount !!
 
@@ -125,8 +137,7 @@ void Robot::AutonomousPeriodic() {
       robPos.y += delta.y;
       pathi++;
 
-      if (shootingPoints[pathi]) { //Make sure no indexing error here.... if pathi is 0
-        //maybe add aiming and gyro stuff here if time if it's not aiming towards the goal already
+      if (shootingPoints[pathi]) { 
         shootFlag == true;
       } 
     }

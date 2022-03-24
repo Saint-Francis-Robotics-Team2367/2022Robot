@@ -27,11 +27,6 @@ class Robot : public frc::TimedRobot {
     float y;
   };
 
-  enum stage {
-    ballcollection,
-    shooting
-  };
-
 
  public:
   void RobotInit() override;
@@ -53,7 +48,6 @@ class Robot : public frc::TimedRobot {
   void initializePaths();
 
   float goalPosition = 90; //if we have a 90 degree gyro thing to face towards the goal, else use photon....needs testing either way
-  stage autostage = ballcollection;
   pathPoint robPos;
   float robTheta;
   std::vector<pathPoint> path;
@@ -70,6 +64,7 @@ class Robot : public frc::TimedRobot {
   bool moveFlag = false;
   bool turnFlag = false;
   bool shootFlag = false;
+  float delays;
 
 };
 

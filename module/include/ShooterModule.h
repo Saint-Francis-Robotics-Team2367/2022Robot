@@ -71,9 +71,6 @@ private:
   bool pressed = false;
   bool shooterFlag = false;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);
-  //rev::SparkMaxPIDController shooterMotorPID = shooterMotor->GetPIDController();
-  //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder(rev::CANEncoder::EncoderType::kNoSensor, 4000);
-  //rev::SparkMaxRelativeEncoder shooterMotorEncoder = shooterMotor->GetEncoder();
 
 
   rev::CANSparkMax * shoot1 = new rev::CANSparkMax(Shooter1, rev::CANSparkMax::MotorType::kBrushless);
@@ -81,14 +78,6 @@ private:
 
   rev::SparkMaxRelativeEncoder shootEncoder = shoot1->GetEncoder();
   rev::SparkMaxPIDController shootPid = shoot1->GetPIDController();
-  
-  // rev::CANSparkMax * hoodMotor = new rev::CANSparkMax(hoodMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  // rev::SparkMaxPIDController hoodMotorPID = hoodMotor->GetPIDController();
-  // rev::SparkMaxRelativeEncoder hoodMotorEncoder = hoodMotor->GetEncoder();
-
-  // rev::CANSparkMax * turretMotor = new rev::CANSparkMax(turretMotorID, rev::CANSparkMax::MotorType::kBrushless);
-  // rev::SparkMaxPIDController turretMotorPID = turretMotor->GetPIDController();
-  // rev::SparkMaxRelativeEncoder turretMotorEncoder = turretMotor->GetEncoder();
 
 
 

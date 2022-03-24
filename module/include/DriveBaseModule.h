@@ -31,8 +31,8 @@
 #define PIDIntegral 0
 #define PIDDerivative 0
 
-#define motorInitMaxCurrent 60 // The initial max current setting
-#define motorInitRatedCurrent 40 // The inital rated current settings
+#define motorInitMaxCurrent 30 // The initial max current setting
+#define motorInitRatedCurrent 30 // The inital rated current settings
 #define motorInitLimitCycles 50  // The inital number of allowed ms at peak current
 
 #define lInvert true // Inversion setings for sides
@@ -93,6 +93,7 @@ class DriveBaseModule{
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
   void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
+  bool PIDDriveSimpleTick(float totalFeet);
   bool PIDDriveTick(float totalFeet, float maxAcc, float maxVelocity);
   bool PIDTurn(float angle, float radius, float maxAcc, float maxVelocity);
   bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
@@ -104,6 +105,7 @@ class DriveBaseModule{
   bool GyroTurnTick(float theta);
   float TurningSensitivity(float rightStick, float leftStick);
   void alignToGoal();
+  float getDistanceTraversed();
   float sliderValue = 0.43;
 
   float adjustSpeed = 0.01;
@@ -113,6 +115,7 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
+
 
   
   photonlib::PhotonCamera cam{"guccicam"};

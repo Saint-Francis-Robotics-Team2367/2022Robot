@@ -408,11 +408,18 @@ void DriveBaseModule::periodicInit() {
   rEncoder.SetPositionConversionFactor(0.168); //check if this works!
   lEncoder.SetPositionConversionFactor(0.168); 
 }
+bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
+  setpoint = (totalFeet * 12) / (PI * 4);
+
+
+  rPID.SetReference(totalFeet);
+  lPID.SetReference(totalFeet);
+}
 
 void DriveBaseModule::periodicRoutine()
 {
-  frc::SmartDashboard::PutNumber("adjustSpeed", adjustSpeed);
-  adjustSpeed = frc::SmartDashboard::GetNumber("adjustSpeed", 0.01);
+  // frc::SmartDashboard::PutNumber("adjustSpeed", adjustSpeed);
+  // adjustSpeed = frc::SmartDashboard::GetNumber("adjustSpeed", 0.01);
   
   // Use mode of robot to determine control source
   // Autonomous -> AutonomousPipe
@@ -428,12 +435,12 @@ void DriveBaseModule::periodicRoutine()
   }
 
   // if driver wants to adjust aim, hold button down to move position of robot
-  if(operatorStick->GetRawButton(3)) {
-    arcadeDrive(0, adjustSpeed);
-  }
-  if(operatorStick->GetRawButton(2)) {
-    arcadeDrive(0, -1*adjustSpeed);
-  }
+  // if(operatorStick->GetRawButton(3)) {
+  //   arcadeDrive(0, adjustSpeed);
+  // }
+  // if(operatorStick->GetRawButton(2)) {
+  //   arcadeDrive(0, -1*adjustSpeed);
+  // }
   frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
 
 
@@ -564,16 +571,10 @@ void DriveBaseModule::GyroTurn(float theta) {
 }
 bool DriveBaseModule::GyroTurnTick(float theta) {
   //add PID
+  float P = 0.2;
   if (fabs(getGyroAngle() - theta) > 1) {
     frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
-    if (getGyroAngle() < theta) {
-      arcadeDrive(0, 0.2);
-      //would adding a return here and below help? so it's not loopish, might be jerkish though
-    }
-    else {
-      arcadeDrive(0, -0.2);
-    
-    }
+    arcadeDrive(0,  (theta - getGyroAngle()) * P)
     return false;
   }
   arcadeDrive(0, 0); //need this to end motors
@@ -600,4 +601,6 @@ void DriveBaseModule::alignToGoal() {
   }
 }
 
-
+float DriveBaseModule::getDistanceTraversed(){
+  return (lEncoder.GetPosition() / 12 * (PI * 4);)
+}
