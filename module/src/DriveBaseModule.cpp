@@ -390,7 +390,7 @@ void DriveBaseModule::periodicInit() {
 
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
-  double m_P = 0.4, m_I = 0.00, m_D = 1.68, iZone = 0.00;
+  double m_P = 1, m_I = 0.00, m_D = 0.5, iZone = 0.00;
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -422,7 +422,9 @@ bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
     encoderZeroed = false;
   }
 
-  return rEncoder.GetPosition() >= 0.95 * totalFeet;  //ADDED THIS
+  frc::SmartDashboard::PutNumber("encoder", rEncoder.GetPosition());
+
+  return (rEncoder.GetPosition() >= (0.95 * totalFeet));  //ADDED THIS
 }
 
 void DriveBaseModule::periodicRoutine()
@@ -441,7 +443,7 @@ void DriveBaseModule::periodicRoutine()
 
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
 
-  if(driverStick->GetRawButton(5)) {
+  if(driverStick->GetRawButton(3)) {
     alignToGoal();
   }
 
