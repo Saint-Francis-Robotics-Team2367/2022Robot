@@ -411,6 +411,9 @@ void DriveBaseModule::periodicInit() {
 
 void DriveBaseModule::periodicRoutine()
 {
+  frc::SmartDashboard::PutNumber("adjustSpeed", adjustSpeed);
+  adjustSpeed = frc::SmartDashboard::GetNumber("adjustSpeed", 0.01);
+  
   // Use mode of robot to determine control source
   // Autonomous -> AutonomousPipe
   // Monitor input from BrownoutPipe
@@ -424,7 +427,16 @@ void DriveBaseModule::periodicRoutine()
     alignToGoal();
   }
 
+  // if driver wants to adjust aim, hold button down to move position of robot
+  if(operatorStick->GetRawButton(3)) {
+    arcadeDrive(0, adjustSpeed);
+  }
+  if(operatorStick->GetRawButton(2)) {
+    arcadeDrive(0, -1*adjustSpeed);
+  }
   frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
+
+
 
 /*
   if (driverStick->GetRawButton(5))
@@ -587,3 +599,5 @@ void DriveBaseModule::alignToGoal() {
     frc::SmartDashboard::PutBoolean("camera", false);
   }
 }
+
+

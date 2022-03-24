@@ -106,6 +106,8 @@ class DriveBaseModule{
   void alignToGoal();
   float sliderValue = 0.43;
 
+  float adjustSpeed = 0.01;
+
   bool tested = false;
   bool index = false;
   float pidprevTime;
