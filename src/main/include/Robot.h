@@ -55,7 +55,7 @@ class Robot : public frc::TimedRobot {
   bool isTrue = false;
   bool resetPath = false;
   float coordOffset = 0; // how much the robot should go past the path point to pick up the bal
-  float shootingDistance = 4;
+  float shootingDistance = 3;
   bool shootingPoints[7] = {0};
   bool tested = false;
 
@@ -63,9 +63,9 @@ class Robot : public frc::TimedRobot {
   float theta = 0;
   bool moveFlag = false;
   bool turnFlag = false;
-  bool shootFlag = false;
+  bool shootFlag = true;
   float delays;
-
+  float shoottimestart;
 };
 
 

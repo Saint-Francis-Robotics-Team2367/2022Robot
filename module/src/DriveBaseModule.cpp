@@ -1,8 +1,8 @@
 #include "DriveBaseModule.h"
 
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
-  motor->RestoreFactoryDefaults();
-  follower->RestoreFactoryDefaults();
+ //  motor->RestoreFactoryDefaults();
+// follower->RestoreFactoryDefaults();
   motor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   motor->SetInverted(invert);
   follower->Follow(*motor, false);
@@ -390,7 +390,7 @@ void DriveBaseModule::periodicInit() {
 
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
-  double m_P = 1, m_I = 0.00, m_D = 0.5, iZone = 0.00;
+  double m_P = 0.5, m_I = 0.00, m_D = 0.1, iZone = 0.00;
 
   lPID.SetP(m_P);
   lPID.SetI(m_I);
@@ -410,21 +410,25 @@ void DriveBaseModule::periodicInit() {
 }
 bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
   if (!encoderZeroed) {
+     lPID.SetOutputRange(-0.25, 0.25);
+      rPID.SetOutputRange(-0.25, 0.25);
     lEncoder.SetPosition(0);
     rEncoder.SetPosition(0);
+    lEncoder.SetPositionConversionFactor(0.64);
+    rEncoder.SetPositionConversionFactor(0.64);
     encoderZeroed = true;
   }
   double setpoint = (totalFeet * 12) / (PI * 4);
   lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
   rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
 
-  if (rEncoder.GetPosition() >= 0.95 * totalFeet) {
+  if (rEncoder.GetPosition() >= totalFeet) {
     encoderZeroed = false;
   }
 
   frc::SmartDashboard::PutNumber("encoder", rEncoder.GetPosition());
 
-  return (rEncoder.GetPosition() >= (0.95 * totalFeet));  //ADDED THIS
+  return (rEncoder.GetPosition() >= (totalFeet));  //ADDED THIS
 }
 
 void DriveBaseModule::periodicRoutine()
@@ -600,14 +604,14 @@ void DriveBaseModule::alignToGoal() {
     photonlib::PhotonPipelineResult result = cam.GetLatestResult();
     float v = result.GetBestTarget().GetYaw();
     frc::SmartDashboard::PutNumber("yaw", v);
-    float y = result.GetBestTarget().GetCameraRelativePose().X().value();
-    frc::SmartDashboard::PutNumber("distance", y);
+    // float y = result.GetBestTarget().GetCameraRelativePose().X().value();
+    // frc::SmartDashboard::PutNumber("distance", y);
 
     if (fabs(v) > 3)
-      arcadeDrive(0, v * 0.02);
-    else {
-      arcadeDrive(-y, 0);
-    }
+      arcadeDrive(0, v * 0.2);
+    // else {
+    //   arcadeDrive(-y, 0);
+    // }
   }
   else {
     frc::SmartDashboard::PutBoolean("camera", false);

@@ -69,7 +69,7 @@ private:
   double shootSpeedSetPoint = -4000;
 
   bool pressed = false;
-  bool shooterFlag = false;
+  bool shooterFlag = true;
   rev::CANSparkMax * shooterMotor = new rev::CANSparkMax(shooterIndexer, rev::CANSparkMax::MotorType::kBrushed);
 
 

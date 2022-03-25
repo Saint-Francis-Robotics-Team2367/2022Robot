@@ -36,16 +36,17 @@ void IntakeModule::periodicRoutine() {
 
   if(driverStick->GetRawButton(1))
   {
-    indexMotors[0]->Set(-1.0);
-    indexMotors[1]->Set(-1.0);
-    indexMotors[2]->Set(-1.0);
+    indexMotors[0]->Set(-0.5);
+    indexMotors[1]->Set(-0.5);
+    indexMotors[2]->Set(-0.5);
   }
-  else if(! (driverStick->GetRawButton(3) | driverStick->GetRawButton(6)))
+  else if(! (driverStick->GetRawButton(5) | driverStick->GetRawButton(6)))
   {
     indexMotors[0]->StopMotor();
     indexMotors[1]->StopMotor();
     indexMotors[2]->StopMotor();
   }
+
   if(driverStick->GetRawButton(5))
   {
     indexMotors[0]->Set(-1.0);
@@ -68,7 +69,7 @@ void IntakeModule::periodicRoutine() {
   }
   else
   {
-    if(! driverStick->GetRawButton(1))
+    if(! (driverStick->GetRawButton(1)))
     {
     indexMotors[1]->StopMotor();
     indexMotors[2]->StopMotor();
