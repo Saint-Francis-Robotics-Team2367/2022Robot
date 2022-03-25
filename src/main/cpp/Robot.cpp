@@ -130,40 +130,42 @@ void Robot::AutonomousPeriodic() {
       }
     } else {
       //do we disable INTAKE HERE TOO !!!!!!!!!
+      
       pathPoint delta;
       delta.x = (path[pathi].x - robPos.x);
       delta.y = (path[pathi].y - robPos.y);
 
       d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-      pathPoint unitDir;
-      unitDir.x = delta.x / d;
-      unitDir.y = delta.y / d;
+      if (d > 0) {
+        pathPoint unitDir;
+        unitDir.x = delta.x / d;
+        unitDir.y = delta.y / d;
 
-      delta.x = delta.x + unitDir.x * coordOffset; //should be plus right?
-      delta.y = delta.y + unitDir.y * coordOffset;
+        delta.x = delta.x + unitDir.x * coordOffset; //should be plus right?
+        delta.y = delta.y + unitDir.y * coordOffset;
 
-      theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
-      theta = theta - robTheta;
-      robTheta += theta;
-      turnFlag = true;
-      compRobotDrive.InitGyro();
+        theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
+        theta = theta - robTheta;
+        robTheta += theta;
+        turnFlag = true;
+        compRobotDrive.InitGyro();
 
-        //turn theta amount !!
+          //turn theta amount !!
 
-      d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-      std::cout << "ddddddddddddddd " << d << std::endl;
-      moveFlag = true;
-        
-        //move d amount
+        d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
+        std::cout << "ddddddddddddddd " << d << std::endl;
+        moveFlag = true;
+          
+          //move d amount
 
 
-      robPos.x += delta.x;
-      robPos.y += delta.y;
-      pathi++;
-
+        robPos.x += delta.x;
+        robPos.y += delta.y;
+      }
       if (shootingPoints[pathi]) { 
         shootFlag == true;
-      } 
+      }
+      pathi++;
     }
   }
 }

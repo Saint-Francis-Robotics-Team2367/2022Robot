@@ -66,7 +66,7 @@ private:
   double FF = 0.00017;
   double maxShooterOutput = 0.1;
   double minShooterOutput = -1.0;
-  double shootSpeedSetPoint = -4000;
+  double shootSpeedSetPoint = -4450;
 
   bool pressed = false;
   bool shooterFlag = true;

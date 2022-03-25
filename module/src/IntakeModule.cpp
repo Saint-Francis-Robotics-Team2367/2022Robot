@@ -38,7 +38,7 @@ void IntakeModule::periodicRoutine() {
   {
     indexMotors[0]->Set(-0.5);
     indexMotors[1]->Set(-0.5);
-    indexMotors[2]->Set(-0.5);
+    indexMotors[2]->Set(-1.0);
   }
   else if(! (driverStick->GetRawButton(5) | driverStick->GetRawButton(6)))
   {
@@ -64,12 +64,12 @@ void IntakeModule::periodicRoutine() {
 
   if(driverStick->GetRawButton(6))
   {
-    indexMotors[1]->Set(-1.0);
+    indexMotors[1]->Set(-0.7);
     indexMotors[2]->Set(-1.0);
   }
   else
   {
-    if(! (driverStick->GetRawButton(1)))
+    if(! (driverStick->GetRawButton(1) | driverStick->GetRawButton(5)))
     {
     indexMotors[1]->StopMotor();
     indexMotors[2]->StopMotor();
@@ -131,8 +131,8 @@ void IntakeModule::periodicRoutine() {
 }
 
 void IntakeModule::enable() {
-   indexMotors[0]->Set(-1.0);
-   indexMotors[1]->Set(-1.0);
+   indexMotors[0]->Set(-0.8);
+   indexMotors[1]->Set(-0.8);
    indexMotors[2]->Set(-1.0);
    intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));
 }
