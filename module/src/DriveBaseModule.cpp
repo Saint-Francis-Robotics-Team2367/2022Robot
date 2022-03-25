@@ -422,13 +422,13 @@ bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
   lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
   rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
 
-  if (rEncoder.GetPosition() >= totalFeet) {
+  if (rEncoder.GetPosition() >= (0.95 *totalFeet)) {
     encoderZeroed = false;
   }
 
   frc::SmartDashboard::PutNumber("encoder", rEncoder.GetPosition());
 
-  return (rEncoder.GetPosition() >= (totalFeet));  //ADDED THIS
+  return (rEncoder.GetPosition() >= (0.95 * totalFeet));  //ADDED THIS
 }
 
 void DriveBaseModule::periodicRoutine()
@@ -588,10 +588,11 @@ void DriveBaseModule::GyroTurn(float theta) {
 }
 bool DriveBaseModule::GyroTurnTick(float theta) {
   //add PID
-  float P = 0.2;
+  float P = 0.05;
   if (fabs(getGyroAngle() - theta) > 1) {
     frc::SmartDashboard::PutNumber("GyroTurn", getGyroAngle());
     arcadeDrive(0,  (theta - getGyroAngle()) * P);
+    std::cout << "ROTATIONAL VALUE " << (theta - getGyroAngle()) * P << std::endl;
     return false;
   }
   arcadeDrive(0, 0); //need this to end motors

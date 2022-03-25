@@ -101,14 +101,15 @@ void Robot::AutonomousPeriodic() {
 
 
   // //***HAVE INDEXEING BE OPEN (maybe just two) AND ON ALL THE TIME (would this ruin ball?), so all 3 indexing motors on, then activate shooter when needed
-  if(pathi < path.size()) {
+  if(true) {
     if(turnFlag) {
       if(compRobotDrive.GyroTurnTick(theta)) {
         turnFlag = false;
       }
-
+      
     } else if (moveFlag) { //does this logic work?, NOT RETURNING ANYTHIGN IN PIDDRIVESIMPLETICK
       if(compRobotDrive.PIDDriveSimpleTick(d)) {
+        std::cout << "done going forward" << std::endl;
         moveFlag = false;
         //which intakes, all 3 right because doing 1 ball at a time, all 3 for some time, then when shoot you shoot
        compIntake.disable(); 
@@ -128,7 +129,7 @@ void Robot::AutonomousPeriodic() {
       else {
         shoottimestart = frc::Timer::GetFPGATimestamp().value();
       }
-    } else {
+    } else if (pathi < path.size()) {
       //do we disable INTAKE HERE TOO !!!!!!!!!
       
       pathPoint delta;
@@ -136,6 +137,7 @@ void Robot::AutonomousPeriodic() {
       delta.y = (path[pathi].y - robPos.y);
 
       d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
+      std::cout << "initd " << d << std::endl;
       if (d > 0) {
         pathPoint unitDir;
         unitDir.x = delta.x / d;
@@ -147,6 +149,7 @@ void Robot::AutonomousPeriodic() {
         theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
         theta = theta - robTheta;
         robTheta += theta;
+        std::cout << "theta " << theta << std::endl;
         turnFlag = true;
         compRobotDrive.InitGyro();
 
@@ -163,6 +166,7 @@ void Robot::AutonomousPeriodic() {
         robPos.y += delta.y;
       }
       if (shootingPoints[pathi]) { 
+        std::cout << "shooting" << std::endl;
         shootFlag == true;
       }
       pathi++;

@@ -1,6 +1,6 @@
 #include "IntakeModule.h"
 #include "frc/SmartDashboard/SmartDashboard.h"
-
+#include <iostream>
 void IntakeModule::periodicInit() {
   indexMotors[0] = new rev::CANSparkMax(indexID0, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[1] = new rev::CANSparkMax(indexID1, rev::CANSparkMax::MotorType::kBrushed);
@@ -138,6 +138,7 @@ void IntakeModule::enable() {
 }
 
 void IntakeModule::disable() {
+   std::cout << "disabling intake" << std::endl;
    indexMotors[0]->StopMotor();
    indexMotors[1]->StopMotor();
    indexMotors[2]->StopMotor();
