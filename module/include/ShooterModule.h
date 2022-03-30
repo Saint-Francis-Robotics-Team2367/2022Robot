@@ -83,13 +83,13 @@ private:
 
   double setpoint = 0;
 
-  // Change this to match the name of your camera
-  //photonlib::PhotonCamera camera{"photonvision"};
-  //photonlib::PhotonPipelineResult prevVisionResult;
   
   bool track = true;
   float turretTheta = 90;
 
+  // Change this to match the name of your camera
+  //photonlib::PhotonCamera camera{"photonvision"};
+  //photonlib::PhotonPipelineResult prevVisionResult;
   const float visionP  = 0.01;
   const float visionI = 0.0;
   const float visionD = 0.2;

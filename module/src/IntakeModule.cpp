@@ -6,7 +6,6 @@ void IntakeModule::periodicInit() {
   indexMotors[1] = new rev::CANSparkMax(indexID1, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[2] = new rev::CANSparkMax(indexID2, rev::CANSparkMax::MotorType::kBrushed);
   indexMotors[0]->GetDeviceId();
-  intakeAction->SetSmartCurrentLimit(4);
   frc::SmartDashboard::PutNumber("intakeSpeed", -0.5);
   frc::SmartDashboard::PutNumber("armCurrent", 4);
   frc::SmartDashboard::PutNumber("armSpeedUp", .5);
@@ -15,9 +14,7 @@ void IntakeModule::periodicInit() {
   //iActEncoder.SetPositionConversionFactor(0.04);
 }
 
-void IntakeModule::periodicRoutine() {
-
-  frc::SmartDashboard::PutNumber("DevID", indexMotors[0]->GetDeviceId());
+void IntakeModule::periodicRoutine() {  frc::SmartDashboard::PutNumber("DevID", indexMotors[0]->GetDeviceId());
   frc::SmartDashboard::PutNumber("IsBrushed", indexMotors[0]->GetInitialMotorType() == rev::CANSparkMaxLowLevel::MotorType::kBrushed);
   if(driverStick->GetRawAxis(2) > 0.05)
   {
@@ -75,6 +72,7 @@ void IntakeModule::periodicRoutine() {
     indexMotors[2]->StopMotor();
     }
   }
+  
 
   // Use mode of robo
 /*
@@ -131,16 +129,16 @@ void IntakeModule::periodicRoutine() {
 }
 
 void IntakeModule::enable() {
-   indexMotors[0]->Set(-0.8);
-   indexMotors[1]->Set(-0.8);
-   indexMotors[2]->Set(-1.0);
-   intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));
+   //indexMotors[0]->Set(-0.8);
+   //indexMotors[1]->Set(-0.8);
+   //indexMotors[2]->Set(-1.0);
+   //intakeRoller->Set(frc::SmartDashboard::GetNumber("intakeSpeed", -0.5));
 }
 
 void IntakeModule::disable() {
-   std::cout << "disabling intake" << std::endl;
-   indexMotors[0]->StopMotor();
-   indexMotors[1]->StopMotor();
-   indexMotors[2]->StopMotor();
-   intakeRoller->StopMotor();
+   //std::cout << "disabling intake" << std::endl;
+   //indexMotors[0]->StopMotor();
+   //indexMotors[1]->StopMotor();
+   //indexMotors[2]->StopMotor();
+   //intakeRoller->StopMotor();
 }

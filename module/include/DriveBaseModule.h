@@ -31,15 +31,15 @@
 #define PIDIntegral 0
 #define PIDDerivative 0
 
-#define motorInitMaxCurrent 30 // The initial max current setting
-#define motorInitRatedCurrent 30 // The inital rated current settings
+#define motorInitMaxCurrent 60 // The initial max current setting
+#define motorInitRatedCurrent 40 // The inital rated current settings
 #define motorInitLimitCycles 50  // The inital number of allowed ms at peak current
 
 #define lInvert true // Inversion setings for sides
 #define rInvert false 
 
-#define xDeadband 0.08
-#define yDeadband 0.08
+#define xDeadband 0.02
+#define yDeadband 0.02
 
 #define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
 #define PI 3.141592654
@@ -56,7 +56,7 @@ class DriveBaseModule{
   bool intakeOn = false;
   bool moveFlag = true;
 
-  const double deadband = 0.08;
+  const double deadband = 0.02;
   float prevTime;
   float prev_value_speed;
   float prev_value_turn;
@@ -76,11 +76,9 @@ class DriveBaseModule{
   rev::SparkMaxPIDController lPID = lMotor->GetPIDController();
   rev::SparkMaxPIDController rPID = rMotor->GetPIDController();
 
-  //frc::PIDController g;
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
-
   float gyroInitVal = 0.0f;
   frc::ADIS16448_IMU m_imu{};
 
@@ -106,8 +104,8 @@ class DriveBaseModule{
   float TurningSensitivity(float rightStick, float leftStick);
   void alignToGoal();
   float getDistanceTraversed();
-  float sliderValue = 0.43;
 
+  float sliderValue = 0.43;
   float adjustSpeed = 0.01;
 
   bool tested = false;
@@ -115,8 +113,6 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
-
-
   
   photonlib::PhotonCamera cam{"guccicam"};
   bool encoderZeroed = false;
