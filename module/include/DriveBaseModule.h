@@ -7,21 +7,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
-#define PATHS_FILE "paths.txt"
-
 #include "Macros.h"
 
 #include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
 
 #include <frc/SmartDashboard/SmartDashboard.h>
-#include <frc/ADIS16448_IMU.h>
 #include <frc/PIDController.h>
-
-#include <photonlib/PhotonCamera.h>
-#include <photonlib/PhotonPipelineResult.h>
-#include <photonlib/PhotonTrackedTarget.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
@@ -80,7 +72,6 @@ class DriveBaseModule{
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
   float gyroInitVal = 0.0f;
-  frc::ADIS16448_IMU m_imu{};
 
   public:
 
@@ -113,8 +104,7 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
-  
-  photonlib::PhotonCamera cam{"guccicam"};
+
   bool encoderZeroed = false;
 };
 

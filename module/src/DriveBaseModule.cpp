@@ -190,79 +190,6 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
 }
 
 bool DriveBaseModule::PIDGyroTurnTick(float angle, float radius, float maxAcc, float maxVelocity) {
-  float timeElapsed;
-  float distanceToDeccelerate, endpoint = 0.0;
-  double currentVelocity = 0;
-  double currentPosition = 0;
-  if (pidprevVelocity == 0) {
-    rEncoder.SetPosition(0);
-    lEncoder.SetPosition(0);
-    InitGyro();
-  }
-  else {
-    timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime;
-    distanceToDeccelerate, endpoint = 0.0; //currentPosition is the set point
-    currentVelocity = pidprevVelocity;
-    currentPosition = pidprevPosition;
-    //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
-  }
-  //pidprevPosition = currentPosition;
-  
-  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.64); 
-
-  if (angle < 0) {
-    maxAcc *= -1;
-    maxVelocity *= -1;
-  }
-
-  //pidprevPosition = currentPosition;
-
-  endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
-  
-  frc::SmartDashboard::PutNumber("endpoint", endpoint);
-
-  if(fabs(currentPosition) < fabs(endpoint)){
-
-    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
-    if (fabs(distanceToDeccelerate) > fabs(endpoint - currentPosition)) {
-      currentVelocity -= (maxAcc * timeElapsed);
-    }
-    else //increase velocity
-    {
-      currentVelocity += (maxAcc * timeElapsed);
-      if (fabs(currentVelocity) > fabs(maxVelocity))
-      {
-        currentVelocity = maxVelocity;
-      }
-    }
-    currentPosition += currentVelocity * timeElapsed;
-    
-    if(fabs(currentPosition) > fabs(endpoint)) {
-      currentPosition = endpoint;
-    }
-    //same as other
-   
-    double outerSetpoint = (currentPosition * 12) / (PI * 4); // for now this is ticks (maybe rotations / gearRatio if not then)
-    double innerSetpoint = ((radius - centerToWheel)/(radius + centerToWheel)) * outerSetpoint;
-    
-
-    if(fabs(currentPosition) < fabs(endpoint)){
-      lPID.SetReference(outerSetpoint, rev::CANSparkMax::ControlType::kPosition);
-      rPID.SetReference(innerSetpoint, rev::CANSparkMax::ControlType::kPosition);
-    }
-
-
-    pidprevTime = frc::Timer::GetFPGATimestamp().value();
-    pidprevVelocity = currentVelocity;
-    pidprevPosition = currentPosition;
-    return false;
-  }
-  else if (!GyroTurnTick(angle)) {
-    return false;
-  }
-  pidprevVelocity = 0;
-  pidprevPosition = 0;
   return true;
 }
 
@@ -315,63 +242,6 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
   return true;
 }
 
-bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVelocity) {
-  float timeElapsed;
-  float distanceToDeccelerate, setpoint = 0.0;
-  double currentVelocity = 0;
-  double currentPosition = 0;
-  if (pidprevVelocity == 0) {
-    rEncoder.SetPosition(0);
-    lEncoder.SetPosition(0);
-  } else {
-    timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime;
-    distanceToDeccelerate, setpoint = 0.0; //currentPosition is the set point
-    currentVelocity = pidprevVelocity;
-    currentPosition = pidprevPosition; //commented this out, adds it twice
-    //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
-  }
-  //pidprevPosition = currentPosition;
-
-  if (totalFeet < 0) {
-    maxAcc *= -1;
-    maxVelocity *= -1;
-  }
-
-  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
-  lEncoder.SetPositionConversionFactor(0.64); 
-
-  if(fabs(currentPosition) < fabs(totalFeet)){
-    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
-    if (fabs(distanceToDeccelerate) > fabs(totalFeet - currentPosition)) {
-      currentVelocity -= (maxAcc * timeElapsed);
-    }
-    else //increase velocity
-    {
-      currentVelocity += (maxAcc * timeElapsed);
-      if (fabs(currentVelocity) > fabs(maxVelocity))
-      {
-        currentVelocity = maxVelocity;
-      }
-    }
-
-    currentPosition += currentVelocity * timeElapsed;
-    if(fabs(currentPosition) > fabs(totalFeet)) {
-      currentPosition = totalFeet;
-    }
-
-    setpoint = (currentPosition * 12) / (PI * 4); 
-    lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
-    rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
-    pidprevTime = frc::Timer::GetFPGATimestamp().value();
-    pidprevVelocity = currentVelocity;
-    pidprevPosition = currentPosition;
-    return false;
-
-  }
-  pidprevVelocity = 0;
-  pidprevPosition = 0;
-  return true; 
-}
 void DriveBaseModule::periodicInit() {
   frc::SmartDashboard::PutNumber("Sensitivity", 1);
   
@@ -433,107 +303,8 @@ bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
 }
 
 void DriveBaseModule::periodicRoutine() {
-  // frc::SmartDashboard::PutNumber("adjustSpeed", adjustSpeed);
-  // adjustSpeed = frc::SmartDashboard::GetNumber("adjustSpeed", 0.01);
-  
-  // Use mode of robot to determine control source
-  // Autonomous -> AutonomousPipe
-  // Monitor input from BrownoutPipe
-  // Command manipulators from operatorStick state
-
   sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
-  frc::SmartDashboard::PutNumber("Right Encoder", rEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Left Encoder", lEncoder.GetPosition());
-
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
-
-  if(driverStick->GetRawButton(3)) {
-    alignToGoal();
-  }
-
-  // if driver wants to adjust aim, hold button down to move position of robot
-  // if(operatorStick->GetRawButton(3)) {
-  //   arcadeDrive(0, adjustSpeed);
-  // }
-  // if(operatorStick->GetRawButton(2)) {
-  //   arcadeDrive(0, -1*adjustSpeed);
-  // }
-  frc::SmartDashboard::PutNumber("gyro", getGyroAngle());
-  // if (driverStick->GetRawButton(5))
-  // {
-  //   std::vector<float> v;
-  //   if (!intakeOn)
-  //   {
-  //     pipes[2]->pushQueue(new Message("activate", v));
-  //     intakeOn = true;
-  //   }
-  //   else
-  //   {
-  //     pipes[2]->pushQueue(new Message("disable", v));
-  //     intakeOn = false;
-  //   }
-  // }
-  // if (driverStick->GetRawButton(6))
-  // {
-  //   std::vector<float> v;
-  //   if (!intakeOn)
-  //   {
-  //     pipes[2]->pushQueue(new Message("index", 1)); // put 0 and 1 for temp right now
-  //     index = true;
-  //   }
-  //   else
-  //   {
-  //     pipes[2]->pushQueue(new Message("index", 0));
-  //     index = false;
-  //   }
-  // }
-  // if (driverStick->GetRawButton(1))
-  // {
-  //   if (!tested)
-  //   {
-  //     pipes[3]->pushQueue(new Message("test", 1));
-  //     tested = true;
-  //   }
-  // }
-  // else
-  // {
-  //   pipes[3]->pushQueue(new Message("test", 0));
-  //   tested = false;
-  // }
-  // Add rest of manipulator code...
-
-  // if (stateRef->IsAutonomousEnabled()) {
-  //   GenericPipe *p = pipes[1];
-
-  //   Message *m = p->popQueue();
-  //   if (m)
-  //   {
-  //     if (m->str == "PD")
-  //     {
-  //       frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", false);
-  //       if (PIDDrive(m->vals[0], m->vals[1], m->vals[2]))
-  //       {
-  //         frc::SmartDashboard::PutBoolean("PIDDrive Comm Succesful!", true);
-  //       }
-  //     }
-
-  //     if (m->str == "PT")
-  //     {
-  //       frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", false);
-  //       frc::SmartDashboard::PutNumber("InDriveBaseTheta", m->vals[0]);
-  //       if (PIDGyroTurn(m->vals[0], m->vals[1], m->vals[2], m->vals[3]))
-  //       {
-  //         // if no here, it does this and tries to do smtng else
-  //         frc::SmartDashboard::PutBoolean("PIDTurn Comm Succesful!", true);
-  //       }
-  //     }
-  //     if (m->str == "Arcade")
-  //     {
-  //       arcadeDrive(m->vals[0], m->vals[1]);
-  //     }
-  //     pipes[1]->pushQueue(new Message("done", 0));
-  //   }
-  // }
 }
 
 void DriveBaseModule::LimitRate(float& s, float& t) {
@@ -556,7 +327,7 @@ void DriveBaseModule::LimitRate(float& s, float& t) {
 }
 
 float DriveBaseModule::getGyroAngle(){
-  return(m_imu.GetAngle().value() - gyroInitVal);
+  return 0.0;
 }
 
 void DriveBaseModule::InitGyro() {
@@ -594,24 +365,7 @@ bool DriveBaseModule::GyroTurnTick(float theta) {
 }
 
 void DriveBaseModule::alignToGoal() {
-  if (cam.HasTargets()) {
-    frc::SmartDashboard::PutBoolean("camera", true);
-    photonlib::PhotonPipelineResult result = cam.GetLatestResult();
-    float v = result.GetBestTarget().GetYaw();
-    frc::SmartDashboard::PutNumber("yaw", v);
-    std::cout << v << std::endl;
-    // float y = result.GetBestTarget().GetCameraRelativePose().X().value();
-    // frc::SmartDashboard::PutNumber("distance", y);
-
-    if (fabs(v) > 3)
-      arcadeDrive(0, v * 0.2);
-    // else {
-    //   arcadeDrive(-y, 0);
-    // }
-  }
-  else {
-    frc::SmartDashboard::PutBoolean("camera", false);
-  }
+ 
 }
 
 float DriveBaseModule::getDistanceTraversed(){

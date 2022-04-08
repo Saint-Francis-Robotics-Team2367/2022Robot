@@ -12,9 +12,6 @@
 #include <stdio.h>
 #include <string>
 
-//#include <frc/ADIS16448_IMU.h>
-
-#include <photonlib/PhotonCamera.h>
 #include <math.h>
 #include <rev/CANSparkMax.h>
 

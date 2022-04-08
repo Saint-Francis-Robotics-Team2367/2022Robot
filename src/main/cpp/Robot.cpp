@@ -4,204 +4,203 @@
 
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
-#include "paths.h"
-#define PATHS_FILE "paths.txt"
+#include <frc/Solenoid.h>
+#include <frc/PowerDistribution.h>
+#include <frc/DoubleSolenoid.h>
+#include <frc/PneumaticsControlModule.h>
 
 // // All Module Includes
 #include "DriveBaseModule.h"
-#include "IntakeModule.h"
-#include "ShooterModule.h"
-#include "AutonomousModule.h"
-
 
 DriveBaseModule compRobotDrive;
-IntakeModule compIntake;
-ShooterModule compShooter;
-//AutonomousModule automod;
+frc::PowerDistribution pdp{40, frc::PowerDistribution::ModuleType::kCTRE};
+frc::PneumaticsControlModule myPCM;
 
-void Robot::RobotInit() {
+frc::DoubleSolenoid pnu1{frc::PneumaticsModuleType::CTREPCM, 0, 1};
+frc::DoubleSolenoid pnu2{frc::PneumaticsModuleType::CTREPCM, 2, 3};
+frc::DoubleSolenoid pnu3{frc::PneumaticsModuleType::CTREPCM, 4, 5};
+frc::DoubleSolenoid pnu4{frc::PneumaticsModuleType::CTREPCM, 6, 7};
+
+frc::Joystick *driverStick = new frc::Joystick(driverStickPort);
+frc::Joystick *operatorStick = new frc::Joystick(operatorStickPort);
+
+enum liftState
+{
+  pre_lift = 0,
+  first_rung_grab,
+  first_rung_lift,
+  second_rung_grab,
+  first_rung_release,
+  clear_second_rung,
+  reach_for_last_rung,
+  last_lift,
+  grab_final_rung,
+  release_second_rung,
+  final_state
+};
+int currLiftState = liftState::pre_lift;
+
+void Robot::RobotInit()
+{
   compRobotDrive.periodicInit();
-  compIntake.periodicInit();
-  compShooter.periodicInit();
 }
 
-void Robot::RobotPeriodic() {
-
+void Robot::RobotPeriodic()
+{
 }
- 
-void Robot::AutonomousInit() { 
-  int sindex = 0;
-  pathi = 0;
-  path.clear();
+void Robot::AutonomousInit()
+{
+}
+void Robot::AutonomousPeriodic()
+{
+}
 
-  while(sindex < paths.length()){ 
-      if (paths[sindex] == '*') {
-          pathi++;
-          sindex++;
-      }
-      else if ((pathi == currpath) && (paths[sindex] == 's')) {
-          pathPoint finalp = path[path.size() - 1];
-          float dToGoal = sqrt(pow(finalp.x, 2) + pow(finalp.y, 2));
+void Robot::TeleopInit()
+{
+  // Move this somewhere else later
 
-          std::cout << "dtogoal " << dToGoal << std::endl;
-          
-          pathPoint shootingp;
-          shootingp.x = (-1 * finalp.x / dToGoal) * (dToGoal - shootingDistance) + finalp.x;
-          shootingp.y = (-1 * finalp.y / dToGoal) * (dToGoal - shootingDistance) + finalp.y;
-          
-          path.push_back(shootingp);
-          shootingPoints[path.size() - 1] = true;
-          sindex += 2;
-      }
-      else if ((pathi == currpath) && (paths[sindex] == 'r')) {
-          pathPoint finalp = path[path.size() - 1];
-          
-          path.push_back(finalp);
-          shootingPoints[path.size() - 1] = true;
-          sindex += 2;
-      }
-      else if (pathi == currpath) {
-          pathPoint p;
-          p.x = atof(paths.substr(sindex, 6).c_str());
-          p.y = atof(paths.substr(sindex + 7, 6).c_str());
-          path.push_back(p);
-          sindex += 14;
-      }
-      else {
-        sindex++;
-      }
+  // Shooter Motor inits
+  pdp.ClearStickyFaults();
+  myPCM.ClearAllStickyFaults();
+  pnu1.Set(frc::DoubleSolenoid::kReverse);
+  pnu2.Set(frc::DoubleSolenoid::kReverse);
+  pnu3.Set(frc::DoubleSolenoid::kReverse);
+  pnu4.Set(frc::DoubleSolenoid::kReverse);
+
+  currLiftState = 0;
+}
+
+void Robot::TeleopPeriodic()
+{
+  static bool switchState = false;
+  if (switchState != myPCM.GetPressureSwitch())
+  {
+    switchState = myPCM.GetPressureSwitch();
+    printf("Pressure Switch: %d\n", myPCM.GetPressureSwitch());
   }
 
-  robTheta = 0;
-  pathi = 1;
-  robPos = path[0];
-}
-void Robot::AutonomousPeriodic() {
-  // //testing PID's during comp
-
-  // if(shootFlag) {
-  // //  std::cout << "ffffffffffffffffff" << std::endl;
-  //   //I added a timestamp for half a second of waiting time in the shoot() method, check if needed !!!!!, added because shooterIndexer needs a bit of time
-  // if (compShooter.shoot()) {
-  //   if ((frc::Timer::GetFPGATimestamp().value() - shoottimestart) > 0.8) {
-  //     compShooter.stopShooting();
-  //     shootFlag = false;
-  //   }
-  // }
-
-  // else {
-  //   shoottimestart = frc::Timer::GetFPGATimestamp().value();
-  // }
-  // }
-  // //}
-  //  else if ((!tested) && (compRobotDrive.PIDDriveSimpleTick(6))) {
-  //    tested = true;
-  //  }
-
-
-
-  // //***HAVE INDEXEING BE OPEN (maybe just two) AND ON ALL THE TIME (would this ruin ball?), so all 3 indexing motors on, then activate shooter when needed
-  if(true) {
-    if(turnFlag) {
-      std::cout << "turning" << std::endl;
-      if(compRobotDrive.GyroTurnTick(theta)) {
-        turnFlag = false;
-      }
-      
-    } else if (moveFlag) { //does this logic work?, NOT RETURNING ANYTHIGN IN PIDDRIVESIMPLETICK
-      if(compRobotDrive.PIDDriveSimpleTick(d)) {
-        moveFlag = false;
-        //which intakes, all 3 right because doing 1 ball at a time, all 3 for some time, then when shoot you shoot
-        compIntake.disable(); 
-      }
-       else if (compRobotDrive.getDistanceTraversed() > (0.75 * d)) {
-        compIntake.enable();
-      }
-    } 
-    else if(shootFlag) {
-      //I added a timestamp for half a second of waiting time in the shoot() method, check if needed !!!!!, added because shooterIndexer needs a bit of time
-     if (compShooter.shoot()) {
-        if ((frc::Timer::GetFPGATimestamp().value() - shoottimestart) > 0.8) {
-          compShooter.stopShooting();
-          shootFlag = false;
-        }
-      }
-      else {
-        shoottimestart = frc::Timer::GetFPGATimestamp().value();
-      }
-    } else if (pathi < path.size()) {
-      //do we disable INTAKE HERE TOO !!!!!!!!!
-      
-      pathPoint delta;
-      delta.x = (path[pathi].x - robPos.x);
-      delta.y = (path[pathi].y - robPos.y);
-
-      d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-      std::cout << "initd " << d << std::endl;
-      if (d > 0) {
-        pathPoint unitDir;
-        unitDir.x = delta.x / d;
-        unitDir.y = delta.y / d;
-
-        delta.x = delta.x + unitDir.x * coordOffset; //should be plus right?
-        delta.y = delta.y + unitDir.y * coordOffset;
-
-        theta = atan2((path[pathi].x - robPos.x), (path[pathi].y - robPos.y)) * (180/(3.14159265));
-        theta = theta - robTheta;
-        theta = fmod(theta, 360);
-        robTheta += theta;
-        std::cout << "theta " << theta << std::endl;
-        turnFlag = true;
-        compRobotDrive.InitGyro();
-
-          //turn theta amount !!
-
-        d = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-        std::cout << "ddddddddddddddd " << d << std::endl;
-        moveFlag = true;
-          
-          //move d amount
-
-
-        robPos.x += delta.x;
-        robPos.y += delta.y;
-      }
-      if (shootingPoints[pathi]) { 
-        shootFlag = true;
-      }
-      pathi++;
-    }
-  }
-}
-
-
-
-void Robot::TeleopInit() {
-  //Move this somewhere else later
-
-  //Shooter Motor inits
- 
-}
-
-void Robot::TeleopPeriodic() {
   compRobotDrive.periodicRoutine();
-  compIntake.periodicRoutine();
-  compShooter.periodicRoutine();
-  
+
+  // lifter_code
+
+  if (driverStick->GetRawButtonPressed(1))
+    pnu1.Toggle();
+
+  if (driverStick->GetRawButtonPressed(2))
+    pnu2.Toggle();
+
+  if (driverStick->GetRawButtonPressed(3))
+    pnu3.Toggle();
+
+  if (driverStick->GetRawButtonPressed(4))
+    pnu4.Toggle();
+
+  if (driverStick->GetRawButtonPressed(6))
+  {
+    printf("lift state:%d\n", currLiftState++);
+    if (currLiftState > final_state)
+      currLiftState = final_state;
+  }
+
+  if (driverStick->GetRawButtonPressed(5))
+  {
+    printf("lift state:%d\n", currLiftState--);
+    if (currLiftState < 0)
+      currLiftState = 0;
+  }
+
+  switch (currLiftState)
+  {
+  case liftState::pre_lift:
+    // do nothing here to allow for manual movement
+    break;
+
+  case liftState::first_rung_grab:
+    pnu1.Set(pnu1.kForward); // right arm extended
+    pnu3.Set(pnu3.kForward); // right arm upright
+
+    pnu2.Set(pnu2.kForward); // left arm extened
+    pnu4.Set(pnu4.kReverse); // left arm forward
+    break;
+
+  case liftState::first_rung_lift:
+    pnu1.Set(pnu1.kReverse); // right arm retracted
+    pnu3.Set(pnu3.kForward); // right arm upright
+
+    pnu2.Set(pnu2.kForward); // left arm extened
+    pnu4.Set(pnu4.kReverse); // left arm forward
+    break;
+
+  case liftState::second_rung_grab:
+    pnu1.Set(pnu1.kReverse); // right arm retracted
+    pnu3.Set(pnu3.kForward); // right arm upright
+
+    pnu2.Set(pnu2.kForward); // left arm extened
+    pnu4.Set(pnu4.kForward); // left arm upright
+    break;
+
+  case liftState::first_rung_release:
+    pnu1.Set(pnu1.kForward); // right arm extended
+    pnu3.Set(pnu3.kForward); // right arm upright
+
+    pnu2.Set(pnu2.kForward); // left arm extened
+    pnu4.Set(pnu4.kForward); // left arm upright
+    break;
+  case liftState::clear_second_rung:
+    pnu1.Set(pnu1.kReverse); // right arm retracted
+    pnu3.Set(pnu3.kReverse); // right arm forward
+
+    pnu2.Set(pnu2.kForward); // left arm extened
+    pnu4.Set(pnu4.kForward); // left arm upright
+    break;
+  case liftState::reach_for_last_rung:
+    pnu1.Set(pnu1.kForward);
+    pnu3.Set(pnu3.kReverse);
+
+    pnu2.Set(pnu2.kForward);
+    pnu4.Set(pnu4.kForward);
+    break;
+  case liftState::last_lift:
+    pnu1.Set(pnu1.kForward);
+    pnu3.Set(pnu3.kReverse);
+
+    pnu2.Set(pnu2.kReverse);
+    pnu4.Set(pnu4.kForward);
+    break;
+  case liftState::grab_final_rung:
+    pnu1.Set(pnu1.kForward);
+    pnu3.Set(pnu3.kForward);
+
+    pnu2.Set(pnu2.kReverse);
+    pnu4.Set(pnu4.kForward);
+    break;
+  case liftState::release_second_rung:
+    pnu1.Set(pnu1.kForward);
+    pnu3.Set(pnu3.kForward);
+
+    pnu2.Set(pnu2.kForward);
+    pnu4.Set(pnu4.kForward);
+    break;
+
+  default:
+    break;
+  }
 }
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {
- }
+void Robot::TestInit()
+{
+}
 
-void Robot::TestPeriodic() {
+void Robot::TestPeriodic()
+{
 }
 
 #ifndef RUNNING_FRC_TESTS
-int main() {
+int main()
+{
   return frc::StartRobot<Robot>();
 }
 #endif
-
