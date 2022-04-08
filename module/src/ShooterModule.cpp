@@ -2,12 +2,13 @@
 #include "frc/smartdashboard/SmartDashboard.h"
 #include <frc/TimedRobot.h>
 
-void ShooterModule::periodicInit() {
-    //Shooter Motor inits
-    // shooterMotorPID.SetP(shooterkP);
-    // shooterMotorPID.SetI(shooterkI);
-    // shooterMotorPID.SetD(shooterkD);
-    // shooterMotorPID.SetFF(shooterkFF);
+void ShooterModule::periodicInit()
+{
+    // Shooter Motor inits
+    //  shooterMotorPID.SetP(shooterkP);
+    //  shooterMotorPID.SetI(shooterkI);
+    //  shooterMotorPID.SetD(shooterkD);
+    //  shooterMotorPID.SetFF(shooterkFF);
 
     // //These aren't good hood motor inits but whatever, change
     // hoodMotorPID.SetP(0.2);
@@ -18,7 +19,6 @@ void ShooterModule::periodicInit() {
     // turretMotorPID.SetP(0.2);
     // turretMotorPID.SetI(0);
     // turretMotorPID.SetD(0.7);
-
 
     shoot2->Follow(*shoot1, true);
     shoot2->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
@@ -31,44 +31,42 @@ void ShooterModule::periodicInit() {
     shootPid.SetIZone(Iz);
     shootPid.SetFF(FF);
     shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
-    frc::SmartDashboard::PutNumber("shootSpeedSetPoint", shootSpeedSetPoint); 
+    frc::SmartDashboard::PutNumber("shootSpeedSetPoint", shootSpeedSetPoint);
 }
 
-void ShooterModule::periodicRoutine() {
-
+void ShooterModule::periodicRoutine()
+{
 
     frc::SmartDashboard::PutNumber("shooterSpeed", shootEncoder.GetVelocity());
-    if(driverStick->GetRawButton(2))
+    if (driverStick->GetRawButton(2))
     {
         shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
         shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
-    
-        shootPid.SetReference(shootSpeedSetPoint , rev::CANSparkMax::ControlType::kVelocity, 0);
-        if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
+
+        shootPid.SetReference(shootSpeedSetPoint, rev::CANSparkMax::ControlType::kVelocity, 0);
+        if (shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
         {
             shooterMotor->Set(-1.0);
         }
-        else    
+        else
         {
             shooterMotor->StopMotor();
         }
-            
     }
     else
     {
         shoot1->StopMotor();
-        //shootPid.SetReference(0.0, rev::CANSparkMax::ControlType::kVelocity);
+        // shootPid.SetReference(0.0, rev::CANSparkMax::ControlType::kVelocity);
     }
 
     if (driverStick->GetRawButton(4))
         shooterMotor->Set(-1.0);
     else
     {
-      if(!driverStick->GetRawButton(2))
-        shooterMotor->StopMotor();
+        if (!driverStick->GetRawButton(2))
+            shooterMotor->StopMotor();
     }
-         
-    
+
     /*
     Message* m = nullptr;
     if (stateRef->IsAutonomousEnabled()) {
@@ -112,35 +110,35 @@ void ShooterModule::periodicRoutine() {
 */
 }
 
-bool ShooterModule::shoot() {
-         shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
-        shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
-    
-        shootPid.SetReference(shootSpeedSetPoint , rev::CANSparkMax::ControlType::kVelocity, 0);
-        if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
-        {
-            shooterMotor->Set(-1.0);
-            return true;
-        }
-        else    
-        {
-            shooterMotor->StopMotor();
-            return false;
-        }
-    //this->periodicRoutine();
-            
-   // if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
+bool ShooterModule::shoot()
+{
+    shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
+    shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
+
+    shootPid.SetReference(shootSpeedSetPoint, rev::CANSparkMax::ControlType::kVelocity, 0);
+    if (shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
+    {
+        shooterMotor->Set(-1.0);
+        return true;
+    }
+    else
+    {
+        shooterMotor->StopMotor();
+        return false;
+    }
+    // this->periodicRoutine();
+
+    // if(shootEncoder.GetVelocity() < shootSpeedSetPoint * 0.95)
     // {
     //     shooterMotor->Set(-1.0);
     //     return false;
     // }
-    // else    
+    // else
     // {
     //     shooterMotor->StopMotor();
     //     return true;
     // }
-   
-   
+
     // shootPid.SetOutputRange(minShooterOutput, maxShooterOutput);
     // shootSpeedSetPoint = frc::SmartDashboard::GetNumber("shootSpeedSetPoint", shootSpeedSetPoint);
 
@@ -158,14 +156,15 @@ bool ShooterModule::shoot() {
     //     shooterMotor->Set(-1.0); //shooter indexer
     //     shooterFlag = true;
     // }
-    // else    
+    // else
     // {
     //     shooterMotor->StopMotor();
     // }
     // return false;
 }
 
-void ShooterModule::stopShooting() {
+void ShooterModule::stopShooting()
+{
     shoot1->StopMotor();
     shooterMotor->StopMotor();
 }

@@ -3,7 +3,7 @@
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
   //  motor->RestoreFactoryDefaults();
   // follower->RestoreFactoryDefaults();
-  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   motor->SetInverted(invert);
   follower->Follow(*motor, false);
   return motor->GetLastError() == rev::REVLibError::kOk;
@@ -30,8 +30,10 @@ float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
 
 void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
     double leftMotorOutput, rightMotorOutput;
-    float xSpeed = xSpeedi;
-    float zRotation = zRotationi;
+    // float xSpeed = xSpeedi;
+    float xSpeed = std::copysign(pow(xSpeedi, 2), xSpeedi);
+    // float zRotation = zRotationi;
+    float zRotation = std::copysign(pow(zRotationi, 2), zRotationi);
 
     LimitRate(xSpeed, zRotation);
 

@@ -31,15 +31,15 @@
 #define PIDIntegral 0
 #define PIDDerivative 0
 
-#define motorInitMaxCurrent 60 // The initial max current setting
-#define motorInitRatedCurrent 40 // The inital rated current settings
-#define motorInitLimitCycles 50  // The inital number of allowed ms at peak current
+#define motorInitMaxCurrent 100 // The initial max current setting
+#define motorInitRatedCurrent 60 // The inital rated current settings
+#define motorInitLimitCycles 2000 // The inital number of allowed ms at peak current
 
 #define lInvert true // Inversion setings for sides
 #define rInvert false 
 
-#define xDeadband 0.02
-#define yDeadband 0.02
+#define xDeadband 0.025
+#define yDeadband 0.025
 
 #define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
 #define PI 3.141592654
@@ -56,7 +56,7 @@ class DriveBaseModule{
   bool intakeOn = false;
   bool moveFlag = true;
 
-  const double deadband = 0.02;
+  const double deadband = 1e-5;
   float prevTime;
   float prev_value_speed;
   float prev_value_turn;
@@ -105,7 +105,7 @@ class DriveBaseModule{
   void alignToGoal();
   float getDistanceTraversed();
 
-  float sliderValue = 0.43;
+  float sliderValue = 1;
   float adjustSpeed = 0.01;
 
   bool tested = false;
