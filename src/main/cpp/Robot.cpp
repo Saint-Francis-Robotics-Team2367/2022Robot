@@ -53,6 +53,11 @@ void Robot::AutonomousInit()
 }
 void Robot::AutonomousPeriodic()
 {
+  if(!moveFlag) {
+    if(compRobotDrive.PIDDriveSimpleTick(5)) {
+      moveFlag = true;
+    }
+  }
 }
 
 void Robot::TeleopInit()
@@ -147,15 +152,16 @@ void Robot::TeleopPeriodic()
     pnu4.Set(pnu4.kForward); // left arm upright
     break;
   case liftState::clear_second_rung:
-    pnu1.Set(pnu1.kReverse); // right arm retracted
-    pnu3.Set(pnu3.kReverse); // right arm forward
+    // KRISHNA: I DONT THINK WE NEED THIS
+    // pnu1.Set(pnu1.kReverse); // right arm retracted
+    // pnu3.Set(pnu3.kReverse); // right arm forward
 
     pnu2.Set(pnu2.kForward); // left arm extened
     pnu4.Set(pnu4.kForward); // left arm upright
     break;
   case liftState::reach_for_last_rung:
-    pnu1.Set(pnu1.kForward);
-    pnu3.Set(pnu3.kReverse);
+    // pnu1.Set(pnu1.kForward);
+    // pnu3.Set(pnu3.kReverse);
 
     pnu2.Set(pnu2.kForward);
     pnu4.Set(pnu4.kForward);

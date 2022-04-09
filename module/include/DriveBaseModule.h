@@ -80,14 +80,14 @@ class DriveBaseModule{
   void periodicRoutine();
  
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
-  void arcadeDrive(float vel, float dir); //takes two values from the joystick and converts them into motor output %
+  void arcadeDrive(double vel, double dir); //takes two values from the joystick and converts them into motor output %
   bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
   bool PIDDriveSimpleTick(float totalFeet);
   bool PIDDriveTick(float totalFeet, float maxAcc, float maxVelocity);
   bool PIDTurn(float angle, float radius, float maxAcc, float maxVelocity);
   bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
   bool PIDGyroTurnTick(float angle, float radius, float maxAcc, float maxVelocity);
-  void LimitRate(float&s, float&t);
+  void LimitRate(double& s, double& t);
   float getGyroAngle();
   void InitGyro();
   void GyroTurn(float theta);

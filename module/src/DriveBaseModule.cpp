@@ -1,9 +1,7 @@
 #include "DriveBaseModule.h"
 
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
-  //  motor->RestoreFactoryDefaults();
-  // follower->RestoreFactoryDefaults();
-  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  motor->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   motor->SetInverted(invert);
   follower->Follow(*motor, false);
   return motor->GetLastError() == rev::REVLibError::kOk;
@@ -28,32 +26,26 @@ float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
   return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed));
 }
 
-void DriveBaseModule::arcadeDrive(float xSpeedi, float zRotationi) {
-    double leftMotorOutput, rightMotorOutput;
-    // float xSpeed = xSpeedi;
-    float xSpeed = std::copysign(pow(xSpeedi, 2), xSpeedi);
-    // float zRotation = zRotationi;
-    float zRotation = std::copysign(pow(zRotationi, 2), zRotationi);
+void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
+    if (fabs(xSpeedi) < deadband)
+        xSpeedi = 0;
+
+    if (fabs(zRotationi) < deadband)
+        zRotationi = 0;
+
+    double xSpeed = std::copysign(pow(fabs(xSpeedi), 1.8), xSpeedi);
+    double zRotation = std::copysign(pow(fabs(zRotationi), 2), zRotationi);
 
     LimitRate(xSpeed, zRotation);
 
-    if (fabs(xSpeed) < deadband)
-        xSpeed = 0;
-
-    if (fabs(zRotation) < deadband)
-        zRotation = 0;
-
-    leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
-    rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
+    double leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
+    double rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
         
     if (rightMotorOutput != 0)
         rightMotorOutput = std::copysign((1/(1-deadband)) * fabs(rightMotorOutput) - (deadband/(1/deadband)), rightMotorOutput);
-
-    // leftMotorOutput = std::copysign(pow(leftMotorOutput, 2), leftMotorOutput);
-    // rightMotorOutput = std::copysign(pow(rightMotorOutput, 2), rightMotorOutput);
 
     lMotor->Set(leftMotorOutput);
     rMotor->Set(rightMotorOutput);
@@ -80,7 +72,6 @@ bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float max
     return false;
   }
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
-
 
   while(fabs(currentPosition) < fabs(endpoint)){
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
@@ -142,7 +133,6 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
   endpoint = (angle / 360.0) * (radius + centerToWheel) * (2 * PI);
   
   frc::SmartDashboard::PutNumber("endpoint", endpoint);
-
 
   while(fabs(currentPosition) < fabs(endpoint)){
     frc::SmartDashboard::PutNumber("lEncoder", lEncoder.GetPosition());
@@ -247,15 +237,11 @@ void DriveBaseModule::periodicInit() {
   
   if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
     //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-    //return;
   }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ///ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
   }
-
-  // Need to add PID Setters!!
-
   // ErrorModulePipe->pushQueue(new Message("Ready", INFO));
 
   double m_P = 0.5, m_I = 0.00, m_D = 0.1, iZone = 0.00;
@@ -303,16 +289,16 @@ bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
 }
 
 void DriveBaseModule::periodicRoutine() {
-  sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
+  // sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
 }
 
-void DriveBaseModule::LimitRate(float& s, float& t) {
+void DriveBaseModule::LimitRate(double& s, double& t) {
     double k = 6; //1/k = rate to speed up [so 0.2 seconds]
-    float currTime = frc::Timer::GetFPGATimestamp().value();
-    float deltaTime = currTime - prevTime;
-    float r_s = (s - prev_value_speed) / deltaTime;
-    float r_t = (t - prev_value_turn) / deltaTime;
+    double currTime = frc::Timer::GetFPGATimestamp().value();
+    double deltaTime = currTime - prevTime;
+    double r_s = (s - prev_value_speed) / deltaTime;
+    double r_t = (t - prev_value_turn) / deltaTime;
 
     if ((fabs(r_s) > k) && (fabs(s) > fabs(prev_value_speed))){
         s = ((k * (fabs(r_s) / r_s) * deltaTime) + prev_value_speed);

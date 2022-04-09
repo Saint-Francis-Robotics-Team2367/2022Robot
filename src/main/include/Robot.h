@@ -11,7 +11,6 @@
 #include <fstream>
 #include <stdio.h>
 #include <string>
-
 #include <math.h>
 #include <rev/CANSparkMax.h>
 
