@@ -329,6 +329,8 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
     //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
   }
   //pidprevPosition = currentPosition;
+  timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime; //moved out
+
 
   if (totalFeet < 0) {
     maxAcc *= -1;
