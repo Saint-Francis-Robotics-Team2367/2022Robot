@@ -288,6 +288,67 @@ bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
   return (getDistanceTraversed() >= (0.95 * totalFeet));  //ADDED THIS
 }
 
+
+bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVelocity) {
+  float timeElapsed;
+  float distanceToDeccelerate, setpoint = 0.0;
+  double currentVelocity = 0;
+  double currentPosition = 0;
+  if (pidprevVelocity == 0) {
+    rEncoder.SetPosition(0);
+    lEncoder.SetPosition(0);
+  } else {
+    timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime;
+    distanceToDeccelerate, setpoint = 0.0; //currentPosition is the set point
+    currentVelocity = pidprevVelocity;
+    currentPosition = pidprevPosition; //commented this out, adds it twice
+    //currentPosition = pidprevPosition + currentVelocity * timeElapsed;
+  }
+  //pidprevPosition = currentPosition;
+  timeElapsed = frc::Timer::GetFPGATimestamp().value() - pidprevTime; //moved out
+
+
+  if (totalFeet < 0) {
+    maxAcc *= -1;
+    maxVelocity *= -1;
+  }
+
+  rEncoder.SetPositionConversionFactor(0.64); //check if this works!
+  lEncoder.SetPositionConversionFactor(0.64); 
+
+  if(fabs(currentPosition) < fabs(totalFeet)){
+    distanceToDeccelerate = (3 * currentVelocity * currentVelocity) / (2 * maxAcc);
+    if (fabs(distanceToDeccelerate) > fabs(totalFeet - currentPosition)) {
+      currentVelocity -= (maxAcc * timeElapsed);
+    }
+    else //increase velocity
+    {
+      currentVelocity += (maxAcc * timeElapsed);
+      if (fabs(currentVelocity) > fabs(maxVelocity))
+      {
+        currentVelocity = maxVelocity;
+      }
+    }
+
+    currentPosition += currentVelocity * timeElapsed;
+    if(fabs(currentPosition) > fabs(totalFeet)) {
+      currentPosition = totalFeet;
+    }
+
+    setpoint = (currentPosition * 12) / (PI * 4); 
+    lPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
+    rPID.SetReference(setpoint, rev::CANSparkMax::ControlType::kPosition);
+    pidprevTime = frc::Timer::GetFPGATimestamp().value();
+    pidprevVelocity = currentVelocity;
+    pidprevPosition = currentPosition;
+    return false;
+
+  }
+  pidprevVelocity = 0;
+  pidprevPosition = 0;
+  return true; 
+}
+
 void DriveBaseModule::periodicRoutine() {
   // sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
   arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
