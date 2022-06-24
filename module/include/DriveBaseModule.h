@@ -14,6 +14,7 @@
 
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include <frc/PIDController.h>
+#include <frc/ADIS16448_IMU.h>
 
 #define driverStickPort 0
 #define operatorStickPort 1
@@ -72,7 +73,7 @@ class DriveBaseModule{
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
   float gyroInitVal = 0.0f;
-
+  frc::ADIS16448_IMU m_imu{};
   public:
 
   std::vector<uint8_t> getConstructorArgs();
@@ -95,6 +96,7 @@ class DriveBaseModule{
   float TurningSensitivity(float rightStick, float leftStick);
   void alignToGoal();
   float getDistanceTraversed();
+  void adjustedArcadeDrive(double x, double y);
 
   float sliderValue = 1;
   float adjustSpeed = 0.01;

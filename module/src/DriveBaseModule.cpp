@@ -51,6 +51,24 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
     rMotor->Set(rightMotorOutput);
 }
 
+
+void DriveBaseModule::adjustedArcadeDrive(double xSpeedi, double zRotationi) {
+    if (fabs(xSpeedi) < deadband)
+        xSpeedi = 0;
+
+    if (fabs(zRotationi) < deadband)
+        zRotationi = 0;
+
+    double xSpeed = std::copysign(pow(fabs(xSpeedi), 1.8), xSpeedi);
+    double zRotation = std::copysign(pow(fabs(zRotationi), 2), zRotationi);
+
+    double leftMotorOutput = xSpeed + zRotation;
+    double rightMotorOutput = xSpeed - zRotation;
+
+    lMotor->Set(leftMotorOutput);
+    rMotor->Set(rightMotorOutput);
+}
+
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {
   rEncoder.SetPosition(0);
   lEncoder.SetPosition(0);
@@ -350,8 +368,13 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
 }
 
 void DriveBaseModule::periodicRoutine() {
-  // sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
-  arcadeDrive(driverStick->GetRawAxis(1),  -1.0 * driverStick->GetRawAxis(4));
+  //sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
+  //left stick, right stick
+  float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+  //rightStickOutput = 
+
+
+  arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
 }
 
 void DriveBaseModule::LimitRate(double& s, double& t) {
