@@ -52,21 +52,36 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 }
 
 
-void DriveBaseModule::adjustedArcadeDrive(double xSpeedi, double zRotationi) {
-    if (fabs(xSpeedi) < deadband)
-        xSpeedi = 0;
+void DriveBaseModule::adjustedArcadeDrive(double xSpeed, double zRotation) {
+    if (fabs(xSpeed) < deadband)
+        xSpeed = 0;
 
-    if (fabs(zRotationi) < deadband)
-        zRotationi = 0;
+    if (fabs(zRotation) < deadband)
+        zRotation = 0;
 
-    double xSpeed = std::copysign(pow(fabs(xSpeedi), 1.8), xSpeedi);
-    double zRotation = std::copysign(pow(fabs(zRotationi), 2), zRotationi);
+    //scaling functiins
 
-    double leftMotorOutput = xSpeed + zRotation;
-    double rightMotorOutput = xSpeed - zRotation;
+  
+    //is this even right, any other adjustments I should add: have slew rate, like inertia scalar, other kinds of scalar, skim
+    float angle = m_imu.GetAngle().value(); 
+    float angleRate = m_imu.GetRate().value(); //rate of change of angle or just angle
+    //not adjusted arcade drive?
+    float rotationError = zRotation - angleRate;
+    // double leftMotorOutput = xSpeed + zRotation;
+    // double rightMotorOutput = xSpeed - zRotation;
+    double leftMotorOutput = xSpeed + rotationError;
+    double rightMotorOutput = xSpeed - rotationError;
 
-    lMotor->Set(leftMotorOutput);
-    rMotor->Set(rightMotorOutput);
+
+    //right stick PID input function
+    //input to PID function would be error between right stick and gyro
+
+    
+    //velocity, curvature, cheesy drive
+
+
+    lPID.SetReference(leftMotorOutput, rev::CANSparkMax::ControlType::kPosition);
+    rPID.SetReference(rightMotorOutput, rev::CANSparkMax::ControlType::kPosition);
 }
 
 bool DriveBaseModule::PIDTurn(float angle, float radius, float maxAcc, float maxVelocity) {

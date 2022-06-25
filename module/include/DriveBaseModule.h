@@ -73,9 +73,14 @@ class DriveBaseModule{
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
   
   float gyroInitVal = 0.0f;
-  frc::ADIS16448_IMU m_imu{};
+  
+  
+  // frc::PIDOutput output; //make a decorator class
+  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
+
   public:
 
+  frc::ADIS16448_IMU m_imu{};
   std::vector<uint8_t> getConstructorArgs();
   void periodicInit();
   void periodicRoutine();
