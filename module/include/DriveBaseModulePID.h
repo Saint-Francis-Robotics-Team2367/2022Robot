@@ -20,7 +20,6 @@ public:
     void PIDWrite(double output);
 
     double GetOutput();
-    double CalculatePID();
     private:
 	    double m_out;
 };  

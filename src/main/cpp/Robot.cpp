@@ -42,11 +42,9 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-    float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-  
-
-  GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1), rightStickOutput - GyroPIDDrive.CalculatePID());
- 
+  float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+  //get error instead?
+  GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1), rightStickOutput - GyroPIDDrive.GetOutput());
 }
 
 void Robot::DisabledInit() {}

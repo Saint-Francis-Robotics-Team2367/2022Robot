@@ -16,9 +16,5 @@ double DriveBaseModulePID::GetOutput()
 {
 	return m_out;
 }
-double DriveBaseModulePID::CalculatePID() 
-{
-	
-	return rightStickPID.GetSetpoint();
-}
+
 
