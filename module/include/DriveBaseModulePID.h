@@ -9,17 +9,18 @@ class DriveBaseModulePID: public DriveBaseModule, frc::PIDOutput{
 //creates PIDOutput object which would track this
 //PIDSource x frc::Adis overwrite and create instance and pass here
 
-GyroPIDSource gyroSource{m_imu};
-frc::PIDController rightStickPID{1.0, 0.0, 0.0, &gyroSource, this};
+GyroPIDSource gyroSource{m_imu}; //is this fine with overides
+
 //include gyro PIDSource∏
 
 
 public:
-
+    frc::PIDController rightStickPID{1.0, 0.0, 0.0, &gyroSource, this};
     DriveBaseModulePID();
     void PIDWrite(double output);
 
     double GetOutput();
+    double CalculatePID();
     private:
 	    double m_out;
 };  

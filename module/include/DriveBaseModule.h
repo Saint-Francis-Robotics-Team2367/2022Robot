@@ -54,7 +54,7 @@ class DriveBaseModule{
   float prev_value_speed;
   float prev_value_turn;
 
-  frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
+  //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);

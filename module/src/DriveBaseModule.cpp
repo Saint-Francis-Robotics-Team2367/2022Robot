@@ -385,11 +385,11 @@ bool DriveBaseModule::PIDDriveTick(float totalFeet, float maxAcc, float maxVeloc
 void DriveBaseModule::periodicRoutine() {
   //sliderValue = frc::SmartDashboard::GetNumber("Sensitivity", 1);
   //left stick, right stick
-  float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-  //rightStickOutput = 
+  // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+  // //rightStickOutput = 
 
 
-  arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
+  //arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
 }
 
 void DriveBaseModule::LimitRate(double& s, double& t) {

@@ -62,6 +62,7 @@ class Robot : public frc::TimedRobot {
   bool shootFlag = true;
   float delays;
   float shoottimestart;
+  frc::Joystick* driverStick = new frc::Joystick(0);
 };
 
 
