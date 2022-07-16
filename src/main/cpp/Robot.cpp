@@ -13,8 +13,8 @@
 #include "DriveBaseModule.h"
 #include "DriveBaseModulePID.h"
 
-//DriveBaseModule compRobotDrive;
-DriveBaseModulePID GyroPIDDrive;
+DriveBaseModule compRobotDrive;
+//DriveBaseModule GyroPIDDrive;
 
 void Robot::RobotInit()
 {
@@ -36,7 +36,7 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-   GyroPIDDrive.periodicInit();
+   compRobotDrive.periodicInit();
 
 }
 
@@ -47,7 +47,7 @@ void Robot::TeleopPeriodic()
   // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
-  GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
+  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
   //get error instead?
 
 }
