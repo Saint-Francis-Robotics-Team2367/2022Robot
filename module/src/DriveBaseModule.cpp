@@ -43,8 +43,8 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 
     LimitRate(xSpeed, zRotation);
 
-    double leftMotorOutput = xSpeed + zRotation;
-    double rightMotorOutput = xSpeed -  zRotation;
+    double leftMotorOutput = xSpeed + TurningSensitivity(xSpeed, zRotation) * zRotation;
+    double rightMotorOutput = xSpeed -  TurningSensitivity(xSpeed, zRotation) * zRotation;
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
