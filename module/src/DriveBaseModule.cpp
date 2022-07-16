@@ -24,7 +24,8 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 }
 
 float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  // return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed)); og equation, I'm changing it
+  //return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed)); 
+  //og equation, I'm changing it
   rotation = 0.514919 * cos(3.25292 * speed) + 0.506336;
   return rotation;
 //returns amount of rotation
@@ -42,8 +43,8 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 
     LimitRate(xSpeed, zRotation);
 
-    double leftMotorOutput = xSpeed + std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
-    double rightMotorOutput = xSpeed - std::copysign(DriveBaseModule::TurningSensitivity(xSpeed, zRotation), zRotation);
+    double leftMotorOutput = xSpeed + zRotation;
+    double rightMotorOutput = xSpeed -  zRotation;
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);
