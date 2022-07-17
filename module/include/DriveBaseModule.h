@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 #include "Macros.h"
 
 #include <rev/CANSparkMax.h>
@@ -53,6 +54,13 @@ class DriveBaseModule{
   float prevTime;
   float prev_value_speed;
   float prev_value_turn;
+  
+  typedef struct {
+    float speed;
+    float sensitivity;
+
+  } inputPoint;
+  std::list<inputPoint> inputs;
 
   //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
@@ -102,6 +110,9 @@ class DriveBaseModule{
   void alignToGoal();
   float getDistanceTraversed();
   void adjustedArcadeDrive(double x, double y);
+  float LinearInterpolation(double x, double y, double x2, double y2, double input);
+  void addSensitivityPoint(float speed, float Sensitivity);
+
 
   float sliderValue = 1;
   float adjustSpeed = 0.01;
@@ -113,6 +124,11 @@ class DriveBaseModule{
   float pidprevPosition;
 
   bool encoderZeroed = false;
+
+
+
+
 };
+
 
 #endif

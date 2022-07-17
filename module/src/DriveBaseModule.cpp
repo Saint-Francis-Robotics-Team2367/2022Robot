@@ -23,13 +23,29 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
   return setlFront && setrFront && setlBack && setrBack; // Failure on false
 }
 
+
+
+
+
+
+float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, double y2, double input) {
+  return ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
+}
+
+
 float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  //return fabs(rotation) * (1 + (sliderValue - 1) * fabs(speed)); 
-  //og equation, I'm changing it
   rotation = 0.514919 * cos(3.25292 * speed) + 0.506336;
   return rotation;
 //returns amount of rotation
 }
+
+//make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
+
+
+
+
+
+
 
 void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
     if (fabs(xSpeedi) < deadband)
