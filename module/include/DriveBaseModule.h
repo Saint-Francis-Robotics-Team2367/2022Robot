@@ -111,7 +111,7 @@ class DriveBaseModule{
   float getDistanceTraversed();
   void adjustedArcadeDrive(double x, double y);
   float LinearInterpolation(double x, double y, double x2, double y2, double input);
-  void addSensitivityPoint(float speed, float Sensitivity);
+  void addSensitivityPoint(float speed, float sensitivity);
 
 
   float sliderValue = 1;

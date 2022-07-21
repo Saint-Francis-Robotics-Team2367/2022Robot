@@ -34,13 +34,23 @@ float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, doub
 
 
 float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  rotation = 0.514919 * cos(3.25292 * speed) + 0.506336;
-  return rotation;
+  return 0;
 //returns amount of rotation
 }
 
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
 
+void DriveBaseModule::addSensitivityPoint(float speed, float sensitivity){
+  for(auto it = inputs.begin(); it != inputs.end(); it++){
+    inputPoint elem = *it;
+    if(speed >= elem.speed){
+      inputPoint newinput;
+      newinput.speed = speed;
+      newinput.sensitivity = sensitivity;
+      inputs.insert(it, newinput);
+    }
+  }
+}
 
 
 
