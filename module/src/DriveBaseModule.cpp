@@ -41,6 +41,15 @@ float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
 
 void DriveBaseModule::addSensitivityPoint(float speed, float sensitivity){
+  if(inputs.empty()){
+     inputPoint newinput;
+      newinput.speed = speed;
+      newinput.sensitivity = sensitivity;
+      inputs.push_front(newinput);
+  }
+
+  //base case for testing when list is empty at first (up)
+  
   for(auto it = inputs.begin(); it != inputs.end(); it++){
     inputPoint elem = *it;
     if(speed >= elem.speed){
