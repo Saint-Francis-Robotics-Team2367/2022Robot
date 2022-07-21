@@ -55,11 +55,11 @@ class DriveBaseModule{
   float prev_value_speed;
   float prev_value_turn;
   
-  typedef struct {
+  typedef struct inputPoint{
     float speed;
     float sensitivity;
 
-  } inputPoint;
+  } ;
   std::list<inputPoint> inputs;
 
   //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
