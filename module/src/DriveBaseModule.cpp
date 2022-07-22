@@ -46,18 +46,19 @@ void DriveBaseModule::addSensitivityPoint(float speed, float sensitivity){
       newinput.speed = speed;
       newinput.sensitivity = sensitivity;
       inputs.push_front(newinput);
-  }
+      //base case for testing when list is empty at first (up)
+  } else{
 
-  //base case for testing when list is empty at first (up)
-  
-  for(auto it = inputs.begin(); it != inputs.end(); it++){
+     for(auto it = inputs.begin(); it != inputs.end(); it++){
     inputPoint elem = *it;
-    if(speed >= elem.speed){
+    if(speed < elem.speed){
       inputPoint newinput;
       newinput.speed = speed;
       newinput.sensitivity = sensitivity;
       inputs.insert(it, newinput);
     }
+  }
+
   }
 }
 
