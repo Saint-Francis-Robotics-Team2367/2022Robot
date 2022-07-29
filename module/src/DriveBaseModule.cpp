@@ -33,14 +33,10 @@ float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, doub
 }
 
 
-float DriveBaseModule::TurningSensitivity(float speed, float rotation) {
-  return 0;
-//returns amount of rotation
-}
 
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
 
-void DriveBaseModule::addSensitivityPoint(float speed, float sensitivity){
+void DriveBaseModule::addSensitivityPoint(double speed, double sensitivity){
   if(inputs.empty()){
      inputPoint newinput;
       newinput.speed = speed;
@@ -63,6 +59,30 @@ void DriveBaseModule::addSensitivityPoint(float speed, float sensitivity){
 }
 
 
+float DriveBaseModule::TurningSensitivity(double speed) {
+  // find point before and after
+  std::list <DriveBaseModule::inputPoint>::iterator prev_it = inputs.begin();
+  std::list <DriveBaseModule::inputPoint>::iterator it = inputs.begin();
+  while (it != inputs.end()){
+    inputPoint elem = *it;
+    if (speed <= elem.speed)
+      break;
+    prev_it = it;
+    it++;
+  }
+   
+   inputPoint prev_elem = *prev_it;
+   inputPoint next_elem = *it;
+  
+  return LinearInterpolation(prev_elem.speed, prev_elem.sensitivity, 
+                             next_elem.speed, next_elem.sensitivity, speed)
+
+  //should return a constant value
+}
+
+ float DriveBaseModule::arcadeDrive(double x, double y, double sensitivity) {
+   //sensitivity * y val, override arcade drive function
+ }
 
 
 
