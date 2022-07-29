@@ -56,8 +56,8 @@ class DriveBaseModule{
   float prev_value_turn;
   
   typedef struct inputPoint{
-    float speed;
-    float sensitivity;
+    double speed;
+    double sensitivity;
 
   } ;
   std::list<inputPoint> inputs;
@@ -106,12 +106,13 @@ class DriveBaseModule{
   void InitGyro();
   void GyroTurn(float theta);
   bool GyroTurnTick(float theta);
-  float TurningSensitivity(float rightStick, float leftStick);
+  float TurningSensitivity(double speed);
   void alignToGoal();
   float getDistanceTraversed();
   void adjustedArcadeDrive(double x, double y);
   float LinearInterpolation(double x, double y, double x2, double y2, double input);
-  void addSensitivityPoint(float speed, float sensitivity);
+  void addSensitivityPoint(double speed, double sensitivity);
+  float arcadeDrive(double x, double y, double sensitivity);
 
 
   float sliderValue = 1;
@@ -122,6 +123,8 @@ class DriveBaseModule{
   float pidprevTime;
   float pidprevVelocity;
   float pidprevPosition;
+
+  double ySens;
 
   bool encoderZeroed = false;
 

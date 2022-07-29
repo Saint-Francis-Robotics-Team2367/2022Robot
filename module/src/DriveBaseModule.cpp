@@ -82,6 +82,7 @@ float DriveBaseModule::TurningSensitivity(double speed) {
 
  float DriveBaseModule::arcadeDrive(double x, double y, double sensitivity) {
    //sensitivity * y val, override arcade drive function
+   double ySens = y *sensitivity;
  }
 
 
