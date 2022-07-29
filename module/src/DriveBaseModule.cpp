@@ -75,7 +75,7 @@ float DriveBaseModule::TurningSensitivity(double speed) {
    inputPoint next_elem = *it;
   
   return LinearInterpolation(prev_elem.speed, prev_elem.sensitivity, 
-                             next_elem.speed, next_elem.sensitivity, speed)
+                             next_elem.speed, next_elem.sensitivity, speed);
 
   //should return a constant value
 }
