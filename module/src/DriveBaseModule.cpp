@@ -80,11 +80,15 @@ float DriveBaseModule::TurningSensitivity(double speed) {
   //should return a constant value
 }
 
+  /*
  float DriveBaseModule::arcadeDrive(double x, double y, double sensitivity) {
    //sensitivity * y val, override arcade drive function
+   float Sens = TurningSensitivity();
    double ySens = y *sensitivity;
- }
 
+ }
+*/
+//omit this for the constant and function call in Turning Sensitivity
 
 
 
@@ -100,8 +104,13 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 
     LimitRate(xSpeed, zRotation);
 
-    double leftMotorOutput = xSpeed +  zRotation;
-    double rightMotorOutput = xSpeed - zRotation;
+    float constant = TurningSensitivity(xSpeedi);
+
+
+
+
+    double leftMotorOutput = xSpeed +  (constant * zRotation);
+    double rightMotorOutput = xSpeed - (constant * zRotation);
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);

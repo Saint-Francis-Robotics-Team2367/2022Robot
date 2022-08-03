@@ -112,7 +112,7 @@ class DriveBaseModule{
   void adjustedArcadeDrive(double x, double y);
   float LinearInterpolation(double x, double y, double x2, double y2, double input);
   void addSensitivityPoint(double speed, double sensitivity);
-  float arcadeDrive(double x, double y, double sensitivity);
+
 
 
   float sliderValue = 1;
@@ -124,7 +124,6 @@ class DriveBaseModule{
   float pidprevVelocity;
   float pidprevPosition;
 
-  double ySens;
 
   bool encoderZeroed = false;
 
