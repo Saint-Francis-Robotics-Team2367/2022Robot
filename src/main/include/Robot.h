@@ -63,6 +63,9 @@ class Robot : public frc::TimedRobot {
   float delays;
   float shoottimestart;
   frc::Joystick* driverStick = new frc::Joystick(0);
+  rev::CANSparkMax* testRightMotor = new rev::CANSparkMax(1, rev::CANSparkMax::MotorType::kBrushless);
+  rev::CANSparkMax* testLeftMotor = new rev::CANSparkMax(14, rev::CANSparkMax::MotorType::kBrushless);
+  double n = 0.3;
 };
 
 

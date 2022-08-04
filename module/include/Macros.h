@@ -34,3 +34,5 @@
 #define lMotorFollowerID 16
 #define rMotorLeaderID 9
 #define rMotorFollowerID 3
+// #define testLeft 14
+// #define testRight 1

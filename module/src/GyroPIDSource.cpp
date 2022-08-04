@@ -2,5 +2,5 @@
 
 
 double GyroPIDSource::PIDGet() {
-    return m_imu.GetRate().value() / 250;
+    return m_imu.GetRate().value() / 550; //can change later
 }
