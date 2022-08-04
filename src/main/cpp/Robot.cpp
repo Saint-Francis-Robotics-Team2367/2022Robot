@@ -64,9 +64,7 @@ void Robot::TeleopPeriodic()
     GyroPIDDrive.rightStickPID.SetSetpoint(0.3);
     GyroPIDDrive.arcadeDrive(0, GyroPIDDrive.GetOutput());
     frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  }
-
-  if(!driverStick->GetRawButton(1)) {
+  } else {
     frc::SmartDashboard::PutBoolean("Button Pressed", false);
     GyroPIDDrive.rightStickPID.SetSetpoint(0);
     GyroPIDDrive.arcadeDrive(0, 0);
