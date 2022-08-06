@@ -80,17 +80,12 @@ float DriveBaseModule::TurningSensitivity(double speed) {
   //should return a constant value
 }
 
-  /*
- float DriveBaseModule::arcadeDrive(double x, double y, double sensitivity) {
-   //sensitivity * y val, override arcade drive function
-   float Sens = TurningSensitivity();
-   double ySens = y *sensitivity;
-
+ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity)
+ {
+   arcadeDrive(xSpeedi, zRotationi * turnSensitivity);
  }
-*/
-//omit this for the constant and function call in Turning Sensitivity
 
-
+//use this function to call the y val with the new constant
 
 void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
     if (fabs(xSpeedi) < deadband)

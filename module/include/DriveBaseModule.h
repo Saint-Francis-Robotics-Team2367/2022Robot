@@ -112,7 +112,7 @@ class DriveBaseModule{
   void adjustedArcadeDrive(double x, double y);
   float LinearInterpolation(double x, double y, double x2, double y2, double input);
   void addSensitivityPoint(double speed, double sensitivity);
-
+  void arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity);
 
 
   float sliderValue = 1;
