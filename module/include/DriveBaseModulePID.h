@@ -15,7 +15,7 @@ GyroPIDSource gyroSource{m_imu}; //is this fine with overides
 
 
 public:
-    frc::PIDController rightStickPID{1.0, 0.0, 0.0, &gyroSource, this}; //maybe adjust periods here
+    frc::PIDController rightStickPID{0.95, 0.0, 0.11, &gyroSource, this}; //maybe adjust periods here
     DriveBaseModulePID();
     void PIDWrite(double output);
 
