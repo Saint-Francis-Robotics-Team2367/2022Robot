@@ -31,8 +31,8 @@ void Robot::AutonomousInit()
 }
 void Robot::AutonomousPeriodic()
 {
-  testLeftMotor->Set(0.2);
-  testRightMotor->Set(0.2);
+  // testLeftMotor->Set(0.2);
+  // testRightMotor->Set(0.2);
 }
 
 void Robot::TeleopInit()
@@ -50,6 +50,7 @@ void Robot::TeleopPeriodic()
   // GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
   // GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
   // frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+  // frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
   //get error instead?
   double m_P = frc::SmartDashboard::GetNumber("Pd", 1);
   frc::SmartDashboard::PutNumber("Pd", m_P);
@@ -57,7 +58,7 @@ void Robot::TeleopPeriodic()
 
   double Dee = frc::SmartDashboard::GetNumber("Dee", 0);
   frc::SmartDashboard::PutNumber("Dee", Dee);
-  GyroPIDDrive.rightStickPID.SetP(Dee);
+  GyroPIDDrive.rightStickPID.SetD(Dee);
 
   if(driverStick->GetRawButton(1)) {
     frc::SmartDashboard::PutBoolean("Button Pressed", true);
