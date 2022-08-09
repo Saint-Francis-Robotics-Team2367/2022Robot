@@ -36,6 +36,10 @@ float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, doub
 
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
 
+
+
+
+
 void DriveBaseModule::addSensitivityPoint(double speed, double sensitivity){
   if(inputs.empty()){
      inputPoint newinput;
@@ -76,18 +80,23 @@ float DriveBaseModule::TurningSensitivity(double speed) {
   
   return LinearInterpolation(prev_elem.speed, prev_elem.sensitivity, 
                              next_elem.speed, next_elem.sensitivity, speed);
+                            
 
   //should return a constant value
 }
 
  void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity)
  {
+   addSensitivityPoint(rMotor->Get(), turnSensitivity);
    arcadeDrive(xSpeedi, zRotationi * turnSensitivity);
  }
 
 //use this function to call the y val with the new constant
 
 void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
+
+
+
     if (fabs(xSpeedi) < deadband)
         xSpeedi = 0;
 
@@ -99,13 +108,10 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 
     LimitRate(xSpeed, zRotation);
 
-    float constant = TurningSensitivity(xSpeedi);
 
 
-
-
-    double leftMotorOutput = xSpeed +  (constant * zRotation);
-    double rightMotorOutput = xSpeed - (constant * zRotation);
+    double leftMotorOutput = xSpeed + zRotation;
+    double rightMotorOutput = xSpeed - zRotation;
 
     if (leftMotorOutput != 0)
         leftMotorOutput = std::copysign((1/(1-deadband)) * fabs(leftMotorOutput) - (deadband/(1/deadband)), leftMotorOutput);

@@ -13,8 +13,7 @@
 #include "DriveBaseModule.h"
 #include "DriveBaseModulePID.h"
 
-DriveBaseModule compRobotDrive;
-//DriveBaseModule GyroPIDDrive;
+
 
 void Robot::RobotInit()
 {
@@ -47,7 +46,8 @@ void Robot::TeleopPeriodic()
   // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
-  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
+  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput // ASK MR. P ABOUT KRISHNA'S CODE, compRobotDrive.TurningSensitivity(compRobotDrive.rMotor->Get())); //add in third argument, call turning sensitivity with current robot speed
+  // It should spit out an ideal sensitivity);
   //get error instead?
 
 }

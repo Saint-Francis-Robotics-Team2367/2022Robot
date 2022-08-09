@@ -62,7 +62,28 @@ class DriveBaseModule{
   } ;
   std::list<inputPoint> inputs;
 
-  //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
+ 
+  
+  float gyroInitVal = 0.0f;
+  
+  
+  // frc::PIDOutput output; //make a decorator class
+  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
+
+  public:
+
+
+
+// ASK MR.P IF THIS IS OK TO DO (MOVED FROM PRIVATE TO PUBLIC)
+//*************************************************************************************************************
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//(CODE BELOW)
+
+
+ 
+
+
+ //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
@@ -79,14 +100,17 @@ class DriveBaseModule{
 
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
-  
-  float gyroInitVal = 0.0f;
-  
-  
-  // frc::PIDOutput output; //make a decorator class
-  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
 
-  public:
+
+
+
+
+
+
+
+
+
+
 
   frc::ADIS16448_IMU m_imu{};
   std::vector<uint8_t> getConstructorArgs();
@@ -113,6 +137,7 @@ class DriveBaseModule{
   float LinearInterpolation(double x, double y, double x2, double y2, double input);
   void addSensitivityPoint(double speed, double sensitivity);
   void arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity);
+  void addDataPoint(double x, double y);
 
 
   float sliderValue = 1;

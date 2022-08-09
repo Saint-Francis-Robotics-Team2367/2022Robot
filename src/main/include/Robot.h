@@ -43,6 +43,11 @@ class Robot : public frc::TimedRobot {
   //Auto Stuff
   void initializePaths();
 
+  DriveBaseModule compRobotDrive;
+  //DriveBaseModule GyroPIDDrive;
+
+
+
   float goalPosition = 90; //if we have a 90 degree gyro thing to face towards the goal, else use photon....needs testing either way
   pathPoint robPos;
   float robTheta;
@@ -50,7 +55,7 @@ class Robot : public frc::TimedRobot {
   int pathi = 0;
   bool isTrue = false;
   bool resetPath = false;
-  float coordOffset = 0; // how much the robot should go past the path point to pick up the bal
+  float coordOffset = 0; // how much the robot should go past the path point to pick up the ball
   float shootingDistance = 3;
   bool shootingPoints[7] = {0};
   bool tested = false;
