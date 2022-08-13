@@ -29,7 +29,10 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 
 
 float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, double y2, double input) {
-  return ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
+
+  double Sensitivity = ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
+  addSensitivityPoint(input, Sensitivity);
+  return Sensitivity;
 }
 
 
@@ -87,7 +90,6 @@ float DriveBaseModule::TurningSensitivity(double speed) {
 
  void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity)
  {
-   addSensitivityPoint(rMotor->Get(), turnSensitivity);
    arcadeDrive(xSpeedi, zRotationi * turnSensitivity);
  }
 
