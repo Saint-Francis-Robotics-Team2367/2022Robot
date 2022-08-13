@@ -46,11 +46,12 @@ void Robot::TeleopPeriodic()
   // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
-  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(compRobotDrive.rMotor->Get() + compRobotDrive.lMotor->Get())/2) // ASK MR. P ABOUT KRISHNA'S CODE 
+  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(compRobotDrive.rMotor->Get() + compRobotDrive.lMotor->Get())/2); // ASK MR. P ABOUT KRISHNA'S CODE 
   // It should spit out an ideal sensitivity);
   //get error instead?
 
 }
+
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
