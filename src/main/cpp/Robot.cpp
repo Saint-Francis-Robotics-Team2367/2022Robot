@@ -51,26 +51,6 @@ void Robot::TeleopPeriodic()
   GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
   frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
   frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
-  //get error instead?
-  // double m_P = frc::SmartDashboard::GetNumber("Pd", 0.95);
-  // frc::SmartDashboard::PutNumber("Pd", m_P);
-  // GyroPIDDrive.rightStickPID.SetP(m_P);
-
-  // double Dee = frc::SmartDashboard::GetNumber("Dee", 0.11);
-  // frc::SmartDashboard::PutNumber("Dee", Dee);
-  // GyroPIDDrive.rightStickPID.SetD(Dee);
-
-  // if(driverStick->GetRawButton(1)) {
-  //   frc::SmartDashboard::PutBoolean("Button Pressed", true);
-  //   GyroPIDDrive.rightStickPID.SetSetpoint(0.3);
-  //   GyroPIDDrive.arcadeDrive(0.2, GyroPIDDrive.GetOutput());
-  //   frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  // } else {
-  //   frc::SmartDashboard::PutBoolean("Button Pressed", false);
-  //   GyroPIDDrive.rightStickPID.SetSetpoint(0);
-  //   GyroPIDDrive.arcadeDrive(0, 0);
-  //   frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  // }
 }
 
 void Robot::DisabledInit() {}
@@ -78,12 +58,32 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit()
 {
-
+  GyroPIDDrive.periodicInit();
+  frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
+  frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
 }
 
 void Robot::TestPeriodic()
 {
-  
+   double m_P = frc::SmartDashboard::GetNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
+  frc::SmartDashboard::PutNumber("Pd", m_P);
+  GyroPIDDrive.rightStickPID.SetP(m_P);
+
+  double Dee = frc::SmartDashboard::GetNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
+  frc::SmartDashboard::PutNumber("Dee", Dee);
+  GyroPIDDrive.rightStickPID.SetD(Dee);
+
+  if(driverStick->GetRawButton(1)) {
+    frc::SmartDashboard::PutBoolean("Button Pressed", true);
+    GyroPIDDrive.rightStickPID.SetSetpoint(0.2);
+    GyroPIDDrive.arcadeDrive(0.3, GyroPIDDrive.GetOutput());
+    frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+  } else {
+    frc::SmartDashboard::PutBoolean("Button Pressed", false);
+    GyroPIDDrive.rightStickPID.SetSetpoint(0);
+    GyroPIDDrive.arcadeDrive(0, 0);
+    frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+  }
 }
 
 #ifndef RUNNING_FRC_TESTS
