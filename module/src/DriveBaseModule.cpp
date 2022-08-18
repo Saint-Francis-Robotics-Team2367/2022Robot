@@ -5,6 +5,16 @@
 DriveBaseModule::DriveBaseModule(){}
 
 
+double DriveBaseModule::getRightMotorSpeed(){
+  return rMotor->Get();
+}
+
+double DriveBaseModule::getLeftMotorSpeed(){
+  return lMotor->Get();
+}
+
+
+
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
   motor->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   motor->SetInverted(invert);

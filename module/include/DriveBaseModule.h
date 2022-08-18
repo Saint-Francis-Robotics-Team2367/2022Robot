@@ -67,22 +67,6 @@ class DriveBaseModule{
   float gyroInitVal = 0.0f;
   
   
-  // frc::PIDOutput output; //make a decorator class
-  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
-
-  public:
-
-
-
-// ASK MR.P IF THIS IS OK TO DO (MOVED FROM PRIVATE TO PUBLIC)
-//*************************************************************************************************************
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//(CODE BELOW)
-
-
- 
-
-
  //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
@@ -100,6 +84,18 @@ class DriveBaseModule{
 
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
+
+  
+  // frc::PIDOutput output; //make a decorator class
+  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
+
+  public:
+  double getRightMotorSpeed();
+  double getLeftMotorSpeed();
+
+
+ 
+
 
 
 
