@@ -139,6 +139,7 @@ class DriveBaseModule{
   void arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity);
   void addDataPoint(double x, double y);
 
+  DriveBaseModule();
 
   float sliderValue = 1;
   float adjustSpeed = 0.01;

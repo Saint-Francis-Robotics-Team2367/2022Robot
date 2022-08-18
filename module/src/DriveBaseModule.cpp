@@ -1,6 +1,10 @@
 #include "DriveBaseModule.h"
 #include <cmath>
 
+
+DriveBaseModule::DriveBaseModule(){}
+
+
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
   motor->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   motor->SetInverted(invert);
