@@ -15,7 +15,7 @@ void IntakeModule::periodicInit() {
 }
 
 void IntakeModule::periodicRoutine() {  frc::SmartDashboard::PutNumber("DevID", indexMotors[0]->GetDeviceId());
-  frc::SmartDashboard::PutNumber("IsBrushed", indexMotors[0]->GetInitialMotorType() == rev::CANSparkMaxLowLevel::MotorType::kBrushed);
+  frc::SmartDashboard::PutNumber("IsBrushed", indexMotors[0]->GetMotorType() == rev::CANSparkMaxLowLevel::MotorType::kBrushed);
   if(driverStick->GetRawAxis(2) > 0.05)
   {
     intakeAction->SetSmartCurrentLimit(frc::SmartDashboard::GetNumber("armCurrent", 4));

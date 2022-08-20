@@ -4,10 +4,6 @@
 
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/Solenoid.h>
-#include <frc/PowerDistribution.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/PneumaticsControlModule.h>
 
 
 
@@ -44,7 +40,8 @@ void Robot::TeleopPeriodic()
   // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
-  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed())/2); // ASK MR. P ABOUT KRISHNA'S CODE 
+  //compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed())/2); // ASK MR. P ABOUT KRISHNA'S CODE 
+  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
   // It should spit out an ideal sensitivity);
   //get error instead?
 

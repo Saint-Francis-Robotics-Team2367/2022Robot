@@ -31,10 +31,10 @@ bool DriveBaseModule::setPowerBudget(rev::CANSparkMax* motor, float iPeak, float
 bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycles) {
   bool setlFront = setPowerBudget(lMotor, iPeak, iRated, limitCycles);
   bool setrFront = setPowerBudget(rMotor, iPeak, iRated, limitCycles);
-  bool setlBack = setPowerBudget(lMotorFollower, iPeak, iRated, limitCycles);
-  bool setrBack = setPowerBudget(rMotorFollower, iPeak, iRated, limitCycles);
+ // bool setlBack = setPowerBudget(lMotorFollower, iPeak, iRated, limitCycles);
+ // bool setrBack = setPowerBudget(rMotorFollower, iPeak, iRated, limitCycles);
 
-  return setlFront && setrFront && setlBack && setrBack; // Failure on false
+  return setlFront && setrFront; //&& setlBack && setrBack; // Failure on false
 }
 
 
@@ -356,9 +356,9 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
 void DriveBaseModule::periodicInit() {
   frc::SmartDashboard::PutNumber("Sensitivity", 1);
   
-  if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
+ /* if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
     //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-  }
+  }*/
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ///ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
