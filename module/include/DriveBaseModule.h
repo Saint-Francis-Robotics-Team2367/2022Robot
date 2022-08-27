@@ -50,7 +50,7 @@ class DriveBaseModule{
   bool intakeOn = false;
   bool moveFlag = true;
 
-  const double deadband = 1e-5;
+  const double deadband = 0.01;
   float prevTime;
   float prev_value_speed;
   float prev_value_turn;
@@ -71,10 +71,10 @@ class DriveBaseModule{
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  // rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  //rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
 
   rev::CANSparkMax* rMotor = new rev::CANSparkMax(rMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  // rev::CANSparkMax* rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  //rev::CANSparkMax* rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
 
   //if you don't include getEncoder here, it doesn't build?
   rev::SparkMaxRelativeEncoder lEncoder = lMotor->GetEncoder();

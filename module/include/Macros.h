@@ -34,3 +34,5 @@
 #define lMotorFollowerID 16
 #define rMotorLeaderID 15 // 9
 #define rMotorFollowerID 3
+
+//on 2019 robot, llead 1, rlead 15
