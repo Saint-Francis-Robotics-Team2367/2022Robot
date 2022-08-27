@@ -55,14 +55,14 @@ class DriveBaseModule{
   float prev_value_speed;
   float prev_value_turn;
   
-  typedef struct {
+  struct inputPoint{
     double speed;
     double sensitivity;
 
-  } inputPoint;
+  };
   std::list<inputPoint> inputs;
 
- 
+
   
   float gyroInitVal = 0.0f;
   
@@ -71,10 +71,11 @@ class DriveBaseModule{
   frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
-  //rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
 
   rev::CANSparkMax* rMotor = new rev::CANSparkMax(rMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
- // rev::CANSparkMax* rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+  // rev::CANSparkMax* rMotorFollower = new rev::CANSparkMax(rMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
+
   //if you don't include getEncoder here, it doesn't build?
   rev::SparkMaxRelativeEncoder lEncoder = lMotor->GetEncoder();
   rev::SparkMaxRelativeEncoder rEncoder = rMotor->GetEncoder();
@@ -138,6 +139,8 @@ class DriveBaseModule{
   DriveBaseModule();
 
   float sliderValue = 1;
+//sens slider val
+
   float adjustSpeed = 0.01;
 
   bool tested = false;
