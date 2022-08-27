@@ -13,7 +13,7 @@
 #include "DriveBaseModule.h"
 
 //DriveBaseModule compRobotDrive;
-DriveBaseModulePID GyroPIDDrive;
+//moved instantiation to h file
 
 
 
@@ -36,30 +36,33 @@ void Robot::AutonomousPeriodic()
   // testRightMotor->Set(0.2);
 }
 
+
 void Robot::TeleopInit()
 {
    GyroPIDDrive.periodicInit();
   frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
   frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
-
-  
+  std::thread th(&Robot::initThread, this);
+  th.detach(); //How to detach
 }
 
 void Robot::TeleopPeriodic()
 {
-  float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+  
+  // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
 
-  //check if gyro fell off *******
-  GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
-  GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
-  frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
+  // //check if gyro fell off *******
+  // GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
+  // GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+  // frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+  // frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
 
-  //std::thread(&initThread, GyroPIDDrive, driverStick).detach();
+  
 }
 
 void Robot::DisabledInit() {}
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+}
 
 void Robot::TestInit()
 {
@@ -80,8 +83,8 @@ void Robot::TestPeriodic()
 
   if(driverStick->GetRawButton(1)) {
     frc::SmartDashboard::PutBoolean("Button Pressed", true);
-    GyroPIDDrive.rightStickPID.SetSetpoint(0.2);
-    GyroPIDDrive.arcadeDrive(0.3, GyroPIDDrive.GetOutput());
+    GyroPIDDrive.rightStickPID.SetSetpoint(0.3);
+    GyroPIDDrive.arcadeDrive(0, GyroPIDDrive.GetOutput());
     frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
   } else {
     frc::SmartDashboard::PutBoolean("Button Pressed", false);

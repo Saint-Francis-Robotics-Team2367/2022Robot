@@ -45,18 +45,35 @@ class Robot : public frc::TimedRobot {
 
   //Auto Stuff
   void initializePaths();
-  void initThread(DriveBaseModulePID& gyroDrive, frc::Joystick*& driverStick) {
+
+  DriveBaseModulePID GyroPIDDrive;
+  frc::Joystick* driverStick = new frc::Joystick(0);
+
+  void gyroDriving() {
+      float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+      frc::SmartDashboard::PutNumber("in thread right stick output", rightStickOutput);
+      GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
+      //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+      GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+      frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+      frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
+  }
+
+  void initThread() { //removed ref to Joystick?
+  //need init here?
+  int hi = 1;
     while(true) {
       //I don't this this works lmao
       auto nextRun = std::chrono::steady_clock::now() + std::chrono::milliseconds(20);
-      float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-      gyroDrive.rightStickPID.SetSetpoint(rightStickOutput);
-      gyroDrive.arcadeDrive(driverStick->GetRawAxis(1),  gyroDrive.GetOutput());
-      frc::SmartDashboard::PutNumber("output", gyroDrive.GetOutput());
-      frc::SmartDashboard::PutNumber("gyro", gyroDrive.m_imu.GetRate().value());
+      frc::SmartDashboard::PutNumber("bool", ++hi);
+      gyroDriving();
       std::this_thread::sleep_until(nextRun);
     }
+    frc::SmartDashboard::PutBoolean("yo", true);
   };
+
+  void gyroDriving(DriveBaseModulePID& gyroDrive, frc::Joystick& driverStick);
+  
 
   float goalPosition = 90; //if we have a 90 degree gyro thing to face towards the goal, else use photon....needs testing either way
   pathPoint robPos;
@@ -77,7 +94,7 @@ class Robot : public frc::TimedRobot {
   bool shootFlag = true;
   float delays;
   float shoottimestart;
-  frc::Joystick* driverStick = new frc::Joystick(0);
+  
   // rev::CANSparkMax* testRightMotor = new rev::CANSparkMax(1, rev::CANSparkMax::MotorType::kBrushless);
   // rev::CANSparkMax* testLeftMotor = new rev::CANSparkMax(14, rev::CANSparkMax::MotorType::kBrushless);
   double n = 0.3;
