@@ -30,16 +30,16 @@ void Robot::TeleopPeriodic()
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
   
-  //double turnSense = compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed();
-  //turnSense/=2;
+  double turnSense = compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed();
+  turnSense/=2;
   
   
   //frc::SmartDashboard::PutNumber("turnSense in robotperiod", turnSense);
   //double afterCall = compRobotDrive.TurningSensitivity(turnSense);
    //frc::SmartDashboard::PutNumber("turnSense after func call in robotperiod", afterCall);
 
-  //compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(turnSense)); // ASK MR. P ABOUT KRISHNA'S CODE 
-  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
+  compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput, compRobotDrive.TurningSensitivity(turnSense)); // ASK MR. P ABOUT KRISHNA'S CODE 
+  //compRobotDrive.arcadeDrive(driverStick->GetRawAxis(1),  rightStickOutput);
   // It should spit out an ideal sensitivity);
   //get error instead?
 

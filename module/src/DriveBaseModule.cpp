@@ -157,6 +157,9 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
     if (rightMotorOutput != 0)
         rightMotorOutput = std::copysign((1/(1-deadband)) * fabs(rightMotorOutput) - (deadband/(1/deadband)), rightMotorOutput);
 
+    frc::SmartDashboard::PutNumber("final right motor output", rightMotorOutput);
+    frc::SmartDashboard::PutNumber("final left motor output", leftMotorOutput);
+    
     lMotor->Set(leftMotorOutput);
     rMotor->Set(rightMotorOutput);
 }
