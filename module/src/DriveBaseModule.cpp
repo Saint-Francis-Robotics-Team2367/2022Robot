@@ -2,8 +2,7 @@
 #include <cmath>
 
 
-DriveBaseModule::DriveBaseModule(){}
-
+DriveBaseModule::DriveBaseModule(){} // prob dont need this
 
 double DriveBaseModule::getRightMotorSpeed(){
   return rMotor->Get();
@@ -12,8 +11,6 @@ double DriveBaseModule::getRightMotorSpeed(){
 double DriveBaseModule::getLeftMotorSpeed(){
   return lMotor->Get();
 }
-
-
 
 bool DriveBaseModule::initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert) {
   motor->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
@@ -42,40 +39,56 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, double y2, double input) {
 
+  // std::cout << "Entering arcadeDrive (command 1)" << std::endl;  
   double Sensitivity = ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
   addSensitivityPoint(input, Sensitivity);
+  frc::SmartDashboard::PutNumber("In Linear Interp Sense", Sensitivity);
   return Sensitivity;
 }
 
-
-
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
-
-
-
-
 
 void DriveBaseModule::addSensitivityPoint(double speed, double sensitivity){
   if(inputs.empty()){
-     inputPoint newinput;
-      newinput.speed = speed;
-      newinput.sensitivity = sensitivity;
-      inputs.push_front(newinput);
+    inputPoint newinput;
+    newinput.speed = speed;
+    newinput.sensitivity = sensitivity;
+    frc::SmartDashboard::PutNumber("New input in addSense pt", sensitivity);
+    inputs.push_front(newinput);
       //base case for testing when list is empty at first (up)
   } else{
 
-     for(auto it = inputs.begin(); it != inputs.end(); it++){
-    inputPoint elem = *it;
-    if(speed < elem.speed){
-      inputPoint newinput;
-      newinput.speed = speed;
-      newinput.sensitivity = sensitivity;
-      inputs.insert(it, newinput);
-    }
+    std::cout << "addSensitivityPoint: Entering for loop" << std::endl;
+    for(auto it = inputs.begin(); it != inputs.end(); it++){
+      inputPoint elem = *it;
+      if(speed < elem.speed){
+        inputPoint newinput;
+        newinput.speed = speed;
+        newinput.sensitivity = sensitivity;
+        frc::SmartDashboard::PutNumber("Loop in addSense pt", newinput.speed + newinput.speed);
+        inputs.insert(it, newinput);
+      }
   }
-
+      std::cout << "addSensitivityPoint: Exiting for loop" << std::endl;
   }
 }
 
@@ -84,6 +97,8 @@ float DriveBaseModule::TurningSensitivity(double speed) {
   // find point before and after
   std::list <DriveBaseModule::inputPoint>::iterator prev_it = inputs.begin();
   std::list <DriveBaseModule::inputPoint>::iterator it = inputs.begin();
+  std::cout << "TurningSensitivity: Entering while loop" << std::endl;
+
   while (it != inputs.end()){
     inputPoint elem = *it;
     if (speed <= elem.speed)
@@ -91,9 +106,13 @@ float DriveBaseModule::TurningSensitivity(double speed) {
     prev_it = it;
     it++;
   }
+  std::cout << "TurningSensitivity: Exiting while loop" << std::endl;
    
    inputPoint prev_elem = *prev_it;
    inputPoint next_elem = *it;
+
+   frc::SmartDashboard::PutNumber("prev elem in TurningSense", prev_elem.speed + prev_elem.sensitivity);
+   frc::SmartDashboard::PutNumber("prev elem in TurningSense", next_elem.speed + next_elem.sensitivity);
   
   return LinearInterpolation(prev_elem.speed, prev_elem.sensitivity, 
                              next_elem.speed, next_elem.sensitivity, speed);
@@ -104,14 +123,19 @@ float DriveBaseModule::TurningSensitivity(double speed) {
 
  void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity)
  {
+   std::cout << "Entering arcadeDrive (command 1)" << std::endl;
+   frc::SmartDashboard::PutNumber("End result", turnSensitivity);
+   frc::SmartDashboard::PutNumber("zRotationi", zRotationi);
+   frc::SmartDashboard::PutNumber("xSpeedi", xSpeedi);
    arcadeDrive(xSpeedi, zRotationi * turnSensitivity);
  }
 
 //use this function to call the y val with the new constant
 
 void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
-
-
+   std::cout << "Entering arcadeDrive (command 2)" << std::endl;
+   frc::SmartDashboard::PutNumber("in Actual Drive x", xSpeedi);
+    frc::SmartDashboard::PutNumber("in Actual Drive z", zRotationi);
 
     if (fabs(xSpeedi) < deadband)
         xSpeedi = 0;
@@ -122,9 +146,7 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
     double xSpeed = std::copysign(pow(fabs(xSpeedi), 1.8), xSpeedi);
     double zRotation = std::copysign(pow(fabs(zRotationi), 2), zRotationi);
 
-    LimitRate(xSpeed, zRotation);
-
-
+    // LimitRate(xSpeed, zRotation);
 
     double leftMotorOutput = xSpeed + zRotation;
     double rightMotorOutput = xSpeed - zRotation;
@@ -140,6 +162,32 @@ void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void DriveBaseModule::adjustedArcadeDrive(double xSpeed, double zRotation) {
     if (fabs(xSpeed) < deadband)
         xSpeed = 0;
@@ -149,7 +197,6 @@ void DriveBaseModule::adjustedArcadeDrive(double xSpeed, double zRotation) {
 
     //scaling functiins
 
-  
     //is this even right, any other adjustments I should add: have slew rate, like inertia scalar, other kinds of scalar, skim
     float angle = m_imu.GetAngle().value(); 
     float angleRate = m_imu.GetRate().value(); //rate of change of angle or just angle
@@ -160,11 +207,9 @@ void DriveBaseModule::adjustedArcadeDrive(double xSpeed, double zRotation) {
     double leftMotorOutput = xSpeed + rotationError;
     double rightMotorOutput = xSpeed - rotationError;
 
-
     //right stick PID input function
     //input to PID function would be error between right stick and gyro
 
-    
     //velocity, curvature, cheesy drive
 
 
@@ -241,7 +286,7 @@ bool DriveBaseModule::PIDGyroTurn(float angle, float radius, float maxAcc, float
   rEncoder.SetPositionConversionFactor(0.64); //check if this works!
   lEncoder.SetPositionConversionFactor(0.64); 
 
-  if (angle < 0) {
+  if(angle < 0) {
     maxAcc *= -1;
     maxVelocity *= -1;
   }
@@ -354,11 +399,30 @@ frc::SmartDashboard::PutBoolean("inPIDDrive", true);
 }
 
 void DriveBaseModule::periodicInit() {
+//default testing values
+
+struct inputPoint p1;
+  p1.speed = 0;
+  p1.speed = 1;
+
+  inputs.push_front(p1);
+
+struct inputPoint p2;
+  p1.speed = 1;
+  p1.speed = 0.5;
+
+  inputs.push_front(p2);
+
+
+
+
+
+  /*
   frc::SmartDashboard::PutNumber("Sensitivity", 1);
   
- /* if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
+ // if (!(initDriveMotor(lMotor, lMotorFollower, lInvert) && initDriveMotor(rMotor, rMotorFollower, rInvert))) {
     //ErrorModulePipe->pushQueue(new Message("Could not initialize motors!", FATAL));
-  }*/
+ // }
 
   if (!setDriveCurrLimit(motorInitMaxCurrent, motorInitRatedCurrent, motorInitLimitCycles)) {
     ///ErrorModulePipe->pushQueue(new Message("Failed to set motor current limit", HIGH)); // Not irrecoverable, but pretty bad
@@ -381,6 +445,9 @@ void DriveBaseModule::periodicInit() {
   lEncoder.SetPosition(0);
   rEncoder.SetPositionConversionFactor(0.64); //check if this works!
   lEncoder.SetPositionConversionFactor(0.64); 
+  */
+
+   rMotor->SetInverted(true);
 }
 
 bool DriveBaseModule::PIDDriveSimpleTick(float totalFeet) {
