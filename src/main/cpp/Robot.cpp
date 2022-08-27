@@ -11,10 +11,11 @@
 
 // // All Module Includes
 #include "DriveBaseModule.h"
-#include "DriveBaseModulePID.h"
 
 //DriveBaseModule compRobotDrive;
 DriveBaseModulePID GyroPIDDrive;
+
+
 
 void Robot::RobotInit()
 {
@@ -40,6 +41,8 @@ void Robot::TeleopInit()
    GyroPIDDrive.periodicInit();
   frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
   frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
+
+  
 }
 
 void Robot::TeleopPeriodic()
@@ -51,6 +54,8 @@ void Robot::TeleopPeriodic()
   GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
   frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
   frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
+
+  //std::thread(&initThread, GyroPIDDrive, driverStick).detach();
 }
 
 void Robot::DisabledInit() {}
