@@ -58,11 +58,21 @@ bool DriveBaseModule::setDriveCurrLimit(float iPeak, float iRated, int limitCycl
 
 float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, double y2, double input) {
 
+  double Sensitivity;
+
+  if ((x2-x1) == 0){
+    Sensitivity = ((y1+y2))/2;
+  }
+  else{
+    Sensitivity = ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
+  }
+
+   addSensitivityPoint(input, Sensitivity);
+    std::cout << "In Linear Interp Sensetivity " << Sensitivity << std::endl;
+    return Sensitivity;
+
   // std::cout << "Entering arcadeDrive (command 1)" << std::endl;  
-  double Sensitivity = ((y2 - y1)/(x2 - x1)) * (input - x1) + y1;
-  addSensitivityPoint(input, Sensitivity);
-  frc::SmartDashboard::PutNumber("In Linear Interp Sense", Sensitivity);
-  return Sensitivity;
+  
 }
 
 //make function addSensitivityPoint that adds in point x, y to list points and puts in in IN ORDER
@@ -124,9 +134,17 @@ float DriveBaseModule::TurningSensitivity(double speed) {
  void DriveBaseModule::arcadeDrive(double xSpeedi, double zRotationi, double turnSensitivity)
  {
    std::cout << "Entering arcadeDrive (command 1)" << std::endl;
-   frc::SmartDashboard::PutNumber("End result", turnSensitivity);
-   frc::SmartDashboard::PutNumber("zRotationi", zRotationi);
-   frc::SmartDashboard::PutNumber("xSpeedi", xSpeedi);
+   std::cout << "xSpeedi (command 1)" << xSpeedi << std::endl;
+   std::cout << "zRotationi (command 1)" << zRotationi << std::endl;
+   std::cout << "turnSensitivity(command 1)" << turnSensitivity << std::endl;
+
+   
+   //frc::SmartDashboard::PutNumber("End result", turnSensitivity);
+   //frc::SmartDashboard::PutNumber("zRotationi", zRotationi);
+   //frc::SmartDashboard::PutNumber("xSpeedi", xSpeedi);
+  
+
+
    arcadeDrive(xSpeedi, zRotationi * turnSensitivity);
  }
 
@@ -406,13 +424,13 @@ void DriveBaseModule::periodicInit() {
 
 struct inputPoint p1;
   p1.speed = 0;
-  p1.speed = 1;
+  p1.sensitivity = 1;
 
   inputs.push_front(p1);
 
 struct inputPoint p2;
   p1.speed = 1;
-  p1.speed = 0.5;
+  p1.sensitivity = 0.5;
 
   inputs.push_front(p2);
 
