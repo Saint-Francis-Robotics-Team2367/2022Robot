@@ -68,7 +68,7 @@ float DriveBaseModule::LinearInterpolation(double x1, double y1, double x2, doub
   }
 
    addSensitivityPoint(input, Sensitivity);
-    std::cout << "In Linear Interp Sensetivity " << Sensitivity << std::endl;
+    std::cout << "In Linear Interp Sensitivity " << Sensitivity << std::endl;
     return Sensitivity;
 
   // std::cout << "Entering arcadeDrive (command 1)" << std::endl;  
@@ -430,7 +430,7 @@ struct inputPoint p1;
 
 struct inputPoint p2;
   p1.speed = 1;
-  p1.sensitivity = 0.5;
+  p1.sensitivity = 0.3;
 
   inputs.push_front(p2);
 

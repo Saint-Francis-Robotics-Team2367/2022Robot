@@ -30,7 +30,7 @@ void Robot::TeleopPeriodic()
   // //rightStickOutput = 
   //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxgit bris(1),  rightStickOutput);
   
-  double turnSense = compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed();
+    double turnSense = compRobotDrive.getRightMotorSpeed() + compRobotDrive.getLeftMotorSpeed();
   turnSense/=2;
   
   
