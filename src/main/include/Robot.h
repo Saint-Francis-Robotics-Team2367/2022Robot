@@ -22,6 +22,10 @@
 
 #include "frc/PIDController.h"
 
+//module includes
+#include "GyroDrivePID.h"
+
+
 
 
 class Robot : public frc::TimedRobot {
@@ -64,6 +68,10 @@ class Robot : public frc::TimedRobot {
   //     frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
   // }
 
+  void gyroDriving();
+
+  void initThread();
+
   // void initThread() { //removed ref to Joystick?
   // //need init here?
   // int hi = 1;
@@ -76,12 +84,6 @@ class Robot : public frc::TimedRobot {
   //   }
   //   frc::SmartDashboard::PutBoolean("yo", true);
   // };
-
-  //void gyroDriving(DriveBaseModulePID& gyroDrive, frc::Joystick& driverStick);
-  
-
-//  AHRS *ahrs;
-
 
 
 

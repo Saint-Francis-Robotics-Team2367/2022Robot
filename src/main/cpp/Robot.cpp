@@ -8,32 +8,43 @@
 #include <frc/PowerDistribution.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/PneumaticsControlModule.h>
-
-// // All Module Includes
 //#include "DriveBaseModule.h"
 
-//DriveBaseModule compRobotDrive;
-//moved instantiation to h file
+GyroDrivePID drive;
 
 
-#include "GyroDrivePID.h"
-GyroDrivePID drive; 
+void Robot::gyroDriving() {
+      float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+      frc::SmartDashboard::PutNumber("in thread right stick output", rightStickOutput);
+      drive.rightStickPID.SetSetpoint(rightStickOutput);
+      //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+      drive.arcadeDrive(driverStick->GetRawAxis(1),  drive.GetOutput());
+      frc::SmartDashboard::PutNumber("output", drive.GetOutput());
+      frc::SmartDashboard::PutNumber("gyro", drive.gyroSource.ahrs->GetRate());
+}
 
+void Robot::initThread() {
+    //need init here?
+    int counter = 0;
+    while(true) {
+      //I don't this this works lmao
+      auto nextRun = std::chrono::steady_clock::now() + std::chrono::milliseconds(20);
+      frc::SmartDashboard::PutNumber("bool", ++counter);
+      gyroDriving();
+      std::this_thread::sleep_until(nextRun);
+    }
+    frc::SmartDashboard::PutBoolean("yo", true);
+}
 
 
 void Robot::RobotInit()
 {
-  //compRobotDrive.periodicInit();
-  //  ahrs = new AHRS(frc::SerialPort::kMXP);
+
 }
 
 void Robot::RobotPeriodic()
 {
-  
-
-frc::SmartDashboard::PutNumber("angle", drive.gyroSource.ahrs->GetAngle()); 
-
-  // frc::SmartDashboard::PutNumber("rate", ahrs->GetRate());
+  frc::SmartDashboard::PutNumber("angle", drive.gyroSource.ahrs->GetAngle()); 
 }
 void Robot::AutonomousInit()
 {
@@ -47,33 +58,15 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-  
-  //  GyroPIDDrive.periodicInit();
-  // frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
-  // frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
-  // std::thread th(&Robot::initThread, this);
-  // th.detach(); //How to detach
 
-  
   drive.periodicInit();
+  std::thread th(&Robot::initThread, this);
+  th.detach();
+
 }
 
 void Robot::TeleopPeriodic()
 {
-  
-  float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-
-  // //check if gyro fell off *******
-  // GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
-  // GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
-  // frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  // frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
-
-  drive.rightStickPID.SetSetpoint(rightStickOutput);
-  drive.arcadeDrive(driverStick->GetRawAxis(1),  drive.GetOutput());
-  frc::SmartDashboard::PutNumber("output", drive.GetOutput());
-  frc::SmartDashboard::PutNumber("gyro", drive.gyroSource.ahrs->GetRate());
-
   
 }
 
