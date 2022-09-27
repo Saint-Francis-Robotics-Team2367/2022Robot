@@ -17,6 +17,5 @@ public:
     }
      
      double PIDGet();
-
      //enter other necessary getters and setters for gyro here
 };  

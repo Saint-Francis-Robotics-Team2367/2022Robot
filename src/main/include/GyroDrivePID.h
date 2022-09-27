@@ -15,7 +15,7 @@ class GyroDrivePID: public DriveBaseModule, frc::PIDOutput{
 
 public:
     navx2 gyroSource;
-    frc::PIDController rightStickPID{1.31, 0.0, 0.06, &gyroSource, this}; //maybe adjust periods here
+    frc::PIDController rightStickPID{1, 0.0, 0.0, &gyroSource, this}; //maybe adjust periods here
     GyroDrivePID();
     void PIDWrite(double output);
 

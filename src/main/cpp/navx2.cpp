@@ -2,6 +2,6 @@
 
 
 double navx2::PIDGet() {
-    return ahrs->GetRate() / 550; //can change later
+    return ahrs->GetRate() / 1000; //can change later, ask how this works too...
 }
 
