@@ -13,9 +13,14 @@
 #include <string>
 #include <math.h>
 #include <rev/CANSparkMax.h>
-#include "DriveBaseModulePID.h"
+//#include "DriveBaseModulePID.h"
 #include <thread>
 #include <chrono>
+#include "AHRS.h"
+#include "frc/SPI.h"
+#include "frc/SerialPort.h"
+
+#include "frc/PIDController.h"
 
 
 
@@ -46,34 +51,39 @@ class Robot : public frc::TimedRobot {
   //Auto Stuff
   void initializePaths();
 
-  DriveBaseModulePID GyroPIDDrive;
+  //DriveBaseModulePID GyroPIDDrive;
   frc::Joystick* driverStick = new frc::Joystick(0);
 
-  void gyroDriving() {
-      float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-      frc::SmartDashboard::PutNumber("in thread right stick output", rightStickOutput);
-      GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
-      //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
-      GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
-      frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-      frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
-  }
+  // void gyroDriving() {
+  //     float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
+  //     frc::SmartDashboard::PutNumber("in thread right stick output", rightStickOutput);
+  //     GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
+  //     //GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+  //     GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
+  //     frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
+  //     frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
+  // }
 
-  void initThread() { //removed ref to Joystick?
-  //need init here?
-  int hi = 1;
-    while(true) {
-      //I don't this this works lmao
-      auto nextRun = std::chrono::steady_clock::now() + std::chrono::milliseconds(20);
-      frc::SmartDashboard::PutNumber("bool", ++hi);
-      gyroDriving();
-      std::this_thread::sleep_until(nextRun);
-    }
-    frc::SmartDashboard::PutBoolean("yo", true);
-  };
+  // void initThread() { //removed ref to Joystick?
+  // //need init here?
+  // int hi = 1;
+  //   while(true) {
+  //     //I don't this this works lmao
+  //     auto nextRun = std::chrono::steady_clock::now() + std::chrono::milliseconds(20);
+  //     frc::SmartDashboard::PutNumber("bool", ++hi);
+  //     gyroDriving();
+  //     std::this_thread::sleep_until(nextRun);
+  //   }
+  //   frc::SmartDashboard::PutBoolean("yo", true);
+  // };
 
-  void gyroDriving(DriveBaseModulePID& gyroDrive, frc::Joystick& driverStick);
+  //void gyroDriving(DriveBaseModulePID& gyroDrive, frc::Joystick& driverStick);
   
+
+//  AHRS *ahrs;
+
+
+
 
   float goalPosition = 90; //if we have a 90 degree gyro thing to face towards the goal, else use photon....needs testing either way
   pathPoint robPos;
