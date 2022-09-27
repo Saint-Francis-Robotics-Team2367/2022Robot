@@ -10,6 +10,10 @@
 #include <frc/PneumaticsControlModule.h>
 //#include "DriveBaseModule.h"
 
+#include<mutex>
+#include <atomic>
+
+std::atomic<bool> shouldRun(true); //initialize to true in teleop init, to false in disable init
 GyroDrivePID drive;
 
 
@@ -29,7 +33,11 @@ void Robot::initThread() {
     while(true) {
       //I don't this this works lmao
       auto nextRun = std::chrono::steady_clock::now() + std::chrono::milliseconds(20);
-      frc::SmartDashboard::PutNumber("bool", ++counter);
+      frc::SmartDashboard::PutNumber("timesRun", ++counter);
+      if(!shouldRun.load()) {
+        break;
+      }
+      frc::SmartDashboard::PutBoolean("atomic bool lock", shouldRun.load());
       gyroDriving();
       std::this_thread::sleep_until(nextRun);
     }
@@ -44,6 +52,7 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic()
 {
+  
   frc::SmartDashboard::PutNumber("angle", drive.gyroSource.ahrs->GetAngle()); 
 }
 void Robot::AutonomousInit()
@@ -61,7 +70,8 @@ void Robot::TeleopInit()
 
   drive.periodicInit();
   std::thread th(&Robot::initThread, this);
-  th.detach();
+  th.detach(); //do I get a memory error or am I good?
+  shouldRun = true; //needs to be assigned here or drive thread won't run~!, called from other thread...
 
 }
 
@@ -70,7 +80,9 @@ void Robot::TeleopPeriodic()
   
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  shouldRun = false;
+}
 void Robot::DisabledPeriodic() {
 }
 
