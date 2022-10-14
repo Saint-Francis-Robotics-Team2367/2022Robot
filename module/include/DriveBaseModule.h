@@ -1,61 +1,53 @@
-#ifndef DRIVEBASEMODULE_H
-#define DRIVEBASEMODULE_H
+#include "Macros.h"
 
 #include <vector>
 #include <math.h> 
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include "Macros.h"
 
 #include <rev/CANSparkMax.h>
 #include <frc/Joystick.h>
 
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include <frc/PIDController.h>
-#include <frc/ADIS16448_IMU.h>
+
+#include <thread>
+#include <chrono>
+#include<mutex>
+#include <atomic>
+
+#include "gyro.h"
 
 #define driverStickPort 0
 #define operatorStickPort 1
 
-// Values that are assigned on init 
-#define PIDProportional 1
+#define PIDProportional 0.39
 #define PIDIntegral 0
-#define PIDDerivative 0
+#define PIDDerivative 2.13
+#define PIDIZone 0
 
 #define motorInitMaxCurrent 100 // The initial max current setting
 #define motorInitRatedCurrent 60 // The inital rated current settings
 #define motorInitLimitCycles 2000 // The inital number of allowed ms at peak current
-
-#define lInvert true // Inversion setings for sides
+#define lInvert true // Inversion setings for sides (invert this if opposite side)
 #define rInvert false 
 
 #define xDeadband 0.025
 #define yDeadband 0.025
-
-#define centerToWheel 1.041667 //Center of the robot to outer wheel or .994... for to inner wheel or 1.08333
+#define centerToWheel 1.08333 //Center of the robot to outer side of the wheel?
 #define PI 3.141592654
+#define wheelDiameter 4 //inches
 
-class DriveBaseModule{
-  float rMotorSetpoint; // Current Motor Setpoints
-  float lMotorSetpoint;
+// #define maxAcc = 7.0
+// #define maxVelocity = 21.0
 
-  float robotProportional; // PID values, for dynamic assignment
-  float robotIntegral;
-  float robotDerivative;
-
-  bool pressed = false;
-  bool intakeOn = false;
-  bool moveFlag = true;
-
-  const double deadband = 1e-5;
-  float prevTime;
-  float prev_value_speed;
-  float prev_value_turn;
-
-  //frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
-  frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
+class DriveBaseModule: public frc::PIDOutput{ //needed for gyroPIDDrive implementation
+  double maxAcc =  7.0;
+  double maxVelocity = 21.0;
+  double currentVelocity = 0;
+  
+  
+ 
+  frc::Joystick* driverStick = new frc::Joystick(driverStickPort);
+  //frc::Joystick* operatorStick = new frc::Joystick(operatorStickPort);
 
   rev::CANSparkMax* lMotor = new rev::CANSparkMax(lMotorLeaderID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* lMotorFollower = new rev::CANSparkMax(lMotorFollowerID, rev::CANSparkMax::MotorType::kBrushless);
@@ -69,50 +61,78 @@ class DriveBaseModule{
   rev::SparkMaxPIDController lPID = lMotor->GetPIDController();
   rev::SparkMaxPIDController rPID = rMotor->GetPIDController();
 
+
   bool initDriveMotor(rev::CANSparkMax* motor, rev::CANSparkMax* follower, bool invert); //loads initial values into motors such as current limit and phase direction
   bool setPowerBudget(rev::CANSparkMax* motor, float iPeak, float iRated, int limitCycles); //changes the current limits on the motors 
-  
-  float gyroInitVal = 0.0f;
-  
-  
-  // frc::PIDOutput output; //make a decorator class
-  // frc::PIDController* rightStickPID = new frc::PIDController(1.0, 0.0, 0.0, m_imu, &output); //Can you initialize like this
-
-  public:
-
-  frc::ADIS16448_IMU m_imu{};
-  std::vector<uint8_t> getConstructorArgs();
-  void periodicInit();
-  void periodicRoutine();
- 
   bool setDriveCurrLimit(float iPeak, float iRated, int limitCycles);
-  void arcadeDrive(double vel, double dir); //takes two values from the joystick and converts them into motor output %
-  bool PIDDrive(float totalFeet, float maxAcc, float maxVelocity);
-  bool PIDDriveSimpleTick(float totalFeet);
-  bool PIDDriveTick(float totalFeet, float maxAcc, float maxVelocity);
-  bool PIDTurn(float angle, float radius, float maxAcc, float maxVelocity);
-  bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
-  bool PIDGyroTurnTick(float angle, float radius, float maxAcc, float maxVelocity);
+
+  public: 
+  std::thread driveThread;
+  double stopAuto = false;
+  DriveBaseModule() {
+    driveThread = std::thread(&DriveBaseModule::run, this); //initializing thread so can detach in robot init
+    rightStickPID.Enable();
+    m_out = 0;
+  }
   void LimitRate(double& s, double& t);
-  float getGyroAngle();
-  void InitGyro();
-  void GyroTurn(float theta);
-  bool GyroTurnTick(float theta);
-  float TurningSensitivity(float rightStick, float leftStick);
-  void alignToGoal();
-  float getDistanceTraversed();
-  void adjustedArcadeDrive(double x, double y);
+  void arcadeDrive(double vel, double dir); //takes two values from the joystick and converts them into motor output %
+  bool PIDDrive(float totalFeet, bool keepVelocity);
+  bool PIDTurn(float angle, float radius, bool keepVelocity);
 
-  float sliderValue = 1;
-  float adjustSpeed = 0.01;
 
-  bool tested = false;
-  bool index = false;
-  float pidprevTime;
-  float pidprevVelocity;
-  float pidprevPosition;
+  void autonomousSequence();
+  void initPath();
+  void run();
+  void runInit();
 
-  bool encoderZeroed = false;
+  void gyroDriving();
+
+  //old system doesn't work, need to fix for radius
+
+  struct pathPoint {
+    float x;
+    float y;
+  };
+
+  std::vector<pathPoint> straightLinePoints;
+  pathPoint robPos;
+
+   struct radiusTurnPoint {
+    float angle;
+    float radius;
+  };
+
+   std::vector<radiusTurnPoint> radiusTurnPoints;
+   
+  std::vector<bool> pathOrder; 
+
+  float d = 0;
+  float theta = 0;
+
+  //bool PIDGyroTurn(float angle, float radius, float maxAcc, float maxVelocity);
+  float prevTime; //all for limit rate
+  float prev_value_speed;
+  float prev_value_turn;
+
+  char state = 't';
+
+
+  gyro gyroSource;
+
+  //gyroPIDDrive stuff
+  frc::PIDController rightStickPID{1, 0.0, 0.0, &gyroSource, this}; //maybe adjust periods here
+  void PIDWrite(double output) {
+    m_out = output;
+  }
+
+  double GetOutput() {
+    return m_out;
+  }
+
+  private:
+	    double m_out;
+  
+  
+    
 };
 
-#endif

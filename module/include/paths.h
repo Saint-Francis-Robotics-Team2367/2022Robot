@@ -12,4 +12,5 @@ std::string paths = "0.0000,0.0000 r 0.0000,7.0000 *\
 float startingThetas[7] = {
     0, 190.8, 225.6, -56.5, 14.6, 46.9, -59.5
 };
+
 int currpath = 0;

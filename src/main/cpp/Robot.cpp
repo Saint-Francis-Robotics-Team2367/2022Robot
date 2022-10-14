@@ -3,16 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/Solenoid.h>
-#include <frc/PowerDistribution.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/PneumaticsControlModule.h>
 
 // // All Module Includes
 #include "DriveBaseModule.h"
 
-//DriveBaseModule compRobotDrive;
+DriveBaseModule drive;
 //moved instantiation to h file
 
 
@@ -20,15 +15,18 @@
 void Robot::RobotInit()
 {
   //compRobotDrive.periodicInit();
+
+  //need drive inits
+  drive.driveThread.detach(); 
  
 }
 
 void Robot::RobotPeriodic()
 {
-  
 }
 void Robot::AutonomousInit()
 {
+  drive.state = 'a';
 }
 void Robot::AutonomousPeriodic()
 {
@@ -39,59 +37,25 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-   GyroPIDDrive.periodicInit();
-  frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
-  frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
-  std::thread th(&Robot::initThread, this);
-  th.detach(); //How to detach
+  drive.state = 't'; //add codes in while loops to break if state change
 }
 
 void Robot::TeleopPeriodic()
 {
-  
-  // float rightStickOutput = -1.0 * driverStick->GetRawAxis(4);
-
-  // //check if gyro fell off *******
-  // GyroPIDDrive.rightStickPID.SetSetpoint(rightStickOutput);
-  // GyroPIDDrive.arcadeDrive(driverStick->GetRawAxis(1),  GyroPIDDrive.GetOutput());
-  // frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  // frc::SmartDashboard::PutNumber("gyro", GyroPIDDrive.m_imu.GetRate().value());
-
-  
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  drive.stopAuto = true;
+}
 void Robot::DisabledPeriodic() {
 }
 
 void Robot::TestInit()
 {
-  GyroPIDDrive.periodicInit();
-  frc::SmartDashboard::PutNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
-  frc::SmartDashboard::PutNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
 }
 
 void Robot::TestPeriodic()
 {
-   double m_P = frc::SmartDashboard::GetNumber("Pd", GyroPIDDrive.rightStickPID.GetP());
-  frc::SmartDashboard::PutNumber("Pd", m_P);
-  GyroPIDDrive.rightStickPID.SetP(m_P);
-
-  double Dee = frc::SmartDashboard::GetNumber("Dee", GyroPIDDrive.rightStickPID.GetD());
-  frc::SmartDashboard::PutNumber("Dee", Dee);
-  GyroPIDDrive.rightStickPID.SetD(Dee);
-
-  if(driverStick->GetRawButton(1)) {
-    frc::SmartDashboard::PutBoolean("Button Pressed", true);
-    GyroPIDDrive.rightStickPID.SetSetpoint(0.3);
-    GyroPIDDrive.arcadeDrive(0, GyroPIDDrive.GetOutput());
-    frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  } else {
-    frc::SmartDashboard::PutBoolean("Button Pressed", false);
-    GyroPIDDrive.rightStickPID.SetSetpoint(0);
-    GyroPIDDrive.arcadeDrive(0, 0);
-    frc::SmartDashboard::PutNumber("output", GyroPIDDrive.GetOutput());
-  }
 }
 
 #ifndef RUNNING_FRC_TESTS
